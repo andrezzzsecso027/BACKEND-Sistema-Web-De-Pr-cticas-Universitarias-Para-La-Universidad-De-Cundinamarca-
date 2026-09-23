@@ -1,27 +1,32 @@
-package co.edu.ucundinamarca.backendudecprac.domain.model;
+package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence;
 
-public class Estudiante {
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "estudiantes")
+public class EstudianteEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, unique = true)
     private String codigo;
+
+    @Column(nullable = false)
     private String nombres;
+
+    @Column(nullable = false)
     private String apellidos;
+
+    @Column(nullable = false, unique = true)
     private String correo;
+
+    @Column(nullable = false)
     private String carrera;
+
+    @Column(nullable = false)
     private Integer semestre;
-
-    public Estudiante() {}
-
-    public Estudiante(Long id, String codigo, String nombres, String apellidos,
-                      String correo, String carrera, Integer semestre) {
-        this.id = id;
-        this.codigo = codigo;
-        this.nombres = nombres;
-        this.apellidos = apellidos;
-        this.correo = correo;
-        this.carrera = carrera;
-        this.semestre = semestre;
-    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
