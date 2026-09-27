@@ -4,28 +4,27 @@ public class Usuario {
 
     private long idUsuario;
     private String correoElectronico;
-    private String contraseña;
+    private String contrasenia;
     private String rolUsuario;
-    private boolean estadoUsuario;
+    private boolean estadoUsuario=true;
 
     //constructor vacio
     public Usuario() {}
 
-    //constructor con parametros
-    public Usuario(long idUsuario, String correoElectronico, String contraseña, String rolUsuario, boolean estadoUsuario) {
+    public Usuario(long idUsuario, String correoElectronico, String contrasenia, String rolUsuario, boolean estadoUsuario) {
         this.idUsuario = idUsuario;
         this.correoElectronico = correoElectronico;
-        this.contraseña = contraseña;
+        this.contrasenia = contrasenia;
         this.rolUsuario = rolUsuario;
         this.estadoUsuario = estadoUsuario;
     }
 
-    public String getContraseña() {
-        return contraseña;
+    public String getContrasenia() {
+        return contrasenia;
     }
 
-    public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
+    public void setContrasenia(String contrasenia) {
+        this.contrasenia = contrasenia;
     }
 
     public long getIdUsuario() {
@@ -59,5 +58,4 @@ public class Usuario {
     public void setEstadoUsuario(boolean estadoUsuario) {
         this.estadoUsuario = estadoUsuario;
     }
-
 }
