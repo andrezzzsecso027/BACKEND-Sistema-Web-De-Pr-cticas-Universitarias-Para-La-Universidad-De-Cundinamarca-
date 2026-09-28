@@ -2,39 +2,90 @@ package co.edu.ucundinamarca.backendudecprac.domain.model;
 
 public class Estudiante {
 
-    private Long id;
-    private String codigo;
+    private Long idUsuario;
+    private String documento;
     private String nombres;
     private String apellidos;
-    private String correo;
-    private String carrera;
-    private Integer semestre;
+    private String direccion;
+    private String telefono;
+    private String sede;
+    private String programaAcademico;
 
     public Estudiante() {}
-
-    public Estudiante(Long id, String codigo, String nombres, String apellidos,
-                      String correo, String carrera, Integer semestre) {
-        this.id = id;
-        this.codigo = codigo;
+    public Estudiante(Long idUsuario, String documento, String nombres, String apellidos, String direccion, String telefono, String sede, String programaAcademico) {
+        this.idUsuario = idUsuario;
+        this.documento = documento;
         this.nombres = nombres;
         this.apellidos = apellidos;
-        this.correo = correo;
-        this.carrera = carrera;
-        this.semestre = semestre;
+        this.direccion = direccion;
+        this.telefono = telefono;
+        this.sede = sede;
+        this.programaAcademico = programaAcademico;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getCodigo() { return codigo; }
-    public void setCodigo(String codigo) { this.codigo = codigo; }
-    public String getNombres() { return nombres; }
-    public void setNombres(String nombres) { this.nombres = nombres; }
-    public String getApellidos() { return apellidos; }
-    public void setApellidos(String apellidos) { this.apellidos = apellidos; }
-    public String getCorreo() { return correo; }
-    public void setCorreo(String correo) { this.correo = correo; }
-    public String getCarrera() { return carrera; }
-    public void setCarrera(String carrera) { this.carrera = carrera; }
-    public Integer getSemestre() { return semestre; }
-    public void setSemestre(Integer semestre) { this.semestre = semestre; }
+    public Long getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public String getDocumento() {
+        return documento;
+    }
+
+    public void setDocumento(String documento) {
+        this.documento = documento;
+    }
+
+    public String getNombres() {
+        return nombres;
+    }
+
+    public void setNombres(String nombres) {
+        this.nombres = nombres;
+    }
+
+    public String getApellidos() {
+        return apellidos;
+    }
+
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getSede() {
+        return sede;
+    }
+
+    public void setSede(String sede) {
+        this.sede = sede;
+    }
+
+    public String getProgramaAcademico() {
+        return programaAcademico;
+    }
+
+    public void setProgramaAcademico(String programaAcademico) {
+        this.programaAcademico = programaAcademico;
+    }
+
+
 }

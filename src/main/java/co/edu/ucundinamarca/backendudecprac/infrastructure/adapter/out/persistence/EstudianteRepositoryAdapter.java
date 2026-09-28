@@ -1,7 +1,7 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence;
 
 import co.edu.ucundinamarca.backendudecprac.domain.model.Estudiante;
-import co.edu.ucundinamarca.backendudecprac.domain.port.EstudianteRepositoryPort;
+import co.edu.ucundinamarca.backendudecprac.domain.port.out.EstudianteRepositoryPort;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,28 +15,33 @@ public class EstudianteRepositoryAdapter implements EstudianteRepositoryPort {
         this.jpaRepository = jpaRepository;
     }
 
+
     @Override
-    public Estudiante guardar(Estudiante estudiante) {
+    public Estudiante saveEstudiante(Estudiante estudiante) {
         EstudianteEntity entity = new EstudianteEntity();
-        entity.setCodigo(estudiante.getCodigo());
+        entity.setDocumento(estudiante.getDocumento());
+        entity.setIdUsuario(estudiante.getIdUsuario());
         entity.setNombres(estudiante.getNombres());
         entity.setApellidos(estudiante.getApellidos());
-        entity.setCorreo(estudiante.getCorreo());
-        entity.setCarrera(estudiante.getCarrera());
-        entity.setSemestre(estudiante.getSemestre());
-        EstudianteEntity guardado = jpaRepository.save(entity);
-        return toDomain(guardado);
+        entity.setDireccion(estudiante.getDireccion());
+        entity.setTelefono(estudiante.getTelefono());
+        entity.setSede(estudiante.getSede());
+        entity.setProgramaAcademico(estudiante.getProgramaAcademico());
+        jpaRepository.save(entity);
+        return estudiante;
     }
+
 
     @Override
     public List<Estudiante> listarTodos() {
-        return jpaRepository.findAll().stream()
-                .map(this::toDomain)
-                .collect(Collectors.toList());
+        return List.of();
     }
 
+    /*
     private Estudiante toDomain(EstudianteEntity entity) {
         return new Estudiante(entity.getId(), entity.getCodigo(), entity.getNombres(),
                 entity.getApellidos(), entity.getCorreo(), entity.getCarrera(), entity.getSemestre());
     }
+
+     */
 }
