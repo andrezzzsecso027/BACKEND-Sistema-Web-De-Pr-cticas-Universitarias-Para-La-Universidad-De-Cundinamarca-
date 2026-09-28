@@ -1,8 +1,11 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence;
 
 import co.edu.ucundinamarca.backendudecprac.domain.model.Estudiante;
+import co.edu.ucundinamarca.backendudecprac.domain.model.Usuario;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.EstudianteRepositoryPort;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +37,22 @@ public class EstudianteRepositoryAdapter implements EstudianteRepositoryPort {
 
     @Override
     public List<Estudiante> listarTodos() {
-        return List.of();
+        List<EstudianteEntity> entidades = jpaRepository.findAll();
+        List<Estudiante> estudiantes = new ArrayList<>();
+
+        for (EstudianteEntity entity : entidades) {
+            Estudiante est = new Estudiante();
+            est.setIdUsuario(entity.getIdUsuario());
+            est.setDocumento(entity.getDocumento());
+            est.setNombres(entity.getNombres());
+            est.setApellidos(entity.getApellidos());
+            est.setDireccion(entity.getDireccion());
+            est.setTelefono(entity.getTelefono());
+            est.setSede(entity.getSede());
+            est.setProgramaAcademico(entity.getProgramaAcademico());
+            estudiantes.add(est);
+        }
+        return estudiantes;
     }
 
     /*

@@ -26,4 +26,9 @@ public class EstudianteUseCaseUseCaseImpl implements createEstudianteUseCase {
         estudiante.setIdUsuario(usuarioGuardado.getIdUsuario());
         return estudianteRepositoryPort.saveEstudiante(estudiante);
     }
+
+    @Override
+    public List<Estudiante> listarTodos() {
+        return estudianteRepositoryPort.listarTodos();
+    }
 }

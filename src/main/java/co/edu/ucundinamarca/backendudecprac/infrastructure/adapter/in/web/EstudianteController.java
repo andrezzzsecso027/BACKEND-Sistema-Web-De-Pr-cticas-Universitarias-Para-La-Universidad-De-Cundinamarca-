@@ -19,14 +19,13 @@ public class EstudianteController {
         this.useCase = useCase;
     }
 
-    /*
+
     @GetMapping
     public ResponseEntity<List<Estudiante>> listar() {
-        return ResponseEntity.ok(useCase.listar());
+        return ResponseEntity.ok(useCase.listarTodos());
     }
 
 
-     */
     @PostMapping
     public ResponseEntity<Estudiante> crear(@RequestBody EstudianteRegistroRequest request) {
         Usuario usuario = new Usuario();

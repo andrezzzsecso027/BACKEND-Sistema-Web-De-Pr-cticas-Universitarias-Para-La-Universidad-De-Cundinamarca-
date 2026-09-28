@@ -7,6 +7,8 @@ import co.edu.ucundinamarca.backendudecprac.domain.port.out.empresaRepositoryPor
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.usuarioRepositoryPort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class createEmpresaUseCaseImpl implements createEmpresaUseCase{
 
@@ -23,6 +25,11 @@ public class createEmpresaUseCaseImpl implements createEmpresaUseCase{
         Usuario usuarioGuardado = usuariorepositoryport.saveUsuario(usuario);
         empresa.setIdUsuario(usuarioGuardado.getIdUsuario());
         return empresarepositoryPort.saveEmpresa(empresa);
+    }
+
+    @Override
+    public List<Empresa> findAllEmpresas() {
+        return empresarepositoryPort.findAllEmpresas();
     }
 
 

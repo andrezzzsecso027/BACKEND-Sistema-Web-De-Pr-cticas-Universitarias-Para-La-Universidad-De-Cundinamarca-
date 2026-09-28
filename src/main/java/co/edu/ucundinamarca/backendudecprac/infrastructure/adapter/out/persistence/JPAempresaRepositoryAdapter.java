@@ -4,6 +4,7 @@ import co.edu.ucundinamarca.backendudecprac.domain.model.Empresa;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.empresaRepositoryPort;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -30,6 +31,21 @@ public class JPAempresaRepositoryAdapter implements empresaRepositoryPort {
 
     @Override
     public List<Empresa> findAllEmpresas() {
-        return List.of();
+        List<empresaEntity> entidadesEmpresas = jpaEmpresaRepository.findAll();
+        List<Empresa> empresas = new ArrayList<>();
+
+        for (empresaEntity entity : entidadesEmpresas) {
+            Empresa empresa = new Empresa();
+            empresa.setIdUsuario(entity.getIdUsuario());
+            empresa.setNombreEmpresa(entity.getNombreEmpresa());
+            empresa.setNIT(entity.getNit());
+            empresa.setDireccionEmpresa(entity.getDireccionEmpresa());
+            empresa.setTelefonoEmpresa(entity.getTelefonoEmpresa());
+            empresa.setTipoEmpresa(entity.getTipoEmpresa());
+            empresas.add(empresa);
+        }
+
+        return empresas;
+
     }
 }
