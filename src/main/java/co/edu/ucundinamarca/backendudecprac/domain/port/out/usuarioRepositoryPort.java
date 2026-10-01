@@ -7,4 +7,5 @@ import java.util.List;
 public interface usuarioRepositoryPort {
     Usuario saveUsuario(Usuario usuario);
     List<Usuario> findAllUsuarios();
+    boolean existsByCorreoElectronico(String correoElectronico);
 }

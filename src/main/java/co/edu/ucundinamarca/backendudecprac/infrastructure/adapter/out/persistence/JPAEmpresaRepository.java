@@ -3,4 +3,6 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persiste
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface JPAEmpresaRepository extends JpaRepository<empresaEntity,String> {
+
+    boolean existsByNit(String nit);
 }

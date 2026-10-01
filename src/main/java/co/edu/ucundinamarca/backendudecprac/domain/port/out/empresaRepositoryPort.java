@@ -7,4 +7,6 @@ import java.util.List;
 public interface empresaRepositoryPort {
     Empresa saveEmpresa(Empresa empresa);
     List<Empresa> findAllEmpresas();
+
+    boolean existsByNit(String nit);
 }

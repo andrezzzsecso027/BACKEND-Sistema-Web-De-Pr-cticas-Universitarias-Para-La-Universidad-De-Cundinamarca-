@@ -48,4 +48,11 @@ public class JPAempresaRepositoryAdapter implements empresaRepositoryPort {
         return empresas;
 
     }
+
+    @Override
+    public boolean existsByNit(String nit) {
+        return jpaEmpresaRepository.existsByNit(nit);
+    }
+
+
 }

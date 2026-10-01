@@ -1,5 +1,6 @@
 package co.edu.ucundinamarca.backendudecprac.application.usecase;
 
+import co.edu.ucundinamarca.backendudecprac.domain.ResourceAlreadyExistsException;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Empresa;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Usuario;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.createEmpresaUseCase;
@@ -22,6 +23,12 @@ public class createEmpresaUseCaseImpl implements createEmpresaUseCase{
 
     @Override
     public Empresa createEmpresa(Usuario usuario, Empresa empresa) {
+        if(usuariorepositoryport.existsByCorreoElectronico(usuario.getCorreoElectronico())) {
+            throw new ResourceAlreadyExistsException("Ya existe una cuenta con ese correo");
+        }
+        if(empresarepositoryPort.existsByNit(empresa.getNIT())){
+            throw new ResourceAlreadyExistsException("Ya existe una cuenta con ese nit");
+        }
         Usuario usuarioGuardado = usuariorepositoryport.saveUsuario(usuario);
         empresa.setIdUsuario(usuarioGuardado.getIdUsuario());
         return empresarepositoryPort.saveEmpresa(empresa);

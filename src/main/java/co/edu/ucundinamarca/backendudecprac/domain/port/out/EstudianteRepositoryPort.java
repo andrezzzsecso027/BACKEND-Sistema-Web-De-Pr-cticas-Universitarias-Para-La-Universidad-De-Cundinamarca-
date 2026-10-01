@@ -6,4 +6,6 @@ import java.util.List;
 public interface EstudianteRepositoryPort {
     Estudiante saveEstudiante(Estudiante estudiante);
     List<Estudiante> listarTodos();
+
+    boolean existsByDocumento(String documento);
 }

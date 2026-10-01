@@ -31,7 +31,10 @@ public class usuarioRepositoryAdapater implements usuarioRepositoryPort {
         usuario.setIdUsuario(guardado.getIdUsario());
         return usuario;
     }
-
+    @Override
+    public boolean existsByCorreoElectronico(String correoElectronico) {
+        return usuariojparepository.existsByCorreoElectronico(correoElectronico);
+    }
     @Override
     public List<Usuario> findAllUsuarios() {
         return List.of();
