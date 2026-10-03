@@ -1,6 +1,6 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web;
 
-public class EstudianteRegistroRequest {
+public class StudentRecordRequest {
     private String documento;
     private String nombreEstudiante;
     private String apellidoEstudiante;

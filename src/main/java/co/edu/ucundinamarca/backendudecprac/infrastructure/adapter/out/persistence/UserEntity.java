@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name="usuarios")
-public class usuarioEntity {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,7 @@ public class usuarioEntity {
     @Column(nullable = false)
     private boolean estado=true;
 
-    public usuarioEntity() {}
+    public UserEntity() {}
 
     public long getIdUsario() {
         return idUsario;

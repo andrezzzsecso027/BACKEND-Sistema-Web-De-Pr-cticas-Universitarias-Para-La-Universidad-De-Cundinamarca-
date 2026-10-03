@@ -7,7 +7,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "empresas")
-public class empresaEntity {
+public class CompanyEntity {
 
     @Id
     private String nit;
@@ -21,7 +21,7 @@ public class empresaEntity {
     private String direccionEmpresa;
     private String telefonoEmpresa;
 
-    public empresaEntity() {}
+    public CompanyEntity() {}
 
     public Long getIdUsuario() {
         return idUsuario;

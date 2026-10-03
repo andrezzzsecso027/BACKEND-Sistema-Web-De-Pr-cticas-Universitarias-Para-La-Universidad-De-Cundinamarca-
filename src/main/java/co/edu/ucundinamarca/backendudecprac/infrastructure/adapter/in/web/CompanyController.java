@@ -12,34 +12,34 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/registro/empresas")
 @CrossOrigin(origins = "http://localhost:4200")
-public class empresaController {
+public class CompanyController {
     private final createCompanyUseCase createempresausecase;
 
-    public empresaController(createCompanyUseCase createempresausecase) {
+    public CompanyController(createCompanyUseCase createempresausecase) {
         this.createempresausecase = createempresausecase;
     }
 
     @GetMapping
     public ResponseEntity<List<Company>> findAllEmpresas() {
-        List<Company> lista = createempresausecase.findAllEmpresas();
+        List<Company> lista = createempresausecase.findAllCompanies();
         return ResponseEntity.ok(lista);
     }
 
     @PostMapping
-    public ResponseEntity<Company> registrar(@RequestBody EmpresaRegistroRequest request) {
+    public ResponseEntity<Company> registrar(@RequestBody companyRecordRequest request) {
         User user = new User();
-        user.setCorreoElectronico(request.getCorreo());
-        user.setContrasenia(request.getContrasenia());
-        user.setRolUsuario("empresa");
+        user.setEmailAddres(request.getCorreo());
+        user.setPassword(request.getContrasenia());
+        user.setUserRol("empresa");
 
         Company company = new Company();
         company.setNIT(request.getNit());
-        company.setNombreEmpresa(request.getNombreEmpresa());
-        company.setTipoEmpresa(request.getTipoEmpresa());
-        company.setDireccionEmpresa(request.getDireccionEmpresa());
-        company.setTelefonoEmpresa(request.getTelefonoEmpresa());
+        company.setCompanyName(request.getNombreEmpresa());
+        company.setCompanyType(request.getTipoEmpresa());
+        company.setCompanyAddres(request.getDireccionEmpresa());
+        company.setCompanyPhoneNumber(request.getTelefonoEmpresa());
 
-        Company creada = createempresausecase.createEmpresa(user, company);
+        Company creada = createempresausecase.createCompany(user, company);
         return ResponseEntity.status(HttpStatus.CREATED).body(creada);
     }
 

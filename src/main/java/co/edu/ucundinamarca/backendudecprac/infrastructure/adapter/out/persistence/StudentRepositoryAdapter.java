@@ -1,58 +1,56 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence;
 
-import co.edu.ucundinamarca.backendudecprac.domain.model.Estudiante;
-import co.edu.ucundinamarca.backendudecprac.domain.model.Usuario;
-import co.edu.ucundinamarca.backendudecprac.domain.port.out.EstudianteRepositoryPort;
+import co.edu.ucundinamarca.backendudecprac.domain.model.Student;
+import co.edu.ucundinamarca.backendudecprac.domain.port.out.StudentRepositoryPort;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
-public class EstudianteRepositoryAdapter implements EstudianteRepositoryPort {
+public class StudentRepositoryAdapter implements StudentRepositoryPort {
 
-    private final EstudianteJpaRepository jpaRepository;
+    private final StudentJpaRepository jpaRepository;
 
-    public EstudianteRepositoryAdapter(EstudianteJpaRepository jpaRepository) {
+    public StudentRepositoryAdapter(StudentJpaRepository jpaRepository) {
         this.jpaRepository = jpaRepository;
     }
 
 
     @Override
-    public Estudiante saveEstudiante(Estudiante estudiante) {
-        EstudianteEntity entity = new EstudianteEntity();
-        entity.setDocumento(estudiante.getDocumento());
-        entity.setIdUsuario(estudiante.getIdUsuario());
-        entity.setNombres(estudiante.getNombres());
-        entity.setApellidos(estudiante.getApellidos());
-        entity.setDireccion(estudiante.getDireccion());
-        entity.setTelefono(estudiante.getTelefono());
-        entity.setSede(estudiante.getSede());
-        entity.setProgramaAcademico(estudiante.getProgramaAcademico());
+    public Student saveStudent(Student student) {
+        StudentEntity entity = new StudentEntity();
+        entity.setDocumento(student.getDocument());
+        entity.setIdUsuario(student.getIdUser());
+        entity.setNombres(student.getName());
+        entity.setApellidos(student.getLastName());
+        entity.setDireccion(student.getAddres());
+        entity.setTelefono(student.getPhoneNumber());
+        entity.setSede(student.getHeadquarters());
+        entity.setProgramaAcademico(student.getAcademicProgram());
         jpaRepository.save(entity);
-        return estudiante;
+        return student;
     }
 
 
     @Override
-    public List<Estudiante> listarTodos() {
-        List<EstudianteEntity> entidades = jpaRepository.findAll();
-        List<Estudiante> estudiantes = new ArrayList<>();
+    public List<Student> findAllStudents() {
+        List<StudentEntity> entidades = jpaRepository.findAll();
+        List<Student> students = new ArrayList<>();
 
-        for (EstudianteEntity entity : entidades) {
-            Estudiante est = new Estudiante();
-            est.setIdUsuario(entity.getIdUsuario());
-            est.setDocumento(entity.getDocumento());
-            est.setNombres(entity.getNombres());
-            est.setApellidos(entity.getApellidos());
-            est.setDireccion(entity.getDireccion());
-            est.setTelefono(entity.getTelefono());
-            est.setSede(entity.getSede());
-            est.setProgramaAcademico(entity.getProgramaAcademico());
-            estudiantes.add(est);
+        for (StudentEntity entity : entidades) {
+            Student est = new Student();
+            est.setIdUser(entity.getIdUsuario());
+            est.setDocument(entity.getDocumento());
+            est.setName(entity.getNombres());
+            est.setLastName(entity.getApellidos());
+            est.setAddres(entity.getDireccion());
+            est.setPhoneNumber(entity.getTelefono());
+            est.setHeadquarters(entity.getSede());
+            est.setAcademicProgram(entity.getProgramaAcademico());
+            students.add(est);
         }
-        return estudiantes;
+        return students;
     }
 
     @Override

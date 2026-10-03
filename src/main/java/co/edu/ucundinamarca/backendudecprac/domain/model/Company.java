@@ -1,34 +1,34 @@
 package co.edu.ucundinamarca.backendudecprac.domain.model;
 
-public class Empresa {
+public class Company {
     private String NIT;
-    private long idUsuario;
-    private String nombreEmpresa;
-    private String tipoEmpresa;
-    private String direccionEmpresa;
-    private String telefonoEmpresa;
+    private long idUser;
+    private String CompanyName;
+    private String CompanyType;
+    private String CompanyAddres;
+    private String CompanyPhoneNumber;
 
 
-    public Empresa() {
+    public Company() {
     }
 
 
-    public Empresa(String NIT, Long idUsuario, String nombreEmpresa, String tipoEmpresa,
-                   String direccionEmpresa, String telefonoEmpresa) {
+    public Company(String NIT, Long idUser, String CompanyName, String CompanyType,
+                   String CompanyAddres, String CompanyPhoneNumber) {
         this.NIT = NIT;
-        this.idUsuario = idUsuario;
-        this.nombreEmpresa = nombreEmpresa;
-        this.tipoEmpresa = tipoEmpresa;
-        this.direccionEmpresa = direccionEmpresa;
-        this.telefonoEmpresa = telefonoEmpresa;
+        this.idUser = idUser;
+        this.CompanyName = CompanyName;
+        this.CompanyType = CompanyType;
+        this.CompanyAddres = CompanyAddres;
+        this.CompanyPhoneNumber = CompanyPhoneNumber;
     }
 
-    public String getDireccionEmpresa() {
-        return direccionEmpresa;
+    public String getCompanyAddres() {
+        return CompanyAddres;
     }
 
-    public void setDireccionEmpresa(String direccionEmpresa) {
-        this.direccionEmpresa = direccionEmpresa;
+    public void setCompanyAddres(String companyAddres) {
+        this.CompanyAddres = companyAddres;
     }
 
     public String getNIT() {
@@ -39,35 +39,35 @@ public class Empresa {
         this.NIT = NIT;
     }
 
-    public long getIdUsuario() {
-        return idUsuario;
+    public long getIdUser() {
+        return idUser;
     }
 
-    public void setIdUsuario(long idUsuario) {
-        this.idUsuario = idUsuario;
+    public void setIdUser(long idUser) {
+        this.idUser = idUser;
     }
 
-    public String getNombreEmpresa() {
-        return nombreEmpresa;
+    public String getCompanyName() {
+        return CompanyName;
     }
 
-    public void setNombreEmpresa(String nombreEmpresa) {
-        this.nombreEmpresa = nombreEmpresa;
+    public void setCompanyName(String companyName) {
+        this.CompanyName = companyName;
     }
 
-    public String getTipoEmpresa() {
-        return tipoEmpresa;
+    public String getCompanyType() {
+        return CompanyType;
     }
 
-    public void setTipoEmpresa(String tipoEmpresa) {
-        this.tipoEmpresa = tipoEmpresa;
+    public void setCompanyType(String companyType) {
+        this.CompanyType = companyType;
     }
 
-    public String getTelefonoEmpresa() {
-        return telefonoEmpresa;
+    public String getCompanyPhoneNumber() {
+        return CompanyPhoneNumber;
     }
 
-    public void setTelefonoEmpresa(String telefonoEmpresa) {
-        this.telefonoEmpresa = telefonoEmpresa;
+    public void setCompanyPhoneNumber(String companyPhoneNumber) {
+        this.CompanyPhoneNumber = companyPhoneNumber;
     }
 }

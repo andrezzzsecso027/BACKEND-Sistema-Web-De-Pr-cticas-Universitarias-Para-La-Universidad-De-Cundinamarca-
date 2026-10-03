@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class JPAempresaRepositoryAdapter implements CompanyRepositoryPort {
+public class JPACompanyRepositoryAdapter implements CompanyRepositoryPort {
 
-    private final JPAEmpresaRepository jpaEmpresaRepository;
+    private final JPACompanyRepository jpaCompanyRepository;
 
-    public JPAempresaRepositoryAdapter(JPAEmpresaRepository jpaEmpresaRepository) {
-        this.jpaEmpresaRepository = jpaEmpresaRepository;
+    public JPACompanyRepositoryAdapter(JPACompanyRepository jpaCompanyRepository) {
+        this.jpaCompanyRepository = jpaCompanyRepository;
     }
 
     @Override
@@ -21,27 +21,27 @@ public class JPAempresaRepositoryAdapter implements CompanyRepositoryPort {
         CompanyEntity entity = new CompanyEntity();
         entity.setNit(company.getNIT());
         entity.setIdUsuario(company.getIdUser());
-        entity.setNombreEmpresa(company.getNombreEmpresa());
-        entity.setTipoEmpresa(company.getTipoEmpresa());
-        entity.setDireccionEmpresa(company.getDireccionEmpresa());
-        entity.setTelefonoEmpresa(company.getTelefonoEmpresa());
-        jpaEmpresaRepository.save(entity);
+        entity.setNombreEmpresa(company.getCompanyName());
+        entity.setTipoEmpresa(company.getCompanyType());
+        entity.setDireccionEmpresa(company.getCompanyAddres());
+        entity.setTelefonoEmpresa(company.getCompanyPhoneNumber());
+        jpaCompanyRepository.save(entity);
         return company;
     }
 
     @Override
-    public List<Company> findAllEmpresas() {
-        List<CompanyEntity> entidadesEmpresas = jpaEmpresaRepository.findAll();
+    public List<Company> findAllCompanies() {
+        List<CompanyEntity> entidadesEmpresas = jpaCompanyRepository.findAll();
         List<Company> companies = new ArrayList<>();
 
         for (CompanyEntity entity : entidadesEmpresas) {
             Company company = new Company();
             company.setIdUser(entity.getIdUsuario());
-            company.setNombreEmpresa(entity.getNombreEmpresa());
+            company.setCompanyName(entity.getNombreEmpresa());
             company.setNIT(entity.getNit());
-            company.setDireccionEmpresa(entity.getDireccionEmpresa());
-            company.setTelefonoEmpresa(entity.getTelefonoEmpresa());
-            company.setTipoEmpresa(entity.getTipoEmpresa());
+            company.setCompanyAddres(entity.getDireccionEmpresa());
+            company.setCompanyPhoneNumber(entity.getTelefonoEmpresa());
+            company.setCompanyType(entity.getTipoEmpresa());
             companies.add(company);
         }
 
@@ -51,7 +51,7 @@ public class JPAempresaRepositoryAdapter implements CompanyRepositoryPort {
 
     @Override
     public boolean existsByNit(String nit) {
-        return jpaEmpresaRepository.existsByNit(nit);
+        return jpaCompanyRepository.existsByNit(nit);
     }
 
 

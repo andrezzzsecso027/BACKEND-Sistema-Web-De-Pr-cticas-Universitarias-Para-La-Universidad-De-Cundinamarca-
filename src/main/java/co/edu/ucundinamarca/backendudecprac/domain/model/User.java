@@ -1,61 +1,61 @@
 package co.edu.ucundinamarca.backendudecprac.domain.model;
 
-public class Usuario {
+public class User {
 
-    private long idUsuario;
-    private String correoElectronico;
-    private String contrasenia;
-    private String rolUsuario;
-    private boolean estadoUsuario=true;
+    private long idUser;
+    private String emailAddres;
+    private String password;
+    private String userRol;
+    private boolean userStatus =true;
 
     //constructor vacio
-    public Usuario() {}
+    public User() {}
 
-    public Usuario(long idUsuario, String correoElectronico, String contrasenia, String rolUsuario, boolean estadoUsuario) {
-        this.idUsuario = idUsuario;
-        this.correoElectronico = correoElectronico;
-        this.contrasenia = contrasenia;
-        this.rolUsuario = rolUsuario;
-        this.estadoUsuario = estadoUsuario;
+    public User(long idUser, String emailAddres, String password, String userRol, boolean userStatus) {
+        this.idUser = idUser;
+        this.emailAddres = emailAddres;
+        this.password = password;
+        this.userRol = userRol;
+        this.userStatus = userStatus;
     }
 
-    public String getContrasenia() {
-        return contrasenia;
+    public String getPassword() {
+        return password;
     }
 
-    public void setContrasenia(String contrasenia) {
-        this.contrasenia = contrasenia;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public long getIdUsuario() {
-        return idUsuario;
+    public long getIdUser() {
+        return idUser;
     }
 
-    public void setIdUsuario(long idUsuario) {
-        this.idUsuario = idUsuario;
+    public void setIdUser(long idUser) {
+        this.idUser = idUser;
     }
 
-    public String getCorreoElectronico() {
-        return correoElectronico;
+    public String getEmailAddres() {
+        return emailAddres;
     }
 
-    public void setCorreoElectronico(String correoElectronico) {
-        this.correoElectronico = correoElectronico;
+    public void setEmailAddres(String emailAddres) {
+        this.emailAddres = emailAddres;
     }
 
-    public String getRolUsuario() {
-        return rolUsuario;
+    public String getUserRol() {
+        return userRol;
     }
 
-    public void setRolUsuario(String rolUsuario) {
-        this.rolUsuario = rolUsuario;
+    public void setUserRol(String userRol) {
+        this.userRol = userRol;
     }
 
-    public boolean isEstadoUsuario() {
-        return estadoUsuario;
+    public boolean isUserStatus() {
+        return userStatus;
     }
 
-    public void setEstadoUsuario(boolean estadoUsuario) {
-        this.estadoUsuario = estadoUsuario;
+    public void setUserStatus(boolean userStatus) {
+        this.userStatus = userStatus;
     }
 }

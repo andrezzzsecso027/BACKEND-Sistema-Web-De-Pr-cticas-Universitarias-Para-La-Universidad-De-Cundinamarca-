@@ -1,42 +1,38 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence;
 
-import co.edu.ucundinamarca.backendudecprac.domain.model.Empresa;
-import co.edu.ucundinamarca.backendudecprac.domain.model.Estudiante;
-import co.edu.ucundinamarca.backendudecprac.domain.model.Usuario;
-import co.edu.ucundinamarca.backendudecprac.domain.port.out.empresaRepositoryPort;
-import co.edu.ucundinamarca.backendudecprac.domain.port.out.usuarioRepositoryPort;
+import co.edu.ucundinamarca.backendudecprac.domain.model.User;
+import co.edu.ucundinamarca.backendudecprac.domain.port.out.UserRepositoryPort;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class usuarioRepositoryAdapater implements usuarioRepositoryPort {
+public class UserRepositoryAdapater implements UserRepositoryPort {
 
-    private final usuarioJPArepository usuariojparepository;
+    private final UserJPArepository usuariojparepository;
 
-    public usuarioRepositoryAdapater(usuarioJPArepository usuariojparepository, EstudianteJpaRepository jpaRepository, JPAEmpresaRepository jpaEmpresaRepository) {
+    public UserRepositoryAdapater(UserJPArepository usuariojparepository, StudentJpaRepository jpaRepository, JPACompanyRepository jpaCompanyRepository) {
         this.usuariojparepository = usuariojparepository;
     }
 
     @Override
-    public Usuario saveUsuario(Usuario usuario) {
-        usuarioEntity entity = new usuarioEntity();
-        entity.setCorreoElectronico(usuario.getCorreoElectronico());
-        entity.setContrasenia(usuario.getContrasenia());
-        entity.setRolUsuario(usuario.getRolUsuario());
-        entity.setEstado(usuario.isEstadoUsuario());
+    public User saveUser(User user) {
+        UserEntity entity = new UserEntity();
+        entity.setCorreoElectronico(user.getEmailAddres());
+        entity.setContrasenia(user.getPassword());
+        entity.setRolUsuario(user.getUserRol());
+        entity.setEstado(user.isUserStatus());
 
-        usuarioEntity guardado = usuariojparepository.save(entity);
-        usuario.setIdUsuario(guardado.getIdUsario());
-        return usuario;
+        UserEntity guardado = usuariojparepository.save(entity);
+        user.setIdUser(guardado.getIdUsario());
+        return user;
     }
     @Override
     public boolean existsByCorreoElectronico(String correoElectronico) {
         return usuariojparepository.existsByCorreoElectronico(correoElectronico);
     }
     @Override
-    public List<Usuario> findAllUsuarios() {
+    public List<User> findAllUsuarios() {
         return List.of();
     }
 }

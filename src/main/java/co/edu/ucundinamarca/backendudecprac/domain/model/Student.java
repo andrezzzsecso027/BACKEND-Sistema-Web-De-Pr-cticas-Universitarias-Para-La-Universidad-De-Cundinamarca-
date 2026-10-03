@@ -1,90 +1,90 @@
 package co.edu.ucundinamarca.backendudecprac.domain.model;
 
-public class Estudiante {
+public class Student {
 
-    private Long idUsuario;
-    private String documento;
-    private String nombres;
-    private String apellidos;
-    private String direccion;
-    private String telefono;
-    private String sede;
-    private String programaAcademico;
+    private Long idUser;
+    private String document;
+    private String name;
+    private String lastName;
+    private String addres;
+    private String phoneNumber;
+    private String headquarters;
+    private String academicProgram;
 
-    public Estudiante() {}
-    public Estudiante(Long idUsuario, String documento, String nombres, String apellidos, String direccion, String telefono, String sede, String programaAcademico) {
-        this.idUsuario = idUsuario;
-        this.documento = documento;
-        this.nombres = nombres;
-        this.apellidos = apellidos;
-        this.direccion = direccion;
-        this.telefono = telefono;
-        this.sede = sede;
-        this.programaAcademico = programaAcademico;
+    public Student() {}
+    public Student(Long idUser, String document, String name, String lastName, String addres, String phoneNumber, String headquarters, String academicProgram) {
+        this.idUser = idUser;
+        this.document = document;
+        this.name = name;
+        this.lastName = lastName;
+        this.addres = addres;
+        this.phoneNumber = phoneNumber;
+        this.headquarters = headquarters;
+        this.academicProgram = academicProgram;
     }
 
-    public Long getIdUsuario() {
-        return idUsuario;
+    public Long getIdUser() {
+        return idUser;
     }
 
-    public void setIdUsuario(Long idUsuario) {
-        this.idUsuario = idUsuario;
+    public void setIdUser(Long idUser) {
+        this.idUser = idUser;
     }
 
-    public String getDocumento() {
-        return documento;
+    public String getDocument() {
+        return document;
     }
 
-    public void setDocumento(String documento) {
-        this.documento = documento;
+    public void setDocument(String document) {
+        this.document = document;
     }
 
-    public String getNombres() {
-        return nombres;
+    public String getName() {
+        return name;
     }
 
-    public void setNombres(String nombres) {
-        this.nombres = nombres;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getApellidos() {
-        return apellidos;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setApellidos(String apellidos) {
-        this.apellidos = apellidos;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public String getDireccion() {
-        return direccion;
+    public String getAddres() {
+        return addres;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public void setAddres(String addres) {
+        this.addres = addres;
     }
 
-    public String getTelefono() {
-        return telefono;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public String getSede() {
-        return sede;
+    public String getHeadquarters() {
+        return headquarters;
     }
 
-    public void setSede(String sede) {
-        this.sede = sede;
+    public void setHeadquarters(String headquarters) {
+        this.headquarters = headquarters;
     }
 
-    public String getProgramaAcademico() {
-        return programaAcademico;
+    public String getAcademicProgram() {
+        return academicProgram;
     }
 
-    public void setProgramaAcademico(String programaAcademico) {
-        this.programaAcademico = programaAcademico;
+    public void setAcademicProgram(String academicProgram) {
+        this.academicProgram = academicProgram;
     }
 
 

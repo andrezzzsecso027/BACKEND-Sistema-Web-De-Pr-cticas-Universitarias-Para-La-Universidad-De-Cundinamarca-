@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "estudiantes")
-public class EstudianteEntity {
+public class StudentEntity {
 
     @Id
     @Column(nullable = false, unique = true)
@@ -34,7 +34,7 @@ public class EstudianteEntity {
 
 
 
-    public EstudianteEntity() {}
+    public StudentEntity() {}
 
     public String getProgramaAcademico() {
         return programaAcademico;

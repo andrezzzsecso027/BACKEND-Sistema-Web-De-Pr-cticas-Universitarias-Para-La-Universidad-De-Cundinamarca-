@@ -1,11 +1,11 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web;
 
-public class loginRequest {
-    private String correo;
-    private String contrasenia;
+public class LoginRequest {
+    private String email;
+    private String password;
 
-    public String getCorreo() { return correo; }
-    public void setCorreo(String correo) { this.correo = correo; }
-    public String getContrasenia() { return contrasenia; }
-    public void setContrasenia(String contrasenia) { this.contrasenia = contrasenia; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 }

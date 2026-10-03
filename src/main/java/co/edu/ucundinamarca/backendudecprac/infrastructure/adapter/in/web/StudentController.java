@@ -11,37 +11,37 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/registro/estudiantes")
 @CrossOrigin(origins = "http://localhost:4200")
-public class EstudianteController {
+public class StudentController {
 
     private final StudentUseCaseUseCaseImpl useCase;
 
-    public EstudianteController(StudentUseCaseUseCaseImpl useCase) {
+    public StudentController(StudentUseCaseUseCaseImpl useCase) {
         this.useCase = useCase;
     }
 
 
     @GetMapping
     public ResponseEntity<List<Student>> listar() {
-        return ResponseEntity.ok(useCase.listarTodos());
+        return ResponseEntity.ok(useCase.FindAllStudents());
     }
 
 
     @PostMapping
-    public ResponseEntity<Student> crear(@RequestBody EstudianteRegistroRequest request) {
+    public ResponseEntity<Student> crear(@RequestBody StudentRecordRequest request) {
         User user = new User();
-        user.setCorreoElectronico(request.getCorreo());
-        user.setContrasenia(request.getContrasenia());
-        user.setRolUsuario("estudiante");
+        user.setEmailAddres(request.getCorreo());
+        user.setPassword(request.getContrasenia());
+        user.setUserRol("estudiante");
         Student student = new Student();
-        student.setNombres(request.getNombreEstudiante());
-        student.setApellidos(request.getApellidoEstudiante());
-        student.setDocumento(request.getDocumento());
-        student.setTelefono(request.getTelefono());
-        student.setDireccion(request.getDireccion());
-        student.setSede(request.getSede());
-        student.setProgramaAcademico(request.getProgramaAcademico());
+        student.setName(request.getNombreEstudiante());
+        student.setLastName(request.getApellidoEstudiante());
+        student.setDocument(request.getDocumento());
+        student.setPhoneNumber(request.getTelefono());
+        student.setAddres(request.getDireccion());
+        student.setHeadquarters(request.getSede());
+        student.setAcademicProgram(request.getProgramaAcademico());
 
-        Student studentCreado = useCase.createEstudiante(user, student);
+        Student studentCreado = useCase.createStudent(user, student);
         return ResponseEntity.status(HttpStatus.CREATED).body(studentCreado);
     }
 }

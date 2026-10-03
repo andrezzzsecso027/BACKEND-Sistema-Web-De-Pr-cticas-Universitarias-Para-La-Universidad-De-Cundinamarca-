@@ -1,6 +1,6 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web;
 
-public class EmpresaRegistroRequest {
+public class companyRecordRequest {
     private String nit;
     private String nombreEmpresa;
     private String tipoEmpresa;
