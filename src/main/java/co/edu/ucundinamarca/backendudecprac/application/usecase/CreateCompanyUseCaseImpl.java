@@ -3,6 +3,7 @@ package co.edu.ucundinamarca.backendudecprac.application.usecase;
 import co.edu.ucundinamarca.backendudecprac.domain.ResourceAlreadyExistsException;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Company;
 import co.edu.ucundinamarca.backendudecprac.domain.model.User;
+import co.edu.ucundinamarca.backendudecprac.domain.model.legalRepresentative;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.createCompanyUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.CompanyRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.UserRepositoryPort;
@@ -28,11 +29,12 @@ public class CreateCompanyUseCaseImpl implements createCompanyUseCase {
         if(usuariorepositoryport.existsByCorreoElectronico(user.getEmailAddres())) {
             throw new ResourceAlreadyExistsException("Ya existe una cuenta con ese correo");
         }
-        if(empresarepositoryPort.existsByNit(company.getNIT())){
+        if(empresarepositoryPort.existsByNit(company.getNit())){
             throw new ResourceAlreadyExistsException("Ya existe una cuenta con ese nit");
         }
         String JWtpassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(JWtpassword);
+        user.setUserStatus(false);
         User userGuardado = usuariorepositoryport.saveUser(user);
         company.setIdUser(userGuardado.getIdUser());
         return empresarepositoryPort.saveEmpresa(company);

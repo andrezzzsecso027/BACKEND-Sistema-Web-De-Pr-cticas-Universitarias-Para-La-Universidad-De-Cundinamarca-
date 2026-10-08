@@ -2,6 +2,7 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web;
 
 import co.edu.ucundinamarca.backendudecprac.domain.model.Company;
 import co.edu.ucundinamarca.backendudecprac.domain.model.User;
+import co.edu.ucundinamarca.backendudecprac.domain.model.legalRepresentative;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.createCompanyUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,13 +32,21 @@ public class CompanyController {
         user.setEmailAddres(request.getCorreo());
         user.setPassword(request.getContrasenia());
         user.setUserRol("empresa");
-
+        legalRepresentative representative = new legalRepresentative();
+        representative.setNameRepresentative(request.getNameRepresentive());
+        representative.setLastNameRepresentative(request.getLastNameRepresentive());
+        representative.setNumberDocument(request.getNumberDocument());
         Company company = new Company();
-        company.setNIT(request.getNit());
+        company.setNit(request.getNit());
         company.setCompanyName(request.getNombreEmpresa());
         company.setCompanyType(request.getTipoEmpresa());
-        company.setCompanyAddres(request.getDireccionEmpresa());
+        company.setCompanyAddress(request.getDireccionEmpresa());
         company.setCompanyPhoneNumber(request.getTelefonoEmpresa());
+        company.setLegalName(request.getLegalName());
+        company.setCity(request.getCity());
+        company.setDepartment(request.getDepartment());
+        company.setLegalRepresentative(representative);
+
 
         Company creada = createempresausecase.createCompany(user, company);
         return ResponseEntity.status(HttpStatus.CREATED).body(creada);

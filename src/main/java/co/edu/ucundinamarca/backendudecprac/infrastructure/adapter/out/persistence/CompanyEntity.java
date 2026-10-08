@@ -1,9 +1,6 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "empresas")
@@ -20,7 +17,13 @@ public class CompanyEntity {
     private String tipoEmpresa;
     private String direccionEmpresa;
     private String telefonoEmpresa;
-
+    private String razonSocial; // legalName
+    private String departamento; // department
+    private String ciudad;
+    @Column(name = "estado_verificacion")
+    private String estadoVerificacion = "PENDIENTE";
+    @Embedded
+    private legalReprensentiveEmbeddable representanteLegal;
     public CompanyEntity() {}
 
     public Long getIdUsuario() {
@@ -69,6 +72,44 @@ public class CompanyEntity {
 
     public void setTelefonoEmpresa(String telefonoEmpresa) {
         this.telefonoEmpresa = telefonoEmpresa;
+    }
+    public legalReprensentiveEmbeddable getRepresentanteLegal() {
+        return representanteLegal;
+    }
+
+    public void setRepresentanteLegal(legalReprensentiveEmbeddable representanteLegal) {
+        this.representanteLegal = representanteLegal;
+    }
+    public String getDepartamento() {
+        return departamento;
+    }
+
+    public void setDepartamento(String departamento) {
+        this.departamento = departamento;
+    }
+
+    public String getRazonSocial() {
+        return razonSocial;
+    }
+
+    public void setRazonSocial(String razonSocial) {
+        this.razonSocial = razonSocial;
+    }
+
+    public String getCiudad() {
+        return ciudad;
+    }
+
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
+    }
+
+    public String getEstadoVerificacion() {
+        return estadoVerificacion;
+    }
+
+    public void setEstadoVerificacion(String estadoVerificacion) {
+        this.estadoVerificacion = estadoVerificacion;
     }
 
 }
