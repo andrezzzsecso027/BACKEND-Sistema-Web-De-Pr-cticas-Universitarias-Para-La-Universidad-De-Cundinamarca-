@@ -2,7 +2,7 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web;
 
 import co.edu.ucundinamarca.backendudecprac.domain.model.Company;
 import co.edu.ucundinamarca.backendudecprac.domain.model.User;
-import co.edu.ucundinamarca.backendudecprac.domain.model.legalRepresentative;
+import co.edu.ucundinamarca.backendudecprac.domain.model.LegalRepresentative;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.createCompanyUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +32,7 @@ public class CompanyController {
         user.setEmailAddres(request.getCorreo());
         user.setPassword(request.getContrasenia());
         user.setUserRol("empresa");
-        legalRepresentative representative = new legalRepresentative();
+        LegalRepresentative representative = new LegalRepresentative();
         representative.setNameRepresentative(request.getNameRepresentive());
         representative.setLastNameRepresentative(request.getLastNameRepresentive());
         representative.setNumberDocument(request.getNumberDocument());

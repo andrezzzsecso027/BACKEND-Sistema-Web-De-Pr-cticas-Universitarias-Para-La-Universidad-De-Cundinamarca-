@@ -11,12 +11,12 @@ public class Company {
     private String companyAddress;
     private String companyPhoneNumber;
     private String verificationStatus = "PENDIENTE";
-    private legalRepresentative legalRepresentative;
+    private LegalRepresentative legalRepresentative;
 
     public Company() {
     }
 
-    public Company(String nit, long idUser, String legalName, String department, String city, String companyName, String companyType, String companyAddress, String companyPhoneNumber, String verificationStatus, legalRepresentative legalRepresentative) {
+    public Company(String nit, long idUser, String legalName, String department, String city, String companyName, String companyType, String companyAddress, String companyPhoneNumber, String verificationStatus, LegalRepresentative legalRepresentative) {
         this.nit = nit;
         this.idUser = idUser;
         this.legalName = legalName;
@@ -101,11 +101,11 @@ public class Company {
         this.city = city;
     }
 
-    public legalRepresentative getLegalRepresentative() {
+    public LegalRepresentative getLegalRepresentative() {
         return legalRepresentative;
     }
 
-    public void setLegalRepresentative(legalRepresentative legalRepresentative) {
+    public void setLegalRepresentative(LegalRepresentative legalRepresentative) {
         this.legalRepresentative = legalRepresentative;
     }
     public String getVerificationStatus() {

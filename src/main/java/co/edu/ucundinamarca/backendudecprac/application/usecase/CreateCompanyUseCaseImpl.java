@@ -3,7 +3,6 @@ package co.edu.ucundinamarca.backendudecprac.application.usecase;
 import co.edu.ucundinamarca.backendudecprac.domain.ResourceAlreadyExistsException;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Company;
 import co.edu.ucundinamarca.backendudecprac.domain.model.User;
-import co.edu.ucundinamarca.backendudecprac.domain.model.legalRepresentative;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.createCompanyUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.CompanyRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.UserRepositoryPort;

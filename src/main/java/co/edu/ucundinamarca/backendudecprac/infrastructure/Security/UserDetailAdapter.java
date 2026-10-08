@@ -1,5 +1,7 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure.Security;
 
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.UserEntity;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.UserJPArepository;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -8,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 import co.edu.ucundinamarca.backendudecprac.domain.model.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 public class UserDetailAdapter implements UserDetails {
 
     private final User user;

@@ -6,6 +6,8 @@ import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persisten
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -31,13 +33,20 @@ public class AuthController{
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
-            // 1. Spring Security verifica las contraseñas encriptadas de forma segura.
-            // Si la contraseña es incorrecta, lanza una excepción que atrapamos en el catch.
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
             );
+        } catch (DisabledException e) {
+            // 2. MAGIA: Atrapamos específicamente a los usuarios con estado 'false'
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Tu cuenta de empresa aún está pendiente de verificación por el administrador.");
+        } catch (BadCredentialsException e) {
+            // 3. Atrapamos contraseñas incorrectas
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Correo o contraseña incorrectos");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Correo o contraseña incorrectos");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Ocurrió un error en la autenticación");
         }
 
         // 2. Generamos el Token JWT

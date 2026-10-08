@@ -33,6 +33,7 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.Security;
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers("/api/auth/**").permitAll()
                             .requestMatchers("/api/registro/**","/api/autenticacion/**","/error").permitAll()
+                            .requestMatchers("/api/admin/**").permitAll()
                             .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/api-docs/**").permitAll()
                             .anyRequest().authenticated()
 

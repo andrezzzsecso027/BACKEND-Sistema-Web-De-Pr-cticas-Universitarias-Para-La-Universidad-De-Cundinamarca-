@@ -15,30 +15,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class ApplicationConfig {
-    private final UserJPArepository userRepository;
 
-    public ApplicationConfig(UserJPArepository userRepository) {
-        this.userRepository = userRepository;
+    private final UserDetailsService userDetailsService;
+
+    public ApplicationConfig(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
-    // 1. Le enseñamos a Spring cómo buscar un usuario en tu base de datos
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return username -> {
-            // Buscamos el Entity en PostgreSQL
-            var entity = userRepository.findByCorreoElectronico(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado en la BD"));
 
-            // Transformamos el Entity de Infraestructura al User puro de tu Dominio
-            User userDomain = new User();
-            userDomain.setEmailAddres(entity.getCorreoElectronico());
-            userDomain.setPassword(entity.getContrasenia());
-            userDomain.setUserRol(entity.getRolUsuario());
-
-            // Lo envolvemos en el adaptador hexagonal que creaste
-            return new UserDetailAdapter(userDomain);
-        };
-    }
 
     // 2. Le decimos a Spring que use BCrypt para encriptar/desencriptar contraseñas
     @Bean
@@ -49,7 +33,8 @@ public class ApplicationConfig {
     // 3. Unimos el buscador de usuarios y el encriptador de contraseñas
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService());
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
+
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }

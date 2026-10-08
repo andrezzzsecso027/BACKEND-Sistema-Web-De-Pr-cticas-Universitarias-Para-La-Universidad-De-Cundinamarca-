@@ -1,14 +1,14 @@
 package co.edu.ucundinamarca.backendudecprac.domain.model;
 
-public class legalRepresentative {
+public class LegalRepresentative {
     private String nameRepresentative;
     private String lastNameRepresentative;
     private String numberDocument;
 
-    public legalRepresentative(){
+    public LegalRepresentative(){
 
     }
-    public legalRepresentative(String nameRepresentative, String lastNameRepresentative, String numberDocument) {
+    public LegalRepresentative(String nameRepresentative, String lastNameRepresentative, String numberDocument) {
         this.nameRepresentative = nameRepresentative;
         this.lastNameRepresentative = lastNameRepresentative;
         this.numberDocument = numberDocument;
