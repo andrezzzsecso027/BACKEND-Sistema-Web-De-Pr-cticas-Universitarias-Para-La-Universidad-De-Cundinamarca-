@@ -29,7 +29,8 @@ public class UserRepositoryAdapater implements UserRepositoryPort {
         entity.setContrasenia(user.getPassword());
         entity.setRolUsuario(user.getUserRol());
         entity.setEstado(user.isUserStatus());
-
+        entity.setCodigoVerificacion(user.getVerificationCode());
+        entity.setFechaExpiracionCodigo(user.getCodeExpiration());
         UserEntity guardado = usuariojparepository.save(entity);
         user.setIdUser(guardado.getIdUsario());
         return user;
@@ -40,18 +41,41 @@ public class UserRepositoryAdapater implements UserRepositoryPort {
     }
 
     @Override
+    public Optional<User> findByCorreoElectronico(String correoElectronico) {
+        Optional<UserEntity> entityOptional = usuariojparepository.findByCorreoElectronico(correoElectronico);
+
+        if (entityOptional.isPresent()) {
+            UserEntity entity = entityOptional.get();
+            User user = new User();
+
+            user.setIdUser(entity.getIdUsario());
+            user.setEmailAddres(entity.getCorreoElectronico());
+            user.setPassword(entity.getContrasenia());
+            user.setUserRol(entity.getRolUsuario());
+            user.setUserStatus(entity.isEstado());
+
+            // 2. Mapeo de los datos de seguridad para la verificación
+            user.setVerificationCode(entity.getCodigoVerificacion());
+            user.setCodeExpiration(entity.getFechaExpiracionCodigo());
+
+            return Optional.of(user);
+        }
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<User> findById(long idUser) {
         Optional<UserEntity> entityOptional = usuariojparepository.findById(idUser);
 
         if (entityOptional.isPresent()) {
             UserEntity entity = entityOptional.get();
             User user = new User();
-            // Mapea los datos del entity al dominio
+
             user.setIdUser(entity.getIdUsario());
             user.setEmailAddres(entity.getCorreoElectronico());
             user.setPassword(entity.getContrasenia());
             user.setUserRol(entity.getRolUsuario());
-            user.setUserStatus(entity.isEstado()); // Asegúrate de tener este campo mapeado
+            user.setUserStatus(entity.isEstado());
             return Optional.of(user);
         }
 

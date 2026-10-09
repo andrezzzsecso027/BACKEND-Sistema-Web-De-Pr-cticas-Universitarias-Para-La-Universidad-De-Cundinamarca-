@@ -1,5 +1,7 @@
 package co.edu.ucundinamarca.backendudecprac.domain.model;
 
+import java.time.LocalDateTime;
+
 public class User {
 
     private long idUser;
@@ -7,6 +9,8 @@ public class User {
     private String password;
     private String userRol;
     private boolean userStatus =true;
+    private String verificationCode;
+    private LocalDateTime codeExpiration;
 
     //constructor vacio
     public User() {}
@@ -57,5 +61,21 @@ public class User {
 
     public void setUserStatus(boolean userStatus) {
         this.userStatus = userStatus;
+    }
+
+    public LocalDateTime getCodeExpiration() {
+        return codeExpiration;
+    }
+
+    public void setCodeExpiration(LocalDateTime codeExpiration) {
+        this.codeExpiration = codeExpiration;
+    }
+
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
     }
 }

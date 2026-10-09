@@ -2,6 +2,8 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persiste
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name="usuarios")
 public class UserEntity {
@@ -20,6 +22,13 @@ public class UserEntity {
 
     @Column(nullable = false)
     private boolean estado=true;
+
+    @Column(name = "codigo_verificacion", length = 100)
+    private String codigoVerificacion;
+
+    @Column(name = "fecha_expiracion_codigo")
+    private LocalDateTime fechaExpiracionCodigo;
+
 
     public UserEntity() {}
 
@@ -61,6 +70,22 @@ public class UserEntity {
 
     public void setEstado(boolean estado) {
         this.estado = estado;
+    }
+
+    public String getCodigoVerificacion() {
+        return codigoVerificacion;
+    }
+
+    public void setCodigoVerificacion(String codigoVerificacion) {
+        this.codigoVerificacion = codigoVerificacion;
+    }
+
+    public LocalDateTime getFechaExpiracionCodigo() {
+        return fechaExpiracionCodigo;
+    }
+
+    public void setFechaExpiracionCodigo(LocalDateTime fechaExpiracionCodigo) {
+        this.fechaExpiracionCodigo = fechaExpiracionCodigo;
     }
 
 }

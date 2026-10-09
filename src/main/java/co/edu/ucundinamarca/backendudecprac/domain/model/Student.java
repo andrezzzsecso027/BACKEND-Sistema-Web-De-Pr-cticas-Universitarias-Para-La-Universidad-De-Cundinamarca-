@@ -1,5 +1,7 @@
 package co.edu.ucundinamarca.backendudecprac.domain.model;
 
+import java.time.LocalDateTime;
+
 public class Student {
 
     private Long idUser;
@@ -86,6 +88,5 @@ public class Student {
     public void setAcademicProgram(String academicProgram) {
         this.academicProgram = academicProgram;
     }
-
 
 }

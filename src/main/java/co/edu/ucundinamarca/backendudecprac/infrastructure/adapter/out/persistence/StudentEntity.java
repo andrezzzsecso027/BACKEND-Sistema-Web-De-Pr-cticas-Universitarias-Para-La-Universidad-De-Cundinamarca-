@@ -2,6 +2,8 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persiste
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "estudiantes")
 public class StudentEntity {
@@ -31,7 +33,6 @@ public class StudentEntity {
 
     @Column(nullable = false)
     private String programaAcademico;
-
 
 
     public StudentEntity() {}
