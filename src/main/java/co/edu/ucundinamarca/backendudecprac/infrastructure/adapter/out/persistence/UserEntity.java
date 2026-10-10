@@ -29,6 +29,9 @@ public class UserEntity {
     @Column(name = "fecha_expiracion_codigo")
     private LocalDateTime fechaExpiracionCodigo;
 
+    @Column(name= "fecha_registro")
+    private LocalDateTime fechaRegistro;
+
 
     public UserEntity() {}
 
@@ -87,5 +90,11 @@ public class UserEntity {
     public void setFechaExpiracionCodigo(LocalDateTime fechaExpiracionCodigo) {
         this.fechaExpiracionCodigo = fechaExpiracionCodigo;
     }
+    public LocalDateTime getFechaRegistro() {
+        return fechaRegistro;
+    }
 
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
 }

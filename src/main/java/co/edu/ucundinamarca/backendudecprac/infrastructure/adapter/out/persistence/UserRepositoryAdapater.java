@@ -31,6 +31,7 @@ public class UserRepositoryAdapater implements UserRepositoryPort {
         entity.setEstado(user.isUserStatus());
         entity.setCodigoVerificacion(user.getVerificationCode());
         entity.setFechaExpiracionCodigo(user.getCodeExpiration());
+        entity.setFechaRegistro(user.getCreationDate());
         UserEntity guardado = usuariojparepository.save(entity);
         user.setIdUser(guardado.getIdUsario());
         return user;
@@ -57,7 +58,7 @@ public class UserRepositoryAdapater implements UserRepositoryPort {
             // 2. Mapeo de los datos de seguridad para la verificación
             user.setVerificationCode(entity.getCodigoVerificacion());
             user.setCodeExpiration(entity.getFechaExpiracionCodigo());
-
+            user.setCreationDate(entity.getFechaRegistro());
             return Optional.of(user);
         }
         return Optional.empty();

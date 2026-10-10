@@ -9,6 +9,7 @@ import co.edu.ucundinamarca.backendudecprac.domain.port.out.UserRepositoryPort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -34,6 +35,7 @@ public class CreateCompanyUseCaseImpl implements createCompanyUseCase {
         String JWtpassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(JWtpassword);
         user.setUserStatus(false);
+        user.setCreationDate(LocalDateTime.now());
         User userGuardado = usuariorepositoryport.saveUser(user);
         company.setIdUser(userGuardado.getIdUser());
         return empresarepositoryPort.saveEmpresa(company);

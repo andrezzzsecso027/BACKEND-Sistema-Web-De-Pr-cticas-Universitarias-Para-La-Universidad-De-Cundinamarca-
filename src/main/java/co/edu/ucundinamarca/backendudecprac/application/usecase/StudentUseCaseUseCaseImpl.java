@@ -54,7 +54,7 @@ public class StudentUseCaseUseCaseImpl implements createStudentUseCase {
         user.setCodeExpiration(LocalDateTime.now().plusMinutes(15));
         user.setUserStatus(false);
         user.setPassword(passwordEncoder.encode(user.getPassword())); // Contraseña encriptada
-
+        user.setCreationDate(LocalDateTime.now());
         // 5. Guardar en Base de Datos (tu flujo original)
         User userGuardado = usuariorepositoryport.saveUser(user);
         student.setIdUser(userGuardado.getIdUser());

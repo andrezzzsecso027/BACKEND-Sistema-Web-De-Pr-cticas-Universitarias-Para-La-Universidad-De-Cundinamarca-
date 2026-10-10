@@ -11,6 +11,7 @@ public class User {
     private boolean userStatus =true;
     private String verificationCode;
     private LocalDateTime codeExpiration;
+    private LocalDateTime creationDate;
 
     //constructor vacio
     public User() {}
@@ -78,4 +79,12 @@ public class User {
     public void setVerificationCode(String verificationCode) {
         this.verificationCode = verificationCode;
     }
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
 }
