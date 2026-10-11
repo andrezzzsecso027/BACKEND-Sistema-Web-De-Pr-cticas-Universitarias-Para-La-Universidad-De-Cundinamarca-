@@ -1,7 +1,7 @@
 package co.edu.ucundinamarca.backendudecprac.application.usecase;
 
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.UserEntity;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.UserJPArepository;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.Entities.UserEntity;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.JPA.UserJPArepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

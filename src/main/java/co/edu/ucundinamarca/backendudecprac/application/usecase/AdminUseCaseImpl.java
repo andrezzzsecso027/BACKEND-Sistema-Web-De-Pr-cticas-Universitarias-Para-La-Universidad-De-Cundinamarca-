@@ -8,12 +8,9 @@ import co.edu.ucundinamarca.backendudecprac.domain.port.in.CreateNotificationUse
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.CompanyRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.EmailRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.UserRepositoryPort;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.NotificationEntity;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.NotificationJPArepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
