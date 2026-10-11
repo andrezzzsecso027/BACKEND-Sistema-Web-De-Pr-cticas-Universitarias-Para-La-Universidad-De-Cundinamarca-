@@ -3,15 +3,17 @@ package co.edu.ucundinamarca.backendudecprac.application.usecase;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Company;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Offer;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.CreateOfferUseCase;
+import co.edu.ucundinamarca.backendudecprac.domain.port.in.GetActiveOffersUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.CompanyRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.OfferRepositoryPort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
-public class OfferUseCaseImpl implements CreateOfferUseCase {
+public class OfferUseCaseImpl implements CreateOfferUseCase, GetActiveOffersUseCase {
     private final OfferRepositoryPort offerRepositoryPort;
     private final CompanyRepositoryPort companyRepositoryPort;
 
@@ -37,5 +39,10 @@ public class OfferUseCaseImpl implements CreateOfferUseCase {
         offer.setPublicationDate(LocalDate.now());
         offer.setOfferStatus(true);
         return offerRepositoryPort.saveOffer(offer);
+    }
+
+    @Override
+    public List<Offer> getActiveOffers() {
+        return offerRepositoryPort.getActiveOffers();
     }
 }

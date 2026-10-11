@@ -6,6 +6,9 @@ import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persisten
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.JPA.OfferJPArepository;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class OfferRepositoryAdapter implements OfferRepositoryPort {
     private final OfferJPArepository offerJPArepository;
@@ -36,6 +39,28 @@ public class OfferRepositoryAdapter implements OfferRepositoryPort {
         offer.setOfferStatus(offer.getOfferStatus());
         offer.setIdOffer(guardado.getIdOffer());
         return offer;
+    }
+
+    @Override
+    public List<Offer> getActiveOffers() {
+        List<OfferEntity> entidades = offerJPArepository.findByOfferStatusTrue();
+        return entidades.stream().map(entity -> {
+            Offer offer = new Offer();
+            offer.setIdOffer(entity.getIdOffer());
+            offer.setPracticeName(entity.getNameOffer());
+            offer.setNitCompanyAssociated(entity.getNitCompany());
+            offer.setPracticeDescription(entity.getDescriptionOffer());
+            offer.setProfession(entity.getProfesionOffer());
+            offer.setSalary(entity.getSalaryOffer());
+            offer.setModality(entity.getModalityOffer());
+            offer.setLocation(entity.getUbicationOffer());
+            offer.setOfferStatus(entity.getOfferStatus());
+            offer.setPublicationDate(entity.getPublicationDate());
+            offer.setAvailableSpots(entity.getNumberOfCups());
+            offer.setClosingDate(entity.getClosingDate());
+            return offer;
+        }).collect(Collectors.toList());
+
     }
 
 

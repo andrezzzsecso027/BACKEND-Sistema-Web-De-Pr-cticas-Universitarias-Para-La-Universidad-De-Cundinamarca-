@@ -2,22 +2,23 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.contr
 
 import co.edu.ucundinamarca.backendudecprac.domain.model.Offer;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.CreateOfferUseCase;
+import co.edu.ucundinamarca.backendudecprac.domain.port.in.GetActiveOffersUseCase;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.DTOs.OfferRequest;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/ofertas")
 @CrossOrigin(origins = "http://localhost:4200")
 public class OfferController {
     private final CreateOfferUseCase createOfferUseCase;
-    public OfferController(CreateOfferUseCase createOfferUseCase) {
+    private final GetActiveOffersUseCase getActiveOffersUseCase;
+    public OfferController(CreateOfferUseCase createOfferUseCase, GetActiveOffersUseCase getActiveOffersUseCase) {
         this.createOfferUseCase = createOfferUseCase;
+        this.getActiveOffersUseCase = getActiveOffersUseCase;
     }
 
     @PostMapping("/crear")
@@ -41,6 +42,19 @@ public class OfferController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocurrió un error interno en el servidor.");
+        }
+    }
+
+    @GetMapping("/estudiantes")
+    public ResponseEntity<List<Offer>> listarOfertasParaEstudiantes(){
+        try {
+            List<Offer> ofertasActivas = getActiveOffersUseCase.getActiveOffers();
+            if (ofertasActivas.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok(ofertasActivas);
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

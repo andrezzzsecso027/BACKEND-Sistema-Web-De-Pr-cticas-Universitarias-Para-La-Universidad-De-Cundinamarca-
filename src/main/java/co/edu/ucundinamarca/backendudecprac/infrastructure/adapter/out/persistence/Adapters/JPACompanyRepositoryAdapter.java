@@ -1,10 +1,11 @@
-package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.JPA;
+package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.Adapters;
 
 import co.edu.ucundinamarca.backendudecprac.domain.model.Company;
 import co.edu.ucundinamarca.backendudecprac.domain.model.LegalRepresentative;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.CompanyRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.Entities.CompanyEntity;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.Entities.legalReprensentiveEmbeddable;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.JPA.JPACompanyRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
