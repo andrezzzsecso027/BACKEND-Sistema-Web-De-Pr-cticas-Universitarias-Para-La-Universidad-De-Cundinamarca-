@@ -36,6 +36,7 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.Security;
                             .requestMatchers("/api/admin/**").permitAll()
                             .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/api-docs/**").permitAll()
                             .requestMatchers("/api/estudiantes/auth/verificar").permitAll()
+                            .requestMatchers("/api/ofertas/**").permitAll()
                             .anyRequest().authenticated()
 
 
