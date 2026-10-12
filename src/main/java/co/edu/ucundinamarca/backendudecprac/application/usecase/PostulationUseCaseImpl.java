@@ -1,0 +1,46 @@
+package co.edu.ucundinamarca.backendudecprac.application.usecase;
+
+import co.edu.ucundinamarca.backendudecprac.domain.model.Offer;
+import co.edu.ucundinamarca.backendudecprac.domain.model.Postulation;
+import co.edu.ucundinamarca.backendudecprac.domain.port.in.CreatePostulationUseCase;
+import co.edu.ucundinamarca.backendudecprac.domain.port.in.GetPostulationsUseCase;
+import co.edu.ucundinamarca.backendudecprac.domain.port.out.OfferRepositoryPort;
+import co.edu.ucundinamarca.backendudecprac.domain.port.out.PostulationRepositoryPort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+public class PostulationUseCaseImpl implements CreatePostulationUseCase, GetPostulationsUseCase {
+    private final PostulationRepositoryPort postulationRepositoryPort;
+
+    public PostulationUseCaseImpl(PostulationRepositoryPort postulationRepositoryPort) {
+        this.postulationRepositoryPort = postulationRepositoryPort;
+
+    }
+
+    @Transactional
+    @Override
+    public Postulation createPostulation(Postulation postulation) {
+
+        boolean yaPostulado = postulationRepositoryPort.existsByStudentAndOffer(
+                postulation.getIdOffer(),
+                String.valueOf(postulation.getDocumentNumberStudent())
+        );
+        if (yaPostulado) {
+            throw new IllegalStateException("Ya te encuentras postulado a esta oferta.");
+        }
+        postulation.setStatusPostulation("POSTULADA"); // Estado inicial
+        postulation.setDatePostulation(LocalDateTime.now());
+        postulation.setDateUdpate(LocalDateTime.now());
+        postulation.setObservations(null);
+        return postulationRepositoryPort.savePostulation(postulation);
+    }
+
+    @Override
+    public List<Postulation> getPostulationsByOfferId(Long idOffer) {
+        return postulationRepositoryPort.getPostulationsByOfferId(idOffer);
+    }
+}
