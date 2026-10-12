@@ -67,7 +67,7 @@ public class UserRepositoryAdapater implements UserRepositoryPort {
     }
 
     @Override
-    public Optional<User> findById(long idUser) {
+    public Optional<User> findById(Long idUser) {
         Optional<UserEntity> entityOptional = usuariojparepository.findById(idUser);
 
         if (entityOptional.isPresent()) {

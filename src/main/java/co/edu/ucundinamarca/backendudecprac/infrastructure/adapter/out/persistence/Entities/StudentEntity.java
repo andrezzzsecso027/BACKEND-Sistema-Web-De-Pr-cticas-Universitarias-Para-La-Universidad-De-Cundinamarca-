@@ -32,6 +32,17 @@ public class StudentEntity {
     @Column(nullable = false)
     private String programaAcademico;
 
+    public StudentProfileEntity getProfile() {
+        return profile;
+    }
+
+    public void setProfile(StudentProfileEntity profile) {
+        this.profile = profile;
+    }
+
+    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
+    private StudentProfileEntity profile;
+
 
     public StudentEntity() {}
 

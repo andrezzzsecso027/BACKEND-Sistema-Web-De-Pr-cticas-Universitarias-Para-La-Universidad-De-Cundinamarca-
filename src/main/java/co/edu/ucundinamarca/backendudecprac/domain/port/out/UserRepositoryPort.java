@@ -10,5 +10,5 @@ public interface UserRepositoryPort {
     List<User> findAllUsuarios();
     boolean existsByCorreoElectronico(String correoElectronico);
     Optional<User> findByCorreoElectronico(String correoElectronico);
-    Optional<User> findById(long idUser);
+    Optional<User> findById(Long idUser);
 }

@@ -6,6 +6,6 @@ import java.util.List;
 public interface StudentRepositoryPort {
     Student saveStudent(Student student);
     List<Student> findAllStudents();
-
+    Student findByDocumento(String documento);
     boolean existsByDocumento(String documento);
 }

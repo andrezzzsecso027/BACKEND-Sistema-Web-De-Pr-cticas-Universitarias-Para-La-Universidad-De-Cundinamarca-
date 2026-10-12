@@ -56,6 +56,22 @@ public class StudentRepositoryAdapter implements StudentRepositoryPort {
     }
 
     @Override
+    public Student findByDocumento(String documento) {
+        StudentEntity entity = jpaRepository.findById(documento).orElse(null);
+
+        if (entity == null) {
+            return null;
+        }
+
+        Student student = new Student();
+        student.setDocument(entity.getDocumento());
+        student.setName(entity.getNombres());
+        student.setLastName(entity.getApellidos());
+        student.setIdUser(entity.getIdUsuario());
+        return student;
+    }
+
+    @Override
     public boolean existsByDocumento(String documento) {
         return jpaRepository.existsByDocumento(documento);
     }
