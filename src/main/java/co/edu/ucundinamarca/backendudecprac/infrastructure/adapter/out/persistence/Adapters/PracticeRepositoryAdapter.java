@@ -58,4 +58,19 @@ public class PracticeRepositoryAdapter implements PracticeRepositoryPort {
 
         return practice;
     }
+    @Override
+    public Practice findById(Long idPractice) {
+        PracticeEntity entity = jpaRepository.findById(idPractice).orElse(null);
+        if (entity == null) return null;
+
+        Practice practice = new Practice();
+        practice.setIdPractice(entity.getIdPractice());
+        practice.setIdPostulation(entity.getIdPostulation());
+        practice.setPracticeStatus(entity.getPracticeStatus());
+        practice.setStartDate(entity.getStartDate());
+        practice.setEndDate(entity.getEndDate());
+        practice.setCompanyFeedback(entity.getCompanyFeedback());
+        practice.setStudentEvaluation(entity.getStudentEvaluation());
+        return practice;
+    }
 }

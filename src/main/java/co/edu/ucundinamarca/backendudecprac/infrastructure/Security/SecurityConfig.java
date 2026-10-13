@@ -38,6 +38,7 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.Security;
                             .requestMatchers("/api/estudiantes/auth/verificar").permitAll()
                             .requestMatchers("/api/ofertas/**").permitAll()
                             .requestMatchers(("/api/postulaciones/**")).permitAll()
+                            .requestMatchers("/api/practicas/**").permitAll()
                             .anyRequest().authenticated()
 
 
