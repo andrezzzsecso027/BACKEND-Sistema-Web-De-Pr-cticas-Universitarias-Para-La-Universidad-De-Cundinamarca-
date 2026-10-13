@@ -57,5 +57,21 @@ public class PostulationRepositoryAdapter implements PostulationRepositoryPort {
             return p;
         }).collect(Collectors.toList());
     }
+
+    @Override
+    public Postulation findById(Long idPostulation) {
+        PostulationEntity entity = jpaRepository.findById(idPostulation).orElse(null);
+        if (entity == null) return null;
+
+        Postulation postulation = new Postulation();
+        postulation.setIdPostulation(entity.getIdPostulation());
+        postulation.setIdOffer(entity.getIdOffer());
+        postulation.setDocumentNumberStudent(entity.getNumberDocumentStudent());
+        postulation.setStatusPostulation(entity.getStatusPostulation());
+        postulation.setDatePostulation(entity.getDateOfPostulation());
+        postulation.setDateUdpate(entity.getDateOfActualizacion());
+        postulation.setObservations(entity.getObservations());
+        return postulation;
+    }
 }
 

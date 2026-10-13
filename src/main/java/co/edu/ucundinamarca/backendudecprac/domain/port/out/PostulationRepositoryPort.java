@@ -8,4 +8,5 @@ public interface PostulationRepositoryPort {
     Postulation savePostulation(Postulation postulation);
     boolean existsByStudentAndOffer(Long idOffer, String documentStudent);
     List<Postulation> getPostulationsByOfferId(Long idOffer);
+    Postulation findById(Long idPostulation);
 }
