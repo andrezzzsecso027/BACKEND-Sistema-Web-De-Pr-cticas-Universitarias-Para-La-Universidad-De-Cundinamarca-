@@ -49,7 +49,7 @@ public class ExternalApiEmailAdapter implements EmailRepositoryPort {
         body.put("sender", Map.of("name", senderName.trim(), "email", senderEmail.trim()));
         body.put("replyTo", Map.of("name", senderName.trim(), "email", senderEmail.trim()));
         body.put("to", List.of(Map.of("email", toEmail.trim())));
-        body.put("subject", "Código de verificación - Sistema UdecPrac");
+        body.put("subject", "Notificación Oficial - Sistema UdecPrac");
         body.put("htmlContent", htmlBody);
         body.put("textContent", content);
 

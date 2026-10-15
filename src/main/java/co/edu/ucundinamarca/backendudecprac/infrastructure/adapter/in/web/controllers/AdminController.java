@@ -2,6 +2,8 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.contr
 
 
 import co.edu.ucundinamarca.backendudecprac.domain.model.Company;
+import co.edu.ucundinamarca.backendudecprac.domain.model.Offer;
+import co.edu.ucundinamarca.backendudecprac.domain.model.Student;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.AdminUseCase;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.DTOs.VerificationRequest;
 import org.springframework.http.ResponseEntity;
@@ -37,5 +39,22 @@ public class AdminController {
                 "La empresa ha sido rechazada.";
 
         return ResponseEntity.ok(mensaje);
+    }
+    @GetMapping("/estudiantes")
+    public ResponseEntity<List<Student>> getAllStudents() {
+        return ResponseEntity.ok(adminUseCase.getAllStudents());
+    }
+    @GetMapping("/todas")
+    public ResponseEntity<List<Company>> getAllCompanies() {
+        return ResponseEntity.ok(adminUseCase.getAllCompanies());
+    }
+    @GetMapping("/ofertas")
+    public ResponseEntity<List<Offer>> getAllOffers() {
+        return ResponseEntity.ok(adminUseCase.getAllOffers());
+    }
+    @PatchMapping("/ofertas/{idOffer}/cerrar")
+    public ResponseEntity<String> closeOfferByAdmin(@PathVariable Long idOffer) {
+        adminUseCase.closeOfferByAdmin(idOffer);
+        return ResponseEntity.ok("La oferta ha sido cerrada por el administrador.");
     }
 }

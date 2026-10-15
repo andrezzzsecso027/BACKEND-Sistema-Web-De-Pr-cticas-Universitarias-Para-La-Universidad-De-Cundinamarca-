@@ -91,5 +91,25 @@ public class OfferRepositoryAdapter implements OfferRepositoryPort {
         return offer;
     }
 
+    @Override
+    public List<Offer> findAllOffers() {
+        return offerJPArepository.findAll().stream().map(entity -> {
+            Offer offer = new Offer();
+            offer.setIdOffer(entity.getIdOffer());
+            offer.setPracticeName(entity.getNameOffer());
+            offer.setNitCompanyAssociated(entity.getNitCompany());
+            offer.setPracticeDescription(entity.getDescriptionOffer());
+            offer.setProfession(entity.getProfesionOffer());
+            offer.setSalary(entity.getSalaryOffer());
+            offer.setModality(entity.getModalityOffer());
+            offer.setLocation(entity.getUbicationOffer());
+            offer.setOfferStatus(entity.getOfferStatus());
+            offer.setPublicationDate(entity.getPublicationDate());
+            offer.setAvailableSpots(entity.getNumberOfCups());
+            offer.setClosingDate(entity.getClosingDate());
+            return offer;
+        }).collect(Collectors.toList());
+    }
+
 
 }

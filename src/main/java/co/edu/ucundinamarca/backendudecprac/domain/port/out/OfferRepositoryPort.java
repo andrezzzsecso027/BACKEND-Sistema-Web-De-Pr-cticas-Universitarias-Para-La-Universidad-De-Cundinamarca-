@@ -7,4 +7,5 @@ public interface OfferRepositoryPort {
     Offer saveOffer(Offer offer);
     List<Offer> getActiveOffers();
     Offer findById(Long idOffer);
+    List<Offer> findAllOffers();
 }

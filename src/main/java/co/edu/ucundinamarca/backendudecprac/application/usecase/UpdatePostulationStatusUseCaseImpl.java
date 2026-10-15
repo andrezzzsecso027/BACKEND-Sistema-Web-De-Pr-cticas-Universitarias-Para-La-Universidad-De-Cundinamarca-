@@ -1,14 +1,8 @@
 package co.edu.ucundinamarca.backendudecprac.application.usecase;
 
-import co.edu.ucundinamarca.backendudecprac.domain.model.Offer;
-import co.edu.ucundinamarca.backendudecprac.domain.model.Postulation;
-import co.edu.ucundinamarca.backendudecprac.domain.model.PostulationHistory;
-import co.edu.ucundinamarca.backendudecprac.domain.model.Practice;
+import co.edu.ucundinamarca.backendudecprac.domain.model.*;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.UpdatePostulationStatusUseCase;
-import co.edu.ucundinamarca.backendudecprac.domain.port.out.OfferRepositoryPort;
-import co.edu.ucundinamarca.backendudecprac.domain.port.out.PostulationHistoryRepositoryPort;
-import co.edu.ucundinamarca.backendudecprac.domain.port.out.PostulationRepositoryPort;
-import co.edu.ucundinamarca.backendudecprac.domain.port.out.PracticeRepositoryPort;
+import co.edu.ucundinamarca.backendudecprac.domain.port.out.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,12 +14,17 @@ public class UpdatePostulationStatusUseCaseImpl implements UpdatePostulationStat
     private final PostulationHistoryRepositoryPort historyPort;
     private final PracticeRepositoryPort practicePort;
     private final OfferRepositoryPort offerPort;
-
-    public UpdatePostulationStatusUseCaseImpl(PostulationRepositoryPort postulationPort, PostulationHistoryRepositoryPort historyPort, PracticeRepositoryPort practicePort, OfferRepositoryPort offerPort) {
+    private final StudentRepositoryPort studentPort;
+    private final UserRepositoryPort userPort;
+    private final EmailRepositoryPort emailPort;
+    public UpdatePostulationStatusUseCaseImpl(PostulationRepositoryPort postulationPort, PostulationHistoryRepositoryPort historyPort, PracticeRepositoryPort practicePort, OfferRepositoryPort offerPort, StudentRepositoryPort studentPort, UserRepositoryPort userPort, EmailRepositoryPort emailPort) {
         this.postulationPort = postulationPort;
         this.historyPort = historyPort;
         this.practicePort = practicePort;
         this.offerPort = offerPort;
+        this.studentPort = studentPort;
+        this.userPort = userPort;
+        this.emailPort = emailPort;
     }
     @Transactional
     @Override
@@ -67,6 +66,18 @@ public class UpdatePostulationStatusUseCaseImpl implements UpdatePostulationStat
             practica.setIdPostulation(idPostulation);
             practica.setPracticeStatus("ASIGNADA");
             practicePort.savePractice(practica);
+            Student student = studentPort.findByDocumento(postulation.getDocumentNumberStudent());
+            if (student != null && student.getIdUser() != null) {
+                userPort.findById(student.getIdUser()).ifPresent(user -> {
+                    String mensajeCorreo = "¡Felicidades, <b>" + student.getName() + "</b>! Has sido <b>ACEPTADO</b> en la oferta de práctica: <b>"
+                            + oferta.getPracticeName() + "</b>.<br><br>"
+                            + (observations != null && !observations.isBlank()
+                            ? "<b>Observaciones de la empresa:</b> " + observations
+                            : "Ingresa a UdecPrac para consultar los detalles de tu vinculación.");
+
+                    emailPort.sendEmailverification(user.getEmailAddres(), mensajeCorreo);
+                });
+            }
         }
         return postulationActualizada;
     }
