@@ -42,6 +42,7 @@ public class AdminUseCaseImpl implements AdminUseCase {
         if (isApproved) {
             company.setVerificationStatus("APROBADA");
             user.setUserStatus(true);
+            /*
             Notification notification = new Notification();
             notification.setIdUser(company.getIdUser());
             notification.setTypeNotification("SISTEMA_APROBACION");
@@ -49,6 +50,8 @@ public class AdminUseCaseImpl implements AdminUseCase {
             createNotificationUseCase.createNotification(notification);
             String correoEmpresa = user.getEmailAddres();
             emailRepositoryPort.sendEmailverification(correoEmpresa, "Tu cuenta ha sido aprobada. Ya puedes publicar ofertas.");
+
+             */
         } else {
             company.setVerificationStatus("RECHAZADA");
             user.setUserStatus(false);

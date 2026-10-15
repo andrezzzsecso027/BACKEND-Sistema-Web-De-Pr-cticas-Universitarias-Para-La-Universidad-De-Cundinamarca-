@@ -6,4 +6,5 @@ import java.util.List;
 public interface OfferRepositoryPort {
     Offer saveOffer(Offer offer);
     List<Offer> getActiveOffers();
+    Offer findById(Long idOffer);
 }

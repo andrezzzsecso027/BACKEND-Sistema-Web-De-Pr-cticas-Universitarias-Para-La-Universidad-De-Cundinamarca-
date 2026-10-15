@@ -73,5 +73,9 @@ public class PostulationRepositoryAdapter implements PostulationRepositoryPort {
         postulation.setObservations(entity.getObservations());
         return postulation;
     }
+    @Override
+    public boolean hasActivePracticeOrAcceptedPostulation(String numberDocumentStudent ) {
+        return jpaRepository.existsByNumberDocumentStudentAndStatusPostulationIgnoreCase(numberDocumentStudent, "ACEPTADA");
+    }
 }
 

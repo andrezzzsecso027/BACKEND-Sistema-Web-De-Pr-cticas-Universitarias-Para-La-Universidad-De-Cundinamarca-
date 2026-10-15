@@ -8,4 +8,5 @@ import java.util.List;
 public interface JPApostulationRepository extends JpaRepository<PostulationEntity,Long> {
     boolean existsByIdOfferAndNumberDocumentStudent(Long idOffer, String numberDocumentStudent);
     List<PostulationEntity> findByIdOffer(Long idOffer);
+    boolean existsByNumberDocumentStudentAndStatusPostulationIgnoreCase(String numberDocumentStudent, String statusPostulation);
 }

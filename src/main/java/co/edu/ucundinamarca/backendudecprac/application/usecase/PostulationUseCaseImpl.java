@@ -18,9 +18,10 @@ import java.util.stream.Collectors;
 @Service
 public class PostulationUseCaseImpl implements CreatePostulationUseCase{
     private final PostulationRepositoryPort postulationRepositoryPort;
-
-    public PostulationUseCaseImpl(PostulationRepositoryPort postulationRepositoryPort) {
+    private final OfferRepositoryPort  offerRepositoryPort;
+    public PostulationUseCaseImpl(PostulationRepositoryPort postulationRepositoryPort, OfferRepositoryPort offerRepositoryPort) {
         this.postulationRepositoryPort = postulationRepositoryPort;
+        this.offerRepositoryPort = offerRepositoryPort;
     }
 
     @Transactional
@@ -33,6 +34,16 @@ public class PostulationUseCaseImpl implements CreatePostulationUseCase{
         );
         if (yaPostulado) {
             throw new IllegalStateException("Ya te encuentras postulado a esta oferta.");
+        }
+        Offer oferta = offerRepositoryPort.findById(postulation.getIdOffer());
+        if (oferta == null) {
+            throw new IllegalArgumentException("La oferta a la que intentas aplicar no existe.");
+        }
+        if (!oferta.getOfferStatus() || oferta.getAvailableSpots() <= 0) {
+            throw new IllegalStateException("Lo sentimos, esta oferta ya fue cerrada o no tiene cupos disponibles.");
+        }
+        if (postulationRepositoryPort.hasActivePracticeOrAcceptedPostulation(postulation.getDocumentNumberStudent())) {
+            throw new RuntimeException("No puedes postularte a nuevas ofertas porque ya has sido seleccionado en una práctica activa.");
         }
         postulation.setStatusPostulation("POSTULADA"); // Estado inicial
         postulation.setDatePostulation(LocalDateTime.now());

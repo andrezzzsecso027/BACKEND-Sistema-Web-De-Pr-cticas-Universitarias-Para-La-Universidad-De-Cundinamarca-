@@ -9,4 +9,5 @@ public interface PostulationRepositoryPort {
     boolean existsByStudentAndOffer(Long idOffer, String documentStudent);
     List<Postulation> getPostulationsByOfferId(Long idOffer);
     Postulation findById(Long idPostulation);
+    boolean hasActivePracticeOrAcceptedPostulation(String numberDocumentStudent);
 }

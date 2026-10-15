@@ -35,6 +35,16 @@ out/
 /dist/
 /nbdist/
 /.nb-gradle/
-
+build/
+.gradle/
+.git/
+.gitignore
+.idea/
+.vscode/
+*.log
+*.md
+.env
+Dockerfile
+docker-compose.yml
 ### VS Code ###
 .vscode/

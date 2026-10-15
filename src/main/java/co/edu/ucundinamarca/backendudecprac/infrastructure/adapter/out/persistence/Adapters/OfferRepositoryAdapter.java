@@ -22,7 +22,10 @@ public class OfferRepositoryAdapter implements OfferRepositoryPort {
         OfferEntity entity = new OfferEntity();
 
         if (offer.getIdOffer() != null && offer.getIdOffer() != 0) {
-            entity.setIdOffer(offer.getIdOffer());
+            entity = offerJPArepository.findById(offer.getIdOffer())
+                    .orElse(new OfferEntity());
+        } else {
+            entity = new OfferEntity();
         }
         entity.setNameOffer(offer.getPracticeName());
         entity.setNitCompany(offer.getNitCompanyAssociated());
@@ -31,13 +34,17 @@ public class OfferRepositoryAdapter implements OfferRepositoryPort {
         entity.setSalaryOffer(offer.getSalary());
         entity.setModalityOffer(offer.getModality());
         entity.setUbicationOffer(offer.getLocation());
-        entity.setOfferStatus(offer.getOfferStatus());
-        entity.setPublicationDate(offer.getPublicationDate());
         entity.setNumberOfCups(offer.getAvailableSpots());
         entity.setClosingDate(offer.getClosingDate());
+        entity.setPublicationDate(offer.getPublicationDate());
+        if (offer.getAvailableSpots() != null && offer.getAvailableSpots() <= 0) {
+            entity.setOfferStatus(false);
+        } else {
+            entity.setOfferStatus(offer.getOfferStatus());
+        }
         OfferEntity guardado = offerJPArepository.save(entity);
-        offer.setOfferStatus(offer.getOfferStatus());
         offer.setIdOffer(guardado.getIdOffer());
+        offer.setOfferStatus(guardado.getOfferStatus());
         return offer;
     }
 
@@ -61,6 +68,27 @@ public class OfferRepositoryAdapter implements OfferRepositoryPort {
             return offer;
         }).collect(Collectors.toList());
 
+    }
+
+    @Override
+    public Offer findById(Long idOffer) {
+        OfferEntity entity = offerJPArepository.findById(idOffer).orElse(null);
+        if (entity == null) return null;
+        Offer offer = new Offer();
+        offer.setIdOffer(entity.getIdOffer());
+        offer.setPracticeName(entity.getNameOffer());
+        offer.setNitCompanyAssociated(entity.getNitCompany());
+        offer.setPracticeDescription(entity.getDescriptionOffer());
+        offer.setProfession(entity.getProfesionOffer());
+        offer.setSalary(entity.getSalaryOffer());
+        offer.setModality(entity.getModalityOffer());
+        offer.setLocation(entity.getUbicationOffer());
+        offer.setAvailableSpots(entity.getNumberOfCups());
+        offer.setClosingDate(entity.getClosingDate());
+        offer.setOfferStatus(entity.getOfferStatus());
+        offer.setPublicationDate(entity.getPublicationDate());
+
+        return offer;
     }
 
 
