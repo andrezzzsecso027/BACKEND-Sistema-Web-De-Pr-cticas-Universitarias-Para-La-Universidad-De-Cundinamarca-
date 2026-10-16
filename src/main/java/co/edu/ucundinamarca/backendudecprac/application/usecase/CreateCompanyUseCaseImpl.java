@@ -8,6 +8,7 @@ import co.edu.ucundinamarca.backendudecprac.domain.port.out.CompanyRepositoryPor
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.UserRepositoryPort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,7 +24,7 @@ public class CreateCompanyUseCaseImpl implements createCompanyUseCase {
         this.usuariorepositoryport = usuariorepositoryport;
         this.passwordEncoder = passwordEncoder;
     }
-
+    @Transactional
     @Override
     public Company createCompany(User user, Company company) {
         if(usuariorepositoryport.existsByCorreoElectronico(user.getEmailAddres())) {
@@ -41,10 +42,6 @@ public class CreateCompanyUseCaseImpl implements createCompanyUseCase {
         return empresarepositoryPort.saveEmpresa(company);
     }
 
-    @Override
-    public List<Company> findAllCompanies() {
-        return empresarepositoryPort.findAllCompanies();
-    }
 
 
 }

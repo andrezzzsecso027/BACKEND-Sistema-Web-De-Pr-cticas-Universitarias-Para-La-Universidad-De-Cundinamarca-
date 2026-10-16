@@ -74,9 +74,5 @@ public class StudentUseCaseUseCaseImpl implements createStudentUseCase {
 
 
     }
-    @Override
-    public List<Student> FindAllStudents() {
-        return studentRepositoryPort.findAllStudents();
-    }
 
 }

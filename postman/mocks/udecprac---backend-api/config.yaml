@@ -1,0 +1,15 @@
+id: 01a142ae-f403-70c5-847e-1fdcb46694fa
+version: 1
+name: UdecPrac - Backend API
+slug: new-mock-41a95
+enableSession: true
+protocol: http
+port: 4500
+autoRestartOnChange: true
+logging:
+  level: verbose
+  showBody: true
+scenarios:
+  - name: default
+    path: ./default.js
+    default: true

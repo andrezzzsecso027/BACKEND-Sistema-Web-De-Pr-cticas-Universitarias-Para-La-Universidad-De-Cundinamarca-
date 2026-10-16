@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class UserRepositoryAdapater implements UserRepositoryPort {
@@ -55,7 +56,7 @@ public class UserRepositoryAdapater implements UserRepositoryPort {
             user.setEmailAddres(entity.getCorreoElectronico());
             user.setPassword(entity.getContrasenia());
             user.setUserRol(entity.getRolUsuario());
-            user.setUserStatus(entity.isEstado());
+            user.setUserStatus(entity.getEstado());
 
             // 2. Mapeo de los datos de seguridad para la verificación
             user.setVerificationCode(entity.getCodigoVerificacion());
@@ -78,7 +79,7 @@ public class UserRepositoryAdapater implements UserRepositoryPort {
             user.setEmailAddres(entity.getCorreoElectronico());
             user.setPassword(entity.getContrasenia());
             user.setUserRol(entity.getRolUsuario());
-            user.setUserStatus(entity.isEstado());
+            user.setUserStatus(entity.getEstado());
             return Optional.of(user);
         }
 
@@ -88,5 +89,17 @@ public class UserRepositoryAdapater implements UserRepositoryPort {
     @Override
     public List<User> findAllUsuarios() {
         return List.of();
+    }
+
+    @Override
+    public List<User> findByRole(String role) {
+        return usuariojparepository.findByRolUsuarioIgnoreCase(role).stream().map(entity -> {
+            User user = new User();
+            user.setIdUser(entity.getIdUsario()); // o el getter de ID que tengas en UserEntity
+            user.setEmailAddres(entity.getCorreoElectronico());
+            user.setUserRol(entity.getRolUsuario());
+            user.setUserStatus(entity.getEstado());
+            return user;
+        }).collect(Collectors.toList());
     }
 }

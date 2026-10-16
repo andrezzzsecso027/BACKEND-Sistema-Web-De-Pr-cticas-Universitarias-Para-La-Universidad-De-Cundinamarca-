@@ -25,7 +25,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .password(userEntity.getContrasenia())
                 .roles(userEntity.getRolUsuario())
                 // La validación que frena a las empresas no verificadas
-                .disabled(!userEntity.isEstado())
+                .disabled(!userEntity.getEstado())
                 .build();
     }
 }

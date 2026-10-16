@@ -21,7 +21,7 @@ public class UserEntity {
     private String rolUsuario;
 
     @Column(nullable = false)
-    private boolean estado=true;
+    private boolean estado;
 
     @Column(name = "codigo_verificacion", length = 100)
     private String codigoVerificacion;
@@ -67,7 +67,8 @@ public class UserEntity {
         this.rolUsuario = rolUsuario;
     }
 
-    public boolean isEstado() {
+
+    public boolean getEstado() {
         return estado;
     }
 
@@ -97,4 +98,5 @@ public class UserEntity {
     public void setFechaRegistro(LocalDateTime fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
     }
+
 }

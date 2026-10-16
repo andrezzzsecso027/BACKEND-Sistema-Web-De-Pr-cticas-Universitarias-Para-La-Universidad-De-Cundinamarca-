@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface createCompanyUseCase {
     Company createCompany(User user, Company company);
-    List<Company> findAllCompanies();
 }

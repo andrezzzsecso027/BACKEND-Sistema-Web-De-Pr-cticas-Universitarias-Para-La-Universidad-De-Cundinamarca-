@@ -3,6 +3,7 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.contr
 import co.edu.ucundinamarca.backendudecprac.application.usecase.StudentUseCaseUseCaseImpl;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Student;
 import co.edu.ucundinamarca.backendudecprac.domain.model.User;
+import co.edu.ucundinamarca.backendudecprac.domain.port.in.AdminUseCase;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.DTOs.StudentRecordRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,15 +16,16 @@ import java.util.List;
 public class StudentController {
 
     private final StudentUseCaseUseCaseImpl useCase;
-
-    public StudentController(StudentUseCaseUseCaseImpl useCase) {
+    private final AdminUseCase adminUseCase;
+    public StudentController(StudentUseCaseUseCaseImpl useCase, AdminUseCase adminUseCase) {
         this.useCase = useCase;
+        this.adminUseCase = adminUseCase;
     }
 
 
     @GetMapping
     public ResponseEntity<List<Student>> listar() {
-        return ResponseEntity.ok(useCase.FindAllStudents());
+        return ResponseEntity.ok(adminUseCase.getAllStudents());
     }
 
 

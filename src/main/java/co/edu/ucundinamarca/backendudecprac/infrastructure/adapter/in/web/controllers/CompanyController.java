@@ -3,6 +3,7 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.contr
 import co.edu.ucundinamarca.backendudecprac.domain.model.Company;
 import co.edu.ucundinamarca.backendudecprac.domain.model.User;
 import co.edu.ucundinamarca.backendudecprac.domain.model.LegalRepresentative;
+import co.edu.ucundinamarca.backendudecprac.domain.port.in.AdminUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.createCompanyUseCase;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.DTOs.companyRecordRequest;
 import org.springframework.http.HttpStatus;
@@ -16,14 +17,15 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200")
 public class CompanyController {
     private final createCompanyUseCase createempresausecase;
-
-    public CompanyController(createCompanyUseCase createempresausecase) {
+    private final AdminUseCase adminusecase;
+    public CompanyController(createCompanyUseCase createempresausecase, AdminUseCase adminusecase) {
         this.createempresausecase = createempresausecase;
+        this.adminusecase = adminusecase;
     }
 
     @GetMapping
     public ResponseEntity<List<Company>> findAllEmpresas() {
-        List<Company> lista = createempresausecase.findAllCompanies();
+        List<Company> lista = adminusecase.getAllCompanies();
         return ResponseEntity.ok(lista);
     }
 

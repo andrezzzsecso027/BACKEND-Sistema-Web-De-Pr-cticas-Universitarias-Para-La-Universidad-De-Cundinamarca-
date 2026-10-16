@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface createStudentUseCase {
     Student createStudent(User user, Student student);
-    List<Student> FindAllStudents();
 }
