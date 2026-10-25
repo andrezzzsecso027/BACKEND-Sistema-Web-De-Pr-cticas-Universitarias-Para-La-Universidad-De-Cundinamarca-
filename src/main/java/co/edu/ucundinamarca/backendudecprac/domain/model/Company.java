@@ -2,7 +2,7 @@ package co.edu.ucundinamarca.backendudecprac.domain.model;
 
 public class Company {
     private String nit;
-    private long idUser;
+    private Long idUser;
     private String legalName;
     private String department;
     private String city;
@@ -12,11 +12,14 @@ public class Company {
     private String companyPhoneNumber;
     private String verificationStatus = "PENDIENTE";
     private LegalRepresentative legalRepresentative;
+    private String logoUrl;
+    private String rutPdfUrl;
+    private String companyDescription;
 
     public Company() {
     }
 
-    public Company(String nit, long idUser, String legalName, String department, String city, String companyName, String companyType, String companyAddress, String companyPhoneNumber, String verificationStatus, LegalRepresentative legalRepresentative) {
+    public Company(String nit, Long idUser, String legalName, String department, String city, String companyName, String companyType, String companyAddress, String companyPhoneNumber, String verificationStatus, LegalRepresentative legalRepresentative) {
         this.nit = nit;
         this.idUser = idUser;
         this.legalName = legalName;
@@ -28,6 +31,54 @@ public class Company {
         this.companyPhoneNumber = companyPhoneNumber;
         this.verificationStatus = verificationStatus;
         this.legalRepresentative = legalRepresentative;
+    }
+
+    public String getVerificationStatus() {
+        return verificationStatus;
+    }
+
+    public void setVerificationStatus(String verificationStatus) {
+        this.verificationStatus = verificationStatus;
+    }
+
+    public String getRutPdfUrl() {
+        return rutPdfUrl;
+    }
+
+    public void setRutPdfUrl(String rutPdfUrl) {
+        this.rutPdfUrl = rutPdfUrl;
+    }
+
+    public String getCompanyDescription() {
+        return companyDescription;
+    }
+
+    public void setCompanyDescription(String companyDescription) {
+        this.companyDescription = companyDescription;
+    }
+
+    public String getLogoUrl() {
+        return logoUrl;
+    }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
+    }
+
+    public LegalRepresentative getLegalRepresentative() {
+        return legalRepresentative;
+    }
+
+    public void setLegalRepresentative(LegalRepresentative legalRepresentative) {
+        this.legalRepresentative = legalRepresentative;
+    }
+
+    public String getCompanyPhoneNumber() {
+        return companyPhoneNumber;
+    }
+
+    public void setCompanyPhoneNumber(String companyPhoneNumber) {
+        this.companyPhoneNumber = companyPhoneNumber;
     }
 
     public String getCompanyAddress() {
@@ -38,20 +89,12 @@ public class Company {
         this.companyAddress = companyAddress;
     }
 
-    public String getNit() {
-        return nit;
+    public String getCompanyType() {
+        return companyType;
     }
 
-    public void setNit(String nit) {
-        this.nit = nit;
-    }
-
-    public long getIdUser() {
-        return idUser;
-    }
-
-    public void setIdUser(long idUser) {
-        this.idUser = idUser;
+    public void setCompanyType(String companyType) {
+        this.companyType = companyType;
     }
 
     public String getCompanyName() {
@@ -62,27 +105,12 @@ public class Company {
         this.companyName = companyName;
     }
 
-    public String getCompanyType() {
-        return companyType;
+    public String getCity() {
+        return city;
     }
 
-    public void setCompanyType(String companyType) {
-        this.companyType = companyType;
-    }
-
-    public String getCompanyPhoneNumber() {
-        return companyPhoneNumber;
-    }
-
-    public void setCompanyPhoneNumber(String companyPhoneNumber) {
-        this.companyPhoneNumber = companyPhoneNumber;
-    }
-    public String getLegalName() {
-        return legalName;
-    }
-
-    public void setLegalName(String legalName) {
-        this.legalName = legalName;
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getDepartment() {
@@ -93,27 +121,30 @@ public class Company {
         this.department = department;
     }
 
-    public String getCity() {
-        return city;
+    public String getLegalName() {
+        return legalName;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setLegalName(String legalName) {
+        this.legalName = legalName;
     }
 
-    public LegalRepresentative getLegalRepresentative() {
-        return legalRepresentative;
+    public Long getIdUser() {
+        return idUser;
     }
 
-    public void setLegalRepresentative(LegalRepresentative legalRepresentative) {
-        this.legalRepresentative = legalRepresentative;
-    }
-    public String getVerificationStatus() {
-        return verificationStatus;
+    public void setIdUser(Long idUser) {
+        this.idUser = idUser;
     }
 
-    public void setVerificationStatus(String verificationStatus) {
-        this.verificationStatus = verificationStatus;
+    public String getNit() {
+        return nit;
     }
+
+    public void setNit(String nit) {
+        this.nit = nit;
+    }
+
+
 
 }
