@@ -1,10 +1,12 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.controllers;
 
-import co.edu.ucundinamarca.backendudecprac.infrastructure.Security.JWTservice;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.DTOs.LoginRequest;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.DTOs.LoginResponse;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.Entities.UserEntity;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.JPA.UserJPArepository;
+import co.edu.ucundinamarca.backendudecprac.domain.port.in.UpdatePasswordUseCase;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.security.JWTservice;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.LoginRequest;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.LoginResponse;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.UpdatePasswordRequest;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.entities.UserEntity;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.jpa.UserJPArepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,6 +15,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,16 +27,17 @@ public class AuthController{
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final JWTservice jwtService;
-
-    public AuthController(UserJPArepository userRepository, AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JWTservice jwtService) {
+    private final UpdatePasswordUseCase updatePasswordUseCase;
+    public AuthController(UserJPArepository userRepository, AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JWTservice jwtService, UpdatePasswordUseCase updatePasswordUseCase) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtService = jwtService;
+        this.updatePasswordUseCase = updatePasswordUseCase;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<Object> login(@RequestBody LoginRequest request) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
@@ -56,7 +60,8 @@ public class AuthController{
         String jwtToken = jwtService.generateToken(userDetails);
 
         // 3. Buscamos al usuario en la BD para extraer su ID y Rol
-        UserEntity user = userRepository.findByCorreoElectronico(request.getEmail()).get();
+        UserEntity user = userRepository.findByCorreoElectronico(request.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
         // 4. Armamos tu respuesta combinada
         LoginResponse response = new LoginResponse(
@@ -67,5 +72,21 @@ public class AuthController{
         );
 
         return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/cambiar-contrasena")
+    public ResponseEntity<String> cambiarContrasena(@RequestBody UpdatePasswordRequest request) {
+        try {
+            updatePasswordUseCase.updatePassword(
+                    request.getEmail(),
+                    request.getCurrentPassword(),
+                    request.getNewPassword()
+            );
+            return ResponseEntity.ok("Contraseña actualizada exitosamente.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
     }
 }

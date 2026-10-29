@@ -1,7 +1,11 @@
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '4.1.1'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'jacoco'
+    id 'org.sonarqube' version '5.1.0.4882'
+
 }
 
 group = 'co.edu.ucundinamarca'
@@ -43,8 +47,31 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
     implementation 'com.resend:resend-java:3.1.0'
     implementation 'me.paulschwarz:spring-dotenv:4.0.0'
+    implementation 'com.cloudinary:cloudinary-http44:1.39.0'
+    testRuntimeOnly 'com.h2database:h2'
+}
+
+jacocoTestReport {
+    dependsOn tasks.named('test')
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+sonar {
+    properties {
+        property "sonar.projectKey", "backend-udecprac"
+        property "sonar.projectName", "backend-udecprac"
+        property "sonar.host.url", "http://localhost:9000"
+        property "sonar.token", "sqp_70b7b2a13cd72b6d1b3e43caefb939a4520dec29"
+        property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
+        property "sonar.coverage.exclusions", "**/dtos/**, **/entities/**, **/jpa/**, **/security/**, **/domain/model/**, **/controllers/**, **/adapters/**, **/external/**, **/BackendUdecpracApplication.java"
+        property "sonar.cpd.exclusions", "**/domain/model/**, **/entities/**, **/dtos/**"
+    }
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }

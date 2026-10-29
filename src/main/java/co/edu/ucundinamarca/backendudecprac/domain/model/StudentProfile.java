@@ -8,6 +8,7 @@ public class StudentProfile {
     private String linkLifesheet;
     private String githubUrl;
     private String aboutMe;
+    private String photoUrl;
 
     public StudentProfile() {}
     public String getLinkLifesheet() {
@@ -66,4 +67,6 @@ public class StudentProfile {
         this.aboutMe = aboutMe;
     }
 
+    public String getPhotoUrl() { return photoUrl; }
+    public void setPhotoUrl(String photoUrl) { this.photoUrl = photoUrl; }
 }

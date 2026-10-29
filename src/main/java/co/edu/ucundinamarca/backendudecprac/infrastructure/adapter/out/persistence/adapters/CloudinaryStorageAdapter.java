@@ -27,15 +27,16 @@ public class CloudinaryStorageAdapter implements FileStorageRepositoryPort {
     @Override
     public String uploadFile(byte[] fileBytes, String fileName, String folder) {
         try {
+            String nombreLimpio = fileName != null ? fileName.replaceFirst("[.][^.]+$", "") : "archivo";
             Map<?, ?> uploadResult = cloudinary.uploader().upload(fileBytes, ObjectUtils.asMap(
                     "folder", "udecprac/" + folder,
-                    "public_id", fileName,
+                    "public_id", nombreLimpio,
                     "resource_type", "auto",
                     "overwrite", true
             ));
             return uploadResult.get("secure_url").toString();
         } catch (IOException e) {
-            throw new RuntimeException("Error al subir el archivo a Cloudinary: " + e.getMessage(), e);
+            throw new IllegalStateException("Error al subir el archivo a Cloudinary: " + e.getMessage(), e);
         }
     }
 

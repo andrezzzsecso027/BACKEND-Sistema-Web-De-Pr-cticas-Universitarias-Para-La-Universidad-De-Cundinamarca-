@@ -1,8 +1,7 @@
 package co.edu.ucundinamarca.backendudecprac.domain.model;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 public class Postulation {
     private Long idPostulation;

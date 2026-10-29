@@ -18,7 +18,7 @@ public class FileUploadController {
         this.uploadFileUseCase = uploadFileUseCase;
     }
     @PostMapping("/subir")
-    public ResponseEntity<?> subirArchivo(
+    public ResponseEntity<Object> subirArchivo(
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "carpeta", defaultValue = "general") String carpeta) {
         try {

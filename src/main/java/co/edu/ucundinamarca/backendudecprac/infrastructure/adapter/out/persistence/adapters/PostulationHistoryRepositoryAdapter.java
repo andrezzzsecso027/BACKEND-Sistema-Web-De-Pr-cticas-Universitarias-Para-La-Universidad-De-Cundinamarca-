@@ -45,6 +45,6 @@ public class PostulationHistoryRepositoryAdapter implements PostulationHistoryRe
             history.setNewStatus(entity.getNewStatus());
             history.setChangeDate(entity.getChangeDate());
             return history;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 }

@@ -4,7 +4,7 @@ import co.edu.ucundinamarca.backendudecprac.application.usecase.StudentUseCaseUs
 import co.edu.ucundinamarca.backendudecprac.domain.model.Student;
 import co.edu.ucundinamarca.backendudecprac.domain.model.User;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.AdminUseCase;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.DTOs.StudentRecordRequest;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.StudentRecordRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -3,7 +3,7 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.contr
 import co.edu.ucundinamarca.backendudecprac.domain.model.Practice;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.GetPracticeUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.UpdatePracticeUseCase;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.DTOs.UpdatePracticeRequest;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.UpdatePracticeRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,7 @@ public class PracticeController {
         this.updatePracticeUseCase = updatePracticeUseCase;
     }
     @GetMapping("/postulacion/{idPostulation}")
-    public ResponseEntity<?> verPracticaPorPostulacion(@PathVariable Long idPostulation) {
+    public ResponseEntity<Object> verPracticaPorPostulacion(@PathVariable Long idPostulation) {
         try {
             Practice practice = getPracticeUseCase.getPracticeByPostulation(idPostulation);
             return ResponseEntity.ok(practice);
@@ -31,7 +31,7 @@ public class PracticeController {
         }
     }
     @PatchMapping("/{idPractice}")
-    public ResponseEntity<?> actualizarFechasPractica(
+    public ResponseEntity<Object> actualizarFechasPractica(
             @PathVariable Long idPractice,
             @RequestBody UpdatePracticeRequest request) {
         try {

@@ -3,7 +3,7 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.contr
 import co.edu.ucundinamarca.backendudecprac.domain.model.Offer;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.CreateOfferUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.GetActiveOffersUseCase;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.DTOs.OfferRequest;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.OfferRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ public class OfferController {
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<?> crearOferta(@RequestBody OfferRequest request) {
+    public ResponseEntity<Object> crearOferta(@RequestBody OfferRequest request) {
         try {
             System.out.println("NIT recibido en el DTO: [" + request.getNitCompanyAssociated() + "]");
             Offer offer = new Offer();

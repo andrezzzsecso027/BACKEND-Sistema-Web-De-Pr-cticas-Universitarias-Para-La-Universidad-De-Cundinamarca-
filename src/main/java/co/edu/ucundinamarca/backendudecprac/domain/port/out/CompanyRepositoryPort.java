@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CompanyRepositoryPort {
-    Company saveEmpresa(Company company);
+    Company saveCompany(Company company);
     List<Company> findAllCompanies();
     boolean existsByNit(String nit);
     List<Company> findByVerificationStatus(String verificationStatus);

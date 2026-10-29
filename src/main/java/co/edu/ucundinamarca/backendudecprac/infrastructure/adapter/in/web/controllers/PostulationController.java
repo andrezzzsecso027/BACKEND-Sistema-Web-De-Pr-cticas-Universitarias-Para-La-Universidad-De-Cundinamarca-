@@ -6,9 +6,9 @@ import co.edu.ucundinamarca.backendudecprac.domain.port.in.CreatePostulationUseC
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.GetPostulationHistoryUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.GetPostulationsUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.UpdatePostulationStatusUseCase;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.DTOs.PostulationDetailResponse;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.DTOs.PostulationRequest;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.DTOs.UpdatePostulationRequest;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.PostulationDetailResponse;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.PostulationRequest;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.UpdatePostulationRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +31,7 @@ public class PostulationController {
         this.getPostulationHistoryUseCase = getPostulationHistoryUseCase;
     }
     @PostMapping("/aplicar")
-    public ResponseEntity<?> aplicarAOferta(@RequestBody PostulationRequest request) {
+    public ResponseEntity<Object> aplicarAOferta(@RequestBody PostulationRequest request) {
         try {
             Postulation postulation = new Postulation();
             postulation.setIdOffer(request.getIdOffer());
@@ -64,7 +64,7 @@ public class PostulationController {
     }
 
     @PatchMapping("/{idPostulation}/estado")
-    public ResponseEntity<?> cambiarEstadoPostulacion(
+    public ResponseEntity<Object> cambiarEstadoPostulacion(
             @PathVariable Long idPostulation,
             @RequestBody UpdatePostulationRequest request) {
         try {
@@ -88,7 +88,7 @@ public class PostulationController {
     }
 
     @GetMapping("/{idPostulation}/historial")
-    public ResponseEntity<?> verHistorialPostulacion(@PathVariable Long idPostulation) {
+    public ResponseEntity<Object> verHistorialPostulacion(@PathVariable Long idPostulation) {
         try {
             List<PostulationHistory> historial = getPostulationHistoryUseCase.getHistory(idPostulation);
             if (historial.isEmpty()) {

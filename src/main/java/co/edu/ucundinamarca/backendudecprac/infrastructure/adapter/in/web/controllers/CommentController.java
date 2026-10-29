@@ -2,14 +2,13 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.contr
 
 import co.edu.ucundinamarca.backendudecprac.domain.model.Comment;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.CommentUseCase;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.DTOs.CommentRequestDTO;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.CommentRequestDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +24,7 @@ public class CommentController {
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<?> createComment(@RequestBody CommentRequestDTO dto) {
+    public ResponseEntity<Object> createComment(@RequestBody CommentRequestDTO dto) {
         try {
             Comment comment = new Comment();
             comment.setIdPractice(dto.getIdPractice());

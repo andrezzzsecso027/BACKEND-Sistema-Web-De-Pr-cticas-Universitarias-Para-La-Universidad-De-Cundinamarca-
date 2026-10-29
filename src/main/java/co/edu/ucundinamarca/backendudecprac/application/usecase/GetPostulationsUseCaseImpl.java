@@ -9,7 +9,7 @@ import co.edu.ucundinamarca.backendudecprac.domain.port.out.PostulationRepositor
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.StudentProfileRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.StudentRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.UserRepositoryPort;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.DTOs.PostulationDetailResponse;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.PostulationDetailResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -63,6 +63,6 @@ public class GetPostulationsUseCaseImpl implements GetPostulationsUseCase {
                 }
             }
             return response;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 }

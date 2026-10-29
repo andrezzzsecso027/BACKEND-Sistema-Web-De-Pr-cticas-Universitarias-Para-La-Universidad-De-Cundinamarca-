@@ -81,11 +81,5 @@ public class StudentRepositoryAdapter implements StudentRepositoryPort {
         return jpaRepository.existsByDocumento(documento);
     }
 
-    /*
-    private Estudiante toDomain(EstudianteEntity entity) {
-        return new Estudiante(entity.getId(), entity.getCodigo(), entity.getNombres(),
-                entity.getApellidos(), entity.getCorreo(), entity.getCarrera(), entity.getSemestre());
-    }
 
-     */
 }

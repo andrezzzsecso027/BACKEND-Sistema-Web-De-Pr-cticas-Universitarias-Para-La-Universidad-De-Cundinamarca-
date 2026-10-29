@@ -10,7 +10,7 @@ import co.edu.ucundinamarca.backendudecprac.domain.model.User;
 
 public class UserDetailAdapter implements UserDetails {
 
-    private final User user;
+    private final transient User user;
 
     public UserDetailAdapter(User user) {
         this.user = user;

@@ -2,10 +2,9 @@ package co.edu.ucundinamarca.backendudecprac.application.usecase;
 
 import co.edu.ucundinamarca.backendudecprac.domain.model.*;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.AdminUseCase;
-import co.edu.ucundinamarca.backendudecprac.domain.port.in.CreateNotificationUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.*;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 

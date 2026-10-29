@@ -3,7 +3,7 @@ package co.edu.ucundinamarca.backendudecprac.application.usecase;
 import co.edu.ucundinamarca.backendudecprac.domain.ResourceAlreadyExistsException;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Company;
 import co.edu.ucundinamarca.backendudecprac.domain.model.User;
-import co.edu.ucundinamarca.backendudecprac.domain.port.in.createCompanyUseCase;
+import co.edu.ucundinamarca.backendudecprac.domain.port.in.CreateCompanyUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.CompanyRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.UserRepositoryPort;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
+
 
 @Service
-public class CreateCompanyUseCaseImpl implements createCompanyUseCase {
+public class CreateCompanyUseCaseImpl implements CreateCompanyUseCase {
 
     private final CompanyRepositoryPort empresarepositoryPort;
     private final UserRepositoryPort usuariorepositoryport;
@@ -39,7 +39,7 @@ public class CreateCompanyUseCaseImpl implements createCompanyUseCase {
         user.setCreationDate(LocalDateTime.now());
         User userGuardado = usuariorepositoryport.saveUser(user);
         company.setIdUser(userGuardado.getIdUser());
-        return empresarepositoryPort.saveEmpresa(company);
+        return empresarepositoryPort.saveCompany(company);
     }
 
 

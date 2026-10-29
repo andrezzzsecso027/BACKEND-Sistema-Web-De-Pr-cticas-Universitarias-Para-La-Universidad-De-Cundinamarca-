@@ -3,7 +3,7 @@ package co.edu.ucundinamarca.backendudecprac.application.usecase;
 import co.edu.ucundinamarca.backendudecprac.domain.ResourceAlreadyExistsException;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Student;
 import co.edu.ucundinamarca.backendudecprac.domain.model.User;
-import co.edu.ucundinamarca.backendudecprac.domain.port.in.createStudentUseCase;
+import co.edu.ucundinamarca.backendudecprac.domain.port.in.CreateStudentUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.EmailRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.StudentRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.UserRepositoryPort;
@@ -12,11 +12,10 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class StudentUseCaseUseCaseImpl implements createStudentUseCase {
+public class StudentUseCaseUseCaseImpl implements CreateStudentUseCase {
 
     private final StudentRepositoryPort studentRepositoryPort;
     private final UserRepositoryPort usuariorepositoryport;

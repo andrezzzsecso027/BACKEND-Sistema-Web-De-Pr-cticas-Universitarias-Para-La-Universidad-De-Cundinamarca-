@@ -22,7 +22,7 @@ public class JPACompanyRepositoryAdapter implements CompanyRepositoryPort {
     }
 
     @Override
-    public Company saveEmpresa(Company company) {
+    public Company saveCompany(Company company) {
         CompanyEntity entity = new CompanyEntity();
         entity.setNit(company.getNit());
         entity.setIdUsuario(company.getIdUser());
@@ -95,7 +95,7 @@ public class JPACompanyRepositoryAdapter implements CompanyRepositoryPort {
 
     @Override
     public List<Company> findByVerificationStatus(String verificationStatus) {
-        List<CompanyEntity> entidades = jpaCompanyRepository.findByEstadoVerificacion(verificationStatus);
+
         List<Company> companies = new ArrayList<>();
         List<CompanyEntity> entidadesEmpresas = jpaCompanyRepository.findAll();
         for (CompanyEntity entity : entidadesEmpresas) {

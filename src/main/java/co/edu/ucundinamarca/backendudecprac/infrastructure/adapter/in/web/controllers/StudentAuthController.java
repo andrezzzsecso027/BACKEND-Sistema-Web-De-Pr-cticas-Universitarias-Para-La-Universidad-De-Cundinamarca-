@@ -1,7 +1,7 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.controllers;
 
 import co.edu.ucundinamarca.backendudecprac.application.usecase.VerifyStudentUseCaseImpl;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.DTOs.CodeVerificationRequest;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.CodeVerificationRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,14 +1,16 @@
 package co.edu.ucundinamarca.backendudecprac.application.usecase;
 
-import co.edu.ucundinamarca.backendudecprac.domain.model.Student;
+
 import co.edu.ucundinamarca.backendudecprac.domain.model.StudentProfile;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.SaveStudentProfileUseCase;
+import co.edu.ucundinamarca.backendudecprac.domain.port.in.StudentProfileUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.StudentProfileRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.StudentRepositoryPort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class StudentProfileUseCaseImpl implements SaveStudentProfileUseCase {
+public class StudentProfileUseCaseImpl implements SaveStudentProfileUseCase, StudentProfileUseCase {
     private final StudentProfileRepositoryPort profileRepositoryPort;
     private final StudentRepositoryPort studentRepositoryPort;
 
@@ -17,25 +19,20 @@ public class StudentProfileUseCaseImpl implements SaveStudentProfileUseCase {
         this.studentRepositoryPort = studentRepositoryPort;
     }
 
+    @Transactional
     @Override
     public StudentProfile saveProfile(StudentProfile profile) {
-        Boolean estudiante = studentRepositoryPort.existsByDocumento(profile.getDocumentStudent());
-        if (!estudiante) {
+        if (profile.getDocumentStudent() == null || !studentRepositoryPort.existsByDocumento(profile.getDocumentStudent())) {
             throw new IllegalArgumentException("El estudiante no existe.");
         }
-        StudentProfile perfilExistente = profileRepositoryPort.findByDocumentStudent(profile.getDocumentStudent());
-        if (perfilExistente != null) {
-
-            perfilExistente.setSkills(profile.getSkills());
-            perfilExistente.setEnglishLevel(profile.getEnglishLevel());
-            perfilExistente.setLinkLifesheet(profile.getLinkLifesheet());
-            perfilExistente.setGithubUrl(profile.getGithubUrl());
-            perfilExistente.setAboutMe(profile.getAboutMe());
-            return profileRepositoryPort.save(perfilExistente);
-        }
-
-
         return profileRepositoryPort.save(profile);
 
+    }
+    @Transactional
+
+
+    @Override
+    public StudentProfile getProfileByDocument(String documentStudent) {
+        return profileRepositoryPort.findByDocumentStudent(documentStudent);
     }
 }

@@ -18,7 +18,7 @@ public class UserRepositoryAdapater implements UserRepositoryPort {
     private final UserJPArepository usuariojparepository;
 
 
-    public UserRepositoryAdapater(UserJPArepository usuariojparepository, StudentJpaRepository jpaRepository, JPACompanyRepository jpaCompanyRepository) {
+    public UserRepositoryAdapater(UserJPArepository usuariojparepository) {
         this.usuariojparepository = usuariojparepository;
     }
 
@@ -100,6 +100,6 @@ public class UserRepositoryAdapater implements UserRepositoryPort {
             user.setUserRol(entity.getRolUsuario());
             user.setUserStatus(entity.getEstado());
             return user;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 }

@@ -6,4 +6,5 @@ public interface PracticeRepositoryPort {
     Practice savePractice(Practice practice);
     Practice getPracticeByPostulationId(Long idPostulation);
     Practice findById(Long idPractice);
+
 }

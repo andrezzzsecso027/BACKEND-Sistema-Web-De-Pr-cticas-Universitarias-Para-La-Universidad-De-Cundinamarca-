@@ -55,7 +55,7 @@ public class PostulationRepositoryAdapter implements PostulationRepositoryPort {
             p.setDateUdpate(entity.getDateOfActualizacion());
             p.setObservations(entity.getObservations());
             return p;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     @Override

@@ -1,12 +1,11 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.controllers;
 
 
-import co.edu.ucundinamarca.backendudecprac.domain.model.Comment;
-import co.edu.ucundinamarca.backendudecprac.domain.model.Company;
-import co.edu.ucundinamarca.backendudecprac.domain.model.Offer;
-import co.edu.ucundinamarca.backendudecprac.domain.model.Student;
+import co.edu.ucundinamarca.backendudecprac.domain.model.*;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.*;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.DTOs.VerificationRequest;
+import co.edu.ucundinamarca.backendudecprac.domain.port.out.PracticeRepositoryPort;
+import co.edu.ucundinamarca.backendudecprac.domain.port.out.StudentProfileRepositoryPort;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.VerificationRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,13 +20,16 @@ public class AdminController {
     private final VerifyCompanyUseCase verifyCompanyUseCase;
     private final ClosedOfferByAdminUseCase closedOfferByAdminUseCase;
     private final ModerateCommentUseCase moderateCommentUseCase;
+    private final StudentProfileRepositoryPort studentProfileRepositoryPort;
 
-    public AdminController(AdminUseCase adminUseCase, VerifyCompanyUseCase verifyCompanyUseCase, ClosedOfferByAdminUseCase closedOfferByAdminUseCase, ModerateCommentUseCase moderateCommentUseCase) {
+    public AdminController(AdminUseCase adminUseCase, VerifyCompanyUseCase verifyCompanyUseCase, ClosedOfferByAdminUseCase closedOfferByAdminUseCase, ModerateCommentUseCase moderateCommentUseCase, StudentProfileRepositoryPort studentProfileRepositoryPort) {
         this.adminUseCase = adminUseCase;
         this.verifyCompanyUseCase = verifyCompanyUseCase;
-        this.closedOfferByAdminUseCase = closedOfferByAdminUseCase;;
+        this.closedOfferByAdminUseCase = closedOfferByAdminUseCase;
         this.moderateCommentUseCase = moderateCommentUseCase;
+        this.studentProfileRepositoryPort = studentProfileRepositoryPort;
     }
+
 
     @GetMapping("/empresas/pendientes")
     public ResponseEntity<List<Company>> getEmpresasPendientes() {
@@ -77,7 +79,7 @@ public class AdminController {
     }
 
     @PatchMapping("/comentarios/{idComment}/moderar")
-    public ResponseEntity<?> moderateComment(
+    public ResponseEntity<Object> moderateComment(
             @PathVariable Long idComment,
             @RequestParam("aprobado") boolean isApproved) {
         try {
@@ -88,4 +90,18 @@ public class AdminController {
         }
 
     }
+    @GetMapping("/estudiantes/{documento}/perfil")
+    public ResponseEntity<StudentProfile> getStudentProfile(@PathVariable String documento) {
+        try {
+            StudentProfile profile = studentProfileRepositoryPort.findByDocumentStudent(documento);
+            if (profile == null) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok(profile);
+        } catch (Exception e) {
+            return ResponseEntity.noContent().build();
+        }
+    }
+
+
 }
