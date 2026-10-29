@@ -34,9 +34,9 @@ public class VerifyCompanyUseCaseImpl implements VerifyCompanyUseCase {
     @Override
     public void verifyCompany(String nit, boolean isApproved) {
         Company company = companyRepositoryPort.findByNit(nit)
-                .orElseThrow(() -> new RuntimeException("Empresa no encontrada con el NIT: " + nit));
+                .orElseThrow(() -> new IllegalArgumentException("Empresa no encontrada con el NIT: " + nit));
         User user = userRepositoryPort.findById(company.getIdUser())
-                .orElseThrow(() -> new RuntimeException("Usuario asociado no encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException("Usuario asociado no encontrado"));
 
         String correoEmpresa = user.getEmailAddres();
         if (isApproved) {
@@ -64,7 +64,7 @@ public class VerifyCompanyUseCaseImpl implements VerifyCompanyUseCase {
                             "Te informamos que tu solicitud de registro en UdecPrac no fue aprobada tras el proceso de verificación."
             );
         }
-        companyRepositoryPort.saveEmpresa(company);
+        companyRepositoryPort.saveCompany(company);
         userRepositoryPort.saveUser(user);
     }
 }
