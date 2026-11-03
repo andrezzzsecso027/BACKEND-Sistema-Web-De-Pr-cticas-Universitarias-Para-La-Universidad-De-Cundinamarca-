@@ -13,7 +13,6 @@ import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.P
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class GetPostulationsUseCaseImpl implements GetPostulationsUseCase {

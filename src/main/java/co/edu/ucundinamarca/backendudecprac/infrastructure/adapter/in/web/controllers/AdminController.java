@@ -3,7 +3,6 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.contr
 
 import co.edu.ucundinamarca.backendudecprac.domain.model.*;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.*;
-import co.edu.ucundinamarca.backendudecprac.domain.port.out.PracticeRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.StudentProfileRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.VerificationRequest;
 import org.springframework.http.HttpStatus;

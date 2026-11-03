@@ -7,7 +7,6 @@ import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persisten
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class PostulationHistoryRepositoryAdapter implements PostulationHistoryRepositoryPort {

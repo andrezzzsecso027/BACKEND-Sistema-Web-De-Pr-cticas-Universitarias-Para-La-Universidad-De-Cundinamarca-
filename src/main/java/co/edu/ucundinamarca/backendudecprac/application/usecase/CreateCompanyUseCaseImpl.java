@@ -1,6 +1,6 @@
 package co.edu.ucundinamarca.backendudecprac.application.usecase;
 
-import co.edu.ucundinamarca.backendudecprac.domain.ResourceAlreadyExistsException;
+import co.edu.ucundinamarca.backendudecprac.domain.exceptions.ResourceAlreadyExistsException;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Company;
 import co.edu.ucundinamarca.backendudecprac.domain.model.User;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.CreateCompanyUseCase;

@@ -3,14 +3,12 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persiste
 import co.edu.ucundinamarca.backendudecprac.domain.model.User;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.UserRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.entities.UserEntity;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.jpa.JPACompanyRepository;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.jpa.StudentJpaRepository;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.jpa.UserJPArepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Component
 public class UserRepositoryAdapater implements UserRepositoryPort {

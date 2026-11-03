@@ -1,6 +1,6 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure;
 
-import co.edu.ucundinamarca.backendudecprac.domain.ResourceAlreadyExistsException;
+import co.edu.ucundinamarca.backendudecprac.domain.exceptions.ResourceAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;

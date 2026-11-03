@@ -54,14 +54,14 @@ public class CommentRepositoryAdapter implements CommentRepositoryPort {
     public List<Comment> findByValidationStatus(String status) {
         return commentJPArepository.findByValidationStatusIgnoreCase(status)
                 .stream()
-                .map(this::mapToDomain).collect(Collectors.toList());
+                .map(this::mapToDomain).toList();
     }
 
     @Override
     public List<Comment> findApprovedByCompanyNit(String nitCompany) {
         return commentJPArepository.findApprovedCommentsByCompanyNit(nitCompany)
                 .stream()
-                .map(this::mapToDomain).collect(Collectors.toList());
+                .map(this::mapToDomain).toList();
     }
 
     private Comment mapToDomain(CommentEntity entity) {
