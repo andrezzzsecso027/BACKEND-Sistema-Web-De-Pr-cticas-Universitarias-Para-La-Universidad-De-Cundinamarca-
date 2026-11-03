@@ -1,6 +1,6 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos;
 
-public class companyRecordRequest {
+public class CompanyRecordRequest {
     private String nit;
     private String nombreEmpresa;
     private String tipoEmpresa;
