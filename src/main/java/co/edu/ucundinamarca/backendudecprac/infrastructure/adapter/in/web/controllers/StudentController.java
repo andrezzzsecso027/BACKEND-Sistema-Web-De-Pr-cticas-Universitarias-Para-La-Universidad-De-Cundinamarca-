@@ -2,8 +2,11 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.contr
 
 import co.edu.ucundinamarca.backendudecprac.application.usecase.StudentUseCaseUseCaseImpl;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Student;
+import co.edu.ucundinamarca.backendudecprac.domain.model.StudentProfile;
 import co.edu.ucundinamarca.backendudecprac.domain.model.User;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.AdminUseCase;
+import co.edu.ucundinamarca.backendudecprac.domain.port.in.StudentProfileUseCase;
+import co.edu.ucundinamarca.backendudecprac.domain.port.out.StudentProfileRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.StudentRecordRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +18,12 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200")
 public class StudentController {
 
+    private final StudentProfileRepositoryPort studentProfileRepositoryPort;
     private final StudentUseCaseUseCaseImpl useCase;
     private final AdminUseCase adminUseCase;
-    public StudentController(StudentUseCaseUseCaseImpl useCase, AdminUseCase adminUseCase) {
+
+    public StudentController(StudentProfileRepositoryPort studentProfileRepositoryPort, StudentUseCaseUseCaseImpl useCase, AdminUseCase adminUseCase) {
+        this.studentProfileRepositoryPort = studentProfileRepositoryPort;
         this.useCase = useCase;
         this.adminUseCase = adminUseCase;
     }
@@ -47,4 +53,47 @@ public class StudentController {
         Student studentCreado = useCase.createStudent(user, student);
         return ResponseEntity.status(HttpStatus.CREATED).body(studentCreado);
     }
+
+    @GetMapping("/perfil/{documento}")
+    public ResponseEntity<StudentProfile> obtenerPerfilPorDocumento(@PathVariable String documento) {
+        try {
+            StudentProfile profile = studentProfileRepositoryPort.findByDocumentStudent(documento);
+            if (profile == null) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok(profile);
+        } catch (Exception e) {
+            return ResponseEntity.noContent().build();
+        }
+    }
+
+    @PostMapping("/perfil")
+    public ResponseEntity<Object> guardarOActualizarPerfil(@RequestBody StudentProfile request) {
+        try {
+            StudentProfile existente = null;
+            try {
+                existente = studentProfileRepositoryPort.findByDocumentStudent(request.getDocumentStudent());
+            } catch (Exception ignored) {}
+
+            if (existente != null) {
+                if (request.getAboutMe() != null) existente.setAboutMe(request.getAboutMe());
+                if (request.getSkills() != null) existente.setSkills(request.getSkills());
+                if (request.getEnglishLevel() != null) existente.setEnglishLevel(request.getEnglishLevel());
+                if (request.getGithubUrl() != null) existente.setGithubUrl(request.getGithubUrl());
+                if (request.getLinkLifesheet() != null) existente.setLinkLifesheet(request.getLinkLifesheet());
+                if (request.getPhotoUrl() != null) existente.setPhotoUrl(request.getPhotoUrl());
+
+                StudentProfile actualizado = studentProfileRepositoryPort.save(existente);
+                return ResponseEntity.ok(actualizado);
+            }
+
+            StudentProfile creado = studentProfileRepositoryPort.save(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(creado);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+
+
 }
