@@ -14,6 +14,7 @@ public class CompanyRecordRequest {
     private String legalName;
     private String department;
     private String city;
+    private String urlPdfNit;
 
     public String getNumberDocument() {
         return numberDocument;
@@ -115,6 +116,14 @@ public class CompanyRecordRequest {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public String getUrlPdfNit() {
+        return urlPdfNit;
+    }
+
+    public void setUrlPdfNit(String urlPdfNit) {
+        this.urlPdfNit = urlPdfNit;
     }
 
 }

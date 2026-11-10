@@ -52,6 +52,7 @@ import java.util.List;
             company.setCity(request.getCity());
             company.setDepartment(request.getDepartment());
             company.setLegalRepresentative(representative);
+            company.setRutPdfUrl(request.getUrlPdfNit());
 
 
             Company creada = createempresausecase.createCompany(user, company);
