@@ -1,6 +1,6 @@
-package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.adapters;
+package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.external.storage;
 
-import co.edu.ucundinamarca.backendudecprac.domain.port.out.FileStorageRepositoryPort;
+import co.edu.ucundinamarca.backendudecprac.domain.port.out.FileStoragePort;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Map;
 @Component
-public class CloudinaryStorageAdapter implements FileStorageRepositoryPort {
+public class CloudinaryStorageAdapter implements FileStoragePort {
 
     private final Cloudinary cloudinary;
 

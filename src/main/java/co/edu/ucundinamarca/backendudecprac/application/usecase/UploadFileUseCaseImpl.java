@@ -1,23 +1,24 @@
 package co.edu.ucundinamarca.backendudecprac.application.usecase;
 
+import co.edu.ucundinamarca.backendudecprac.domain.exceptions.InvalidInputException;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.UploadFileUseCase;
-import co.edu.ucundinamarca.backendudecprac.domain.port.out.FileStorageRepositoryPort;
+import co.edu.ucundinamarca.backendudecprac.domain.port.out.FileStoragePort;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
 public class UploadFileUseCaseImpl implements UploadFileUseCase {
-    private final FileStorageRepositoryPort fileStoragePort;
+    private final FileStoragePort fileStoragePort;
 
-    public UploadFileUseCaseImpl(FileStorageRepositoryPort fileStoragePort) {
+    public UploadFileUseCaseImpl(FileStoragePort fileStoragePort) {
         this.fileStoragePort = fileStoragePort;
     }
 
     @Override
     public String uploadFile(byte[] fileBytes, String originalFilename, String folder) {
         if (fileBytes == null || fileBytes.length == 0) {
-            throw new IllegalArgumentException("El archivo enviado está vacío.");
+            throw new InvalidInputException("El archivo enviado está vacío.");
         }
 
         String extension = "";

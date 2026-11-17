@@ -1,8 +1,26 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos;
 
+import co.edu.ucundinamarca.backendudecprac.domain.model.PostulationDetail;
+
 import java.time.LocalDateTime;
 
 public class PostulationDetailResponse {
+
+    /** Traduce el modelo de lectura del dominio al JSON que consume el frontend. */
+    public static PostulationDetailResponse from(PostulationDetail detail) {
+        PostulationDetailResponse response = new PostulationDetailResponse();
+        response.setIdPostulation(detail.getIdPostulation());
+        response.setDatePostulation(detail.getDatePostulation());
+        response.setStatusPostulation(detail.getStatusPostulation() == null ? null : detail.getStatusPostulation().name());
+        response.setDocumentStudent(detail.getDocumentStudent());
+        response.setStudentFullName(detail.getStudentFullName());
+        response.setStudentEmail(detail.getStudentEmail());
+        response.setSkills(detail.getSkills());
+        response.setEnglishLevel(detail.getEnglishLevel());
+        response.setLifesheet(detail.getLifesheet());
+        response.setGithubUrl(detail.getGithubUrl());
+        return response;
+    }
     private Long idPostulation;
     private LocalDateTime datePostulation;
     private String statusPostulation;

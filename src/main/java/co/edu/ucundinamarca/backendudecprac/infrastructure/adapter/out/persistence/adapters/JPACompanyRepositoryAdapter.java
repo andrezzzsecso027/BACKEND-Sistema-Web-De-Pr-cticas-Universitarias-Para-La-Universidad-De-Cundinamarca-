@@ -1,5 +1,6 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.adapters;
 
+import co.edu.ucundinamarca.backendudecprac.domain.model.status.CompanyVerificationStatus;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Company;
 import co.edu.ucundinamarca.backendudecprac.domain.model.LegalRepresentative;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.CompanyRepositoryPort;
@@ -33,7 +34,7 @@ public class JPACompanyRepositoryAdapter implements CompanyRepositoryPort {
         entity.setRazonSocial(company.getLegalName());
         entity.setDepartamento(company.getDepartment());
         entity.setCiudad(company.getCity());
-        entity.setEstadoVerificacion(company.getVerificationStatus());
+        entity.setEstadoVerificacion(company.getVerificationStatus() == null ? CompanyVerificationStatus.PENDIENTE.name() : company.getVerificationStatus().name());
         entity.setUrlLogo(company.getLogoUrl());
         entity.setUrlPdfNit(company.getRutPdfUrl());
         entity.setDescripcionEmpresa(company.getCompanyDescription());
@@ -71,7 +72,7 @@ public class JPACompanyRepositoryAdapter implements CompanyRepositoryPort {
         company.setLegalName(entity.getRazonSocial());
         company.setDepartment(entity.getDepartamento());
         company.setCity(entity.getCiudad());
-        company.setVerificationStatus(entity.getEstadoVerificacion());
+        company.setVerificationStatus(entity.getEstadoVerificacion() == null ? CompanyVerificationStatus.PENDIENTE : CompanyVerificationStatus.from(entity.getEstadoVerificacion()));
 
         company.setLogoUrl(entity.getUrlLogo());
         company.setRutPdfUrl(entity.getUrlPdfNit());
@@ -94,10 +95,10 @@ public class JPACompanyRepositoryAdapter implements CompanyRepositoryPort {
     }
 
     @Override
-    public List<Company> findByVerificationStatus(String verificationStatus) {
+    public List<Company> findByVerificationStatus(CompanyVerificationStatus verificationStatus) {
 
         List<Company> companies = new ArrayList<>();
-        List<CompanyEntity> entidadesEmpresas = jpaCompanyRepository.findAll();
+        List<CompanyEntity> entidadesEmpresas = jpaCompanyRepository.findByEstadoVerificacion(verificationStatus.name()); // antes: findAll() ignoraba el filtro
         for (CompanyEntity entity : entidadesEmpresas) {
             companies.add(mapToDomain(entity)); // Usamos el helper
         }

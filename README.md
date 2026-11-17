@@ -37,7 +37,7 @@ El backend está construido en **Java 17** con **Spring Boot** siguiendo estrict
 
 1. **I. Código Base (*Codebase*):** Repositorios versionados en Git (`backend-udecprac` y `frontend-udecprac`) con flujo de ramas por funcionalidad (`develop`, `feature/*`).
 2. **II. Dependencias (*Dependencies*):** Declaración explícita y aislada mediante **`build.gradle`** (Gradle) en el backend y **`package.json`** (NPM) en el frontend.
-3. **III. Configuración (*Config*):** Separación estricta de credenciales sensibles mediante variables de entorno en archivo **`.env`** (`DB_URL`, `CLOUDINARY_URL`, `RESEND_API_KEY`, `JWT_SECRET`) inyectadas en **`src/main/resources/application.properties`**.
+3. **III. Configuración (*Config*):** Separación estricta de credenciales sensibles mediante variables de entorno en archivo **`.env`** (`DB_URL`, `CLOUDINARY_URL`, `BREVO_API_KEY`, `JWT_SECRET`) inyectadas en **`src/main/resources/application.properties`**.
 4. **IV. Servicios de Respaldo (*Backing Services*):** Conexión desacoplada a servicios en la nube como recursos adjuntos: **PostgreSQL Serverless en Neon.tech**, **Cloudinary REST API** y **Servicio de Correo transaccional**.
 5. **V. Construir, Desplegar, Ejecutar (*Build, Release, Run*):** Automatización mediante pipelines de **GitHub Actions (`.github/workflows/`)** y empaquetado reproducible con **`Dockerfile`**.
 6. **VI. Procesos (*Processes*):** Arquitectura **100% Stateless (Sin estado)**. La sesión no se almacena en memoria del servidor sino mediante tokens firmados **JWT** validados en `JwtAuthenticationFilter.java`.

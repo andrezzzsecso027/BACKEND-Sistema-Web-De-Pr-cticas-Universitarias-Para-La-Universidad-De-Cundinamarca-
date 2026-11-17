@@ -3,12 +3,8 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.contr
 import co.edu.ucundinamarca.backendudecprac.domain.model.Comment;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.CommentUseCase;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.CommentRequestDTO;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,24 +20,16 @@ public class CommentController {
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<Object> createComment(@RequestBody CommentRequestDTO dto) {
-        try {
-            Comment comment = new Comment();
-            comment.setIdPractice(dto.getIdPractice());
-            comment.setCommentText(dto.getCommentText());
-            comment.setCompanyRating(dto.getCompanyRating());
-
-            Comment created = commentUseCase.createComment(comment);
-            return ResponseEntity.status(HttpStatus.CREATED).body(created);
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+    public ResponseEntity<Comment> createComment(@RequestBody CommentRequestDTO dto) {
+        Comment comment = new Comment();
+        comment.setIdPractice(dto.getIdPractice());
+        comment.setCommentText(dto.getCommentText());
+        comment.setCompanyRating(dto.getCompanyRating());
+        return ResponseEntity.status(HttpStatus.CREATED).body(commentUseCase.createComment(comment));
     }
+
     @GetMapping("/empresa/{nitCompany}")
     public ResponseEntity<List<Comment>> getApprovedCommentsByCompany(@PathVariable String nitCompany) {
         return ResponseEntity.ok(commentUseCase.getApprovedCommentsByCompany(nitCompany));
     }
-
-
-
 }

@@ -9,7 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CloseOfferByAdminUseCaseImpl implements ClosedOfferByAdminUseCase {
-    private final OfferRepositoryPort  offerRepositoryPort;
+
+    private final OfferRepositoryPort offerRepositoryPort;
 
     public CloseOfferByAdminUseCaseImpl(OfferRepositoryPort offerRepositoryPort) {
         this.offerRepositoryPort = offerRepositoryPort;
@@ -22,8 +23,7 @@ public class CloseOfferByAdminUseCaseImpl implements ClosedOfferByAdminUseCase {
         if (offer == null) {
             throw new OfferNotFound("Oferta no encontrada con ID: " + idOffer);
         }
-        offer.setOfferStatus(false);
+        offer.close();
         offerRepositoryPort.saveOffer(offer);
     }
-
 }

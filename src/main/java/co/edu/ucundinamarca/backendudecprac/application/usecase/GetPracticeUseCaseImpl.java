@@ -1,5 +1,6 @@
 package co.edu.ucundinamarca.backendudecprac.application.usecase;
 
+import co.edu.ucundinamarca.backendudecprac.domain.exceptions.ResourceNotFoundException;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Practice;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.GetPracticeUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.PracticeRepositoryPort;
@@ -17,7 +18,7 @@ public class GetPracticeUseCaseImpl implements GetPracticeUseCase {
     public Practice getPracticeByPostulation(Long idPostulation) {
         Practice practice = practicePort.getPracticeByPostulationId(idPostulation);
         if (practice == null) {
-            throw new IllegalArgumentException("No existe una práctica asignada a esta postulación.");
+            throw new ResourceNotFoundException("No existe una práctica asignada a esta postulación.");
         }
         return practice;
     }

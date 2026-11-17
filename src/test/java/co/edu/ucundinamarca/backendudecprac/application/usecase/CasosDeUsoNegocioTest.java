@@ -1,6 +1,9 @@
 package co.edu.ucundinamarca.backendudecprac.application.usecase;
 
+import co.edu.ucundinamarca.backendudecprac.domain.exceptions.*;
 import co.edu.ucundinamarca.backendudecprac.domain.model.*;
+import co.edu.ucundinamarca.backendudecprac.domain.model.status.CommentStatus;
+import co.edu.ucundinamarca.backendudecprac.domain.model.status.CompanyVerificationStatus;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.CreateNotificationUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.*;
 import org.junit.jupiter.api.Test;
@@ -10,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import co.edu.ucundinamarca.backendudecprac.domain.port.out.PasswordEncoderPort;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,8 +34,8 @@ public class CasosDeUsoNegocioTest {
     @Mock private CommentRepositoryPort commentRepositoryPort;
     @Mock private UserRepositoryPort userRepositoryPort;
     @Mock private NotificationRepositoryPort notificationRepositoryPort;
-    @Mock private PasswordEncoder passwordEncoder;
-    @Mock private EmailRepositoryPort emailRepositoryPort;
+    @Mock private PasswordEncoderPort passwordEncoder;
+    @Mock private EmailSenderPort emailSenderPort;
     @Mock private CreateNotificationUseCase createNotificationUseCase;
 
     @InjectMocks private AdminUseCaseImpl adminUseCase;
@@ -57,7 +60,7 @@ public class CasosDeUsoNegocioTest {
 
     @Test
     void listaEmpresasPendientesCorrectamente() {
-        when(companyRepositoryPort.findByVerificationStatus("PENDIENTE"))
+        when(companyRepositoryPort.findByVerificationStatus(CompanyVerificationStatus.PENDIENTE))
                 .thenReturn(List.of(new Company()));
 
         List<Company> pendientes = verifyCompanyUseCase.getCompaniesPending();
@@ -80,14 +83,14 @@ public class CasosDeUsoNegocioTest {
         when(companyRepositoryPort.saveCompany(any(Company.class))).thenAnswer(i -> i.getArgument(0));
 
         assertDoesNotThrow(() -> verifyCompanyUseCase.verifyCompany("900123456-7", true));
-        assertEquals("APROBADA", emp.getVerificationStatus());
+        assertEquals(CompanyVerificationStatus.APROBADA, emp.getVerificationStatus());
         assertTrue(usuarioEmpresa.isUserStatus());
 
         assertDoesNotThrow(() -> verifyCompanyUseCase.verifyCompany("900123456-7", false));
-        assertEquals("RECHAZADA", emp.getVerificationStatus());
+        assertEquals(CompanyVerificationStatus.RECHAZADA, emp.getVerificationStatus());
         assertFalse(usuarioEmpresa.isUserStatus());
 
-        verify(emailRepositoryPort, times(2)).sendEmailverification(anyString(), anyString());
+        verify(emailSenderPort, times(2)).sendEmail(anyString(), anyString());
     }
 
     @Test
@@ -136,17 +139,26 @@ public class CasosDeUsoNegocioTest {
     void moderaComentarioAprobadoYRechazado() {
         Comment comentario = new Comment();
         comentario.setIdComment(5L);
+        comentario.setValidationStatus(CommentStatus.PENDIENTE);
+        Comment otro = new Comment();
+        otro.setIdComment(6L);
+        otro.setValidationStatus(CommentStatus.PENDIENTE);
         when(commentRepositoryPort.findById(5L)).thenReturn(Optional.of(comentario));
+        when(commentRepositoryPort.findById(6L)).thenReturn(Optional.of(otro));
         when(commentRepositoryPort.saveComment(any(Comment.class))).thenAnswer(i -> i.getArgument(0));
-        when(commentRepositoryPort.findByValidationStatus("PENDIENTE")).thenReturn(List.of(comentario));
+        when(commentRepositoryPort.findByValidationStatus(CommentStatus.PENDIENTE)).thenReturn(List.of(comentario));
 
         assertEquals(1, moderateCommentUseCase.getPendingCommentsForAdmin().size());
 
         Comment aprobado = moderateCommentUseCase.moderateComment(5L, true);
-        assertNotNull(aprobado);
+        assertEquals(CommentStatus.APROBADO, aprobado.getValidationStatus());
+        assertNotNull(aprobado.getAcceptanceComment());
 
-        Comment rechazado = moderateCommentUseCase.moderateComment(5L, false);
-        assertNotNull(rechazado);
+        Comment rechazado = moderateCommentUseCase.moderateComment(6L, false);
+        assertEquals(CommentStatus.RECHAZADO, rechazado.getValidationStatus());
+
+        // Regla de dominio: un comentario ya moderado no se puede volver a moderar
+        assertThrows(InvalidStateTransitionException.class, () -> moderateCommentUseCase.moderateComment(5L, false));
     }
 
     @Test
@@ -172,13 +184,13 @@ public class CasosDeUsoNegocioTest {
                 updatePasswordUseCase.updatePassword("admin@udec.edu.co", "Actual123", "Nueva1234")
         );
 
-        assertThrows(IllegalArgumentException.class, () ->
+        assertThrows(InvalidInputException.class, () ->
                 updatePasswordUseCase.updatePassword("admin@udec.edu.co", "Actual123", "123")
         );
 
         u.setPassword("hash_viejo");
         when(passwordEncoder.matches("Incorrecta", "hash_viejo")).thenReturn(false);
-        assertThrows(IllegalStateException.class, () ->
+        assertThrows(InvalidCredentialsException.class, () ->
                 updatePasswordUseCase.updatePassword("admin@udec.edu.co", "Incorrecta", "Nueva1234")
         );
 
@@ -193,7 +205,7 @@ public class CasosDeUsoNegocioTest {
     void lanzaExcepcionAlActualizarContrasenaDeUsuarioInexistente() {
         when(userRepositoryPort.findByCorreoElectronico("noexiste@udec.edu.co")).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () ->
+        assertThrows(ResourceNotFoundException.class, () ->
                 updatePasswordUseCase.updatePassword("noexiste@udec.edu.co", "Actual123", "Nueva1234")
         );
     }
@@ -217,14 +229,14 @@ public class CasosDeUsoNegocioTest {
 
         StudentProfile sinDocumento = new StudentProfile();
         sinDocumento.setDocumentStudent(null);
-        assertThrows(IllegalArgumentException.class, () ->
+        assertThrows(ResourceNotFoundException.class, () ->
                 studentProfileUseCase.saveProfile(sinDocumento)
         );
 
         StudentProfile noExiste = new StudentProfile();
         noExiste.setDocumentStudent("0000000000");
         when(studentRepositoryPort.existsByDocumento("0000000000")).thenReturn(false);
-        assertThrows(IllegalArgumentException.class, () ->
+        assertThrows(ResourceNotFoundException.class, () ->
                 studentProfileUseCase.saveProfile(noExiste)
         );
     }
@@ -248,7 +260,7 @@ public class CasosDeUsoNegocioTest {
     void creaYConsultaOfertasCubriendoTodasLasValidaciones() {
         Company empresaAprobada = new Company();
         empresaAprobada.setNit("966625556-7");
-        empresaAprobada.setVerificationStatus("APROBADA");
+        empresaAprobada.setVerificationStatus(CompanyVerificationStatus.APROBADA);
 
         Offer ofertaValida = new Offer();
         ofertaValida.setNitCompanyAssociated("966625556-7");
@@ -268,24 +280,24 @@ public class CasosDeUsoNegocioTest {
         Offer sinCupos = new Offer();
         sinCupos.setNitCompanyAssociated("966625556-7");
         sinCupos.setAvailableSpots(0);
-        assertThrows(IllegalArgumentException.class, () -> offerUseCase.createOffer(sinCupos));
+        assertThrows(InvalidInputException.class, () -> offerUseCase.createOffer(sinCupos));
 
 
         Offer fechaPasada = new Offer();
         fechaPasada.setNitCompanyAssociated("966625556-7");
         fechaPasada.setAvailableSpots(2);
         fechaPasada.setClosingDate(LocalDate.now().minusDays(1));
-        assertThrows(IllegalArgumentException.class, () -> offerUseCase.createOffer(fechaPasada));
+        assertThrows(InvalidInputException.class, () -> offerUseCase.createOffer(fechaPasada));
 
 
-        empresaAprobada.setVerificationStatus("PENDIENTE");
-        assertThrows(IllegalStateException.class, () -> offerUseCase.createOffer(ofertaValida));
+        empresaAprobada.setVerificationStatus(CompanyVerificationStatus.PENDIENTE);
+        assertThrows(BusinessRuleException.class, () -> offerUseCase.createOffer(ofertaValida));
 
 
         when(companyRepositoryPort.findByNit("000")).thenReturn(Optional.empty());
         Offer empresaInexistente = new Offer();
         empresaInexistente.setNitCompanyAssociated("000");
-        assertThrows(IllegalArgumentException.class, () -> offerUseCase.createOffer(empresaInexistente));
+        assertThrows(ResourceNotFoundException.class, () -> offerUseCase.createOffer(empresaInexistente));
     }
     @Test
     void actualizaPerfilDeEmpresaCubriendoTodasLasLineasNuevas() throws Exception {

@@ -1,13 +1,14 @@
 package co.edu.ucundinamarca.backendudecprac.application.usecase;
 
+import co.edu.ucundinamarca.backendudecprac.domain.exceptions.InvalidInputException;
 import co.edu.ucundinamarca.backendudecprac.domain.exceptions.ResourceAlreadyExistsException;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Student;
 import co.edu.ucundinamarca.backendudecprac.domain.model.User;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.CreateStudentUseCase;
-import co.edu.ucundinamarca.backendudecprac.domain.port.out.EmailRepositoryPort;
+import co.edu.ucundinamarca.backendudecprac.domain.port.out.EmailSenderPort;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.StudentRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.UserRepositoryPort;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import co.edu.ucundinamarca.backendudecprac.domain.port.out.PasswordEncoderPort;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -17,16 +18,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class StudentUseCaseUseCaseImpl implements CreateStudentUseCase {
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(StudentUseCaseUseCaseImpl.class);
+
     private final StudentRepositoryPort studentRepositoryPort;
     private final UserRepositoryPort usuariorepositoryport;
-    private final PasswordEncoder passwordEncoder;
-    private final EmailRepositoryPort emailRepositoryPort;
+    private final PasswordEncoderPort passwordEncoder;
+    private final EmailSenderPort emailSenderPort;
 
-    public StudentUseCaseUseCaseImpl(StudentRepositoryPort studentRepositoryPort, UserRepositoryPort usuariorepositoryport, PasswordEncoder passwordEncoder, EmailRepositoryPort emailRepositoryPort) {
+    public StudentUseCaseUseCaseImpl(StudentRepositoryPort studentRepositoryPort, UserRepositoryPort usuariorepositoryport, PasswordEncoderPort passwordEncoder, EmailSenderPort emailSenderPort) {
         this.studentRepositoryPort = studentRepositoryPort;
         this.usuariorepositoryport = usuariorepositoryport;
         this.passwordEncoder = passwordEncoder;
-        this.emailRepositoryPort = emailRepositoryPort;
+        this.emailSenderPort = emailSenderPort;
     }
 
     @Transactional
@@ -36,7 +39,7 @@ public class StudentUseCaseUseCaseImpl implements CreateStudentUseCase {
         String correo = user.getEmailAddres();
 
         if (correo == null || !correo.endsWith("@ucundinamarca.edu.co")) {
-            throw new IllegalArgumentException("Solo se permiten correos institucionales (@ucundinamarca.edu.co)");
+            throw new InvalidInputException("Solo se permiten correos institucionales (@ucundinamarca.edu.co)");
         }
 
         if(usuariorepositoryport.existsByCorreoElectronico(user.getEmailAddres())) {
@@ -59,19 +62,14 @@ public class StudentUseCaseUseCaseImpl implements CreateStudentUseCase {
         student.setIdUser(userGuardado.getIdUser());
         Student estudianteGuardado = studentRepositoryPort.saveStudent(student);
 
-        // 6. Disparar el envío del correo con el código limpio
-        // (Asegúrate de que el nombre del método coincida con el que creaste en EmailRepositoryPort)
-        emailRepositoryPort.sendEmailverification(correo, codigoLimpio);
+        // Se envía el código en claro por correo; en BD solo queda el hash
+        emailSenderPort.sendEmail(correo, codigoLimpio);
 
-        // 7. Truco de desarrollador: Imprimir en consola para probar sin gastar los correos de Resend
-        System.out.println("=================================================");
-        System.out.println("NUEVO REGISTRO: " + correo);
-        System.out.println("CÓDIGO GENERADO (COPIA ESTO PARA PROBAR): " + codigoLimpio);
-        System.out.println("=================================================");
+        // Solo visible con logging.level.co.edu.ucundinamarca.backendudecprac=DEBUG (útil en desarrollo
+        // si se agota la cuota de Brevo). Con el nivel INFO por defecto el código NO aparece en los logs.
+        log.debug("Código de verificación generado para {}: {}", correo, codigoLimpio);
 
         return estudianteGuardado;
-
-
     }
 
 }

@@ -6,7 +6,7 @@ import co.edu.ucundinamarca.backendudecprac.domain.model.User;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.CreateCompanyUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.CompanyRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.UserRepositoryPort;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import co.edu.ucundinamarca.backendudecprac.domain.port.out.PasswordEncoderPort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +18,8 @@ public class CreateCompanyUseCaseImpl implements CreateCompanyUseCase {
 
     private final CompanyRepositoryPort empresarepositoryPort;
     private final UserRepositoryPort usuariorepositoryport;
-    private final PasswordEncoder passwordEncoder;
-    public CreateCompanyUseCaseImpl(CompanyRepositoryPort empresarepositoryPort, UserRepositoryPort usuariorepositoryport, PasswordEncoder passwordEncoder) {
+    private final PasswordEncoderPort passwordEncoder;
+    public CreateCompanyUseCaseImpl(CompanyRepositoryPort empresarepositoryPort, UserRepositoryPort usuariorepositoryport, PasswordEncoderPort passwordEncoder) {
         this.empresarepositoryPort = empresarepositoryPort;
         this.usuariorepositoryport = usuariorepositoryport;
         this.passwordEncoder = passwordEncoder;

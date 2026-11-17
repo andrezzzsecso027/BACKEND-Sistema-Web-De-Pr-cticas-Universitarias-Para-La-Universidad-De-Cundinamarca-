@@ -1,12 +1,14 @@
 package co.edu.ucundinamarca.backendudecprac.domain.model;
 
+import co.edu.ucundinamarca.backendudecprac.domain.model.status.PostulationStatus;
+
 import java.time.LocalDateTime;
 
 public class PostulationHistory {
     private Long idHistory;
     private Long idPostulation;
-    private String previousStatus;
-    private String newStatus;
+    private PostulationStatus previousStatus;
+    private PostulationStatus newStatus;
     private LocalDateTime changeDate;
 
     public PostulationHistory() {}
@@ -27,19 +29,19 @@ public class PostulationHistory {
         this.idPostulation = idPostulation;
     }
 
-    public String getPreviousStatus() {
+    public PostulationStatus getPreviousStatus() {
         return previousStatus;
     }
 
-    public void setPreviousStatus(String previousStatus) {
+    public void setPreviousStatus(PostulationStatus previousStatus) {
         this.previousStatus = previousStatus;
     }
 
-    public String getNewStatus() {
+    public PostulationStatus getNewStatus() {
         return newStatus;
     }
 
-    public void setNewStatus(String newStatus) {
+    public void setNewStatus(PostulationStatus newStatus) {
         this.newStatus = newStatus;
     }
 

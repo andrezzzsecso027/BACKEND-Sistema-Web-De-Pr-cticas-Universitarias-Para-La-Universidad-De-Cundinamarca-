@@ -1,5 +1,8 @@
 package co.edu.ucundinamarca.backendudecprac.domain.model;
 
+import co.edu.ucundinamarca.backendudecprac.domain.exceptions.InvalidInputException;
+import co.edu.ucundinamarca.backendudecprac.domain.exceptions.InvalidStateTransitionException;
+import co.edu.ucundinamarca.backendudecprac.domain.model.status.PostulationStatus;
 
 import java.time.LocalDateTime;
 
@@ -7,12 +10,49 @@ public class Postulation {
     private Long idPostulation;
     private Long idOffer;
     private String documentNumberStudent;
-    private String statusPostulation;
+    private PostulationStatus statusPostulation;
     private LocalDateTime datePostulation;
     private LocalDateTime dateUdpate;
     private String observations;
 
     public Postulation() {}
+
+    // ------------------------- Comportamiento de dominio -------------------------
+
+    /** Una postulación nueva siempre nace en POSTULADA (en revisión por la empresa). */
+    public void submit(LocalDateTime now) {
+        if (idOffer == null || documentNumberStudent == null || documentNumberStudent.isBlank()) {
+            throw new InvalidInputException("La oferta y el documento del estudiante son obligatorios.");
+        }
+        this.statusPostulation = PostulationStatus.POSTULADA;
+        this.datePostulation = now;
+        this.dateUdpate = now;
+        this.observations = null;
+    }
+
+    /**
+     * Cambia el estado respetando el ciclo de vida (solo POSTULADA -> ACEPTADA | RECHAZADA).
+     * @return el estado anterior, para registrarlo en el historial.
+     */
+    public PostulationStatus changeStatus(PostulationStatus newStatus, String observations, LocalDateTime now) {
+        if (newStatus == null) {
+            throw new InvalidInputException("El nuevo estado de la postulación es obligatorio.");
+        }
+        if (statusPostulation == null || !statusPostulation.canTransitionTo(newStatus)) {
+            throw new InvalidStateTransitionException("la postulación", statusPostulation, newStatus);
+        }
+        PostulationStatus previous = this.statusPostulation;
+        this.statusPostulation = newStatus;
+        this.observations = observations;
+        this.dateUdpate = now;
+        return previous;
+    }
+
+    public boolean isAccepted() {
+        return statusPostulation == PostulationStatus.ACEPTADA;
+    }
+
+    // ------------------------- Getters / setters -------------------------
 
     public Long getIdPostulation() {
         return idPostulation;
@@ -38,11 +78,11 @@ public class Postulation {
         this.documentNumberStudent = documentNumberStudent;
     }
 
-    public String getStatusPostulation() {
+    public PostulationStatus getStatusPostulation() {
         return statusPostulation;
     }
 
-    public void setStatusPostulation(String statusPostulation) {
+    public void setStatusPostulation(PostulationStatus statusPostulation) {
         this.statusPostulation = statusPostulation;
     }
 

@@ -2,6 +2,7 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.contr
 
 import co.edu.ucundinamarca.backendudecprac.domain.model.Postulation;
 import co.edu.ucundinamarca.backendudecprac.domain.model.PostulationHistory;
+import co.edu.ucundinamarca.backendudecprac.domain.model.status.PostulationStatus;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.CreatePostulationUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.GetPostulationHistoryUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.GetPostulationsUseCase;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/** Los errores de negocio los traduce GlobalExceptionHandler (404 / 409 / 400). */
 @RestController
 @RequestMapping("/api/postulaciones")
 @CrossOrigin(origins = "http://localhost:4200")
@@ -30,74 +32,36 @@ public class PostulationController {
         this.updatePostulationStatusUseCase = updatePostulationStatusUseCase;
         this.getPostulationHistoryUseCase = getPostulationHistoryUseCase;
     }
+
     @PostMapping("/aplicar")
-    public ResponseEntity<Object> aplicarAOferta(@RequestBody PostulationRequest request) {
-        try {
-            Postulation postulation = new Postulation();
-            postulation.setIdOffer(request.getIdOffer());
-            postulation.setDocumentNumberStudent(request.getDocumentNumberStudent());
-
-            Postulation creada = createPostulationUseCase.createPostulation(postulation);
-            return ResponseEntity.status(HttpStatus.CREATED).body(creada);
-
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage()); // 409 Conflict si ya existe
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocurrió un error en el servidor.");
-        }
+    public ResponseEntity<Postulation> aplicarAOferta(@RequestBody PostulationRequest request) {
+        Postulation postulation = new Postulation();
+        postulation.setIdOffer(request.getIdOffer());
+        postulation.setDocumentNumberStudent(request.getDocumentNumberStudent());
+        return ResponseEntity.status(HttpStatus.CREATED).body(createPostulationUseCase.createPostulation(postulation));
     }
 
     @GetMapping("/oferta/{idOffer}")
     public ResponseEntity<List<PostulationDetailResponse>> verPostuladosAOferta(@PathVariable Long idOffer) {
-        try {
-            // Utilizamos el caso de uso de consulta, que ya nos devuelve el DTO armado
-            List<PostulationDetailResponse> postulaciones = getPostulationsUseCase.getPostulationsByOfferId(idOffer);
-
-            if (postulaciones.isEmpty()) {
-                return ResponseEntity.noContent().build();
-            }
-
-            return ResponseEntity.ok(postulaciones);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        // El caso de uso devuelve el modelo de dominio; el adaptador web lo traduce a su DTO
+        List<PostulationDetailResponse> postulaciones = getPostulationsUseCase.getPostulationsByOfferId(idOffer)
+                .stream()
+                .map(PostulationDetailResponse::from)
+                .toList();
+        return postulaciones.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(postulaciones);
     }
 
     @PatchMapping("/{idPostulation}/estado")
-    public ResponseEntity<Object> cambiarEstadoPostulacion(
-            @PathVariable Long idPostulation,
-            @RequestBody UpdatePostulationRequest request) {
-        try {
-            // Capturamos el objeto que devuelve tu Caso de Uso
-            Postulation actualizada = updatePostulationStatusUseCase.updateStatus(
-                    idPostulation,
-                    request.getNewStatus(),
-                    request.getObservations()
-            );
-
-            // Devolvemos el objeto real con un 200 OK
-            return ResponseEntity.ok(actualizada);
-
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error procesando la solicitud.");
-        }
+    public ResponseEntity<Postulation> cambiarEstadoPostulacion(@PathVariable Long idPostulation,
+                                                                @RequestBody UpdatePostulationRequest request) {
+        // Texto -> enum: un estado desconocido responde 400 con los valores permitidos
+        PostulationStatus nuevoEstado = PostulationStatus.from(request.getNewStatus());
+        return ResponseEntity.ok(updatePostulationStatusUseCase.updateStatus(idPostulation, nuevoEstado, request.getObservations()));
     }
 
     @GetMapping("/{idPostulation}/historial")
-    public ResponseEntity<Object> verHistorialPostulacion(@PathVariable Long idPostulation) {
-        try {
-            List<PostulationHistory> historial = getPostulationHistoryUseCase.getHistory(idPostulation);
-            if (historial.isEmpty()) {
-                return ResponseEntity.noContent().build();
-            }
-            return ResponseEntity.ok(historial);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al consultar el historial.");
-        }
+    public ResponseEntity<List<PostulationHistory>> verHistorialPostulacion(@PathVariable Long idPostulation) {
+        List<PostulationHistory> historial = getPostulationHistoryUseCase.getHistory(idPostulation);
+        return historial.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(historial);
     }
-
 }

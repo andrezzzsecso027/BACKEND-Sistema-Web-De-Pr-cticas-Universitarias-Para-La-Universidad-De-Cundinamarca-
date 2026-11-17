@@ -3,7 +3,6 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.contr
 
 import co.edu.ucundinamarca.backendudecprac.domain.model.*;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.*;
-import co.edu.ucundinamarca.backendudecprac.domain.port.out.StudentProfileRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.VerificationRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,14 +18,14 @@ public class AdminController {
     private final VerifyCompanyUseCase verifyCompanyUseCase;
     private final ClosedOfferByAdminUseCase closedOfferByAdminUseCase;
     private final ModerateCommentUseCase moderateCommentUseCase;
-    private final StudentProfileRepositoryPort studentProfileRepositoryPort;
+    private final StudentProfileUseCase studentProfileUseCase;
 
-    public AdminController(AdminUseCase adminUseCase, VerifyCompanyUseCase verifyCompanyUseCase, ClosedOfferByAdminUseCase closedOfferByAdminUseCase, ModerateCommentUseCase moderateCommentUseCase, StudentProfileRepositoryPort studentProfileRepositoryPort) {
+    public AdminController(AdminUseCase adminUseCase, VerifyCompanyUseCase verifyCompanyUseCase, ClosedOfferByAdminUseCase closedOfferByAdminUseCase, ModerateCommentUseCase moderateCommentUseCase, StudentProfileUseCase studentProfileUseCase) {
         this.adminUseCase = adminUseCase;
         this.verifyCompanyUseCase = verifyCompanyUseCase;
         this.closedOfferByAdminUseCase = closedOfferByAdminUseCase;
         this.moderateCommentUseCase = moderateCommentUseCase;
-        this.studentProfileRepositoryPort = studentProfileRepositoryPort;
+        this.studentProfileUseCase = studentProfileUseCase;
     }
 
 
@@ -78,28 +77,16 @@ public class AdminController {
     }
 
     @PatchMapping("/comentarios/{idComment}/moderar")
-    public ResponseEntity<Object> moderateComment(
+    public ResponseEntity<Comment> moderateComment(
             @PathVariable Long idComment,
             @RequestParam("aprobado") boolean isApproved) {
-        try {
-            Comment moderated = moderateCommentUseCase.moderateComment(idComment, isApproved);
-            return ResponseEntity.ok(moderated);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-
+        return ResponseEntity.ok(moderateCommentUseCase.moderateComment(idComment, isApproved));
     }
+
     @GetMapping("/estudiantes/{documento}/perfil")
     public ResponseEntity<StudentProfile> getStudentProfile(@PathVariable String documento) {
-        try {
-            StudentProfile profile = studentProfileRepositoryPort.findByDocumentStudent(documento);
-            if (profile == null) {
-                return ResponseEntity.noContent().build();
-            }
-            return ResponseEntity.ok(profile);
-        } catch (Exception e) {
-            return ResponseEntity.noContent().build();
-        }
+        StudentProfile profile = studentProfileUseCase.getProfileByDocument(documento);
+        return profile == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(profile);
     }
 
 

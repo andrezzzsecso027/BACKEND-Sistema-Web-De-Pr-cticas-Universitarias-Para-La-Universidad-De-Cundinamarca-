@@ -1,17 +1,42 @@
 package co.edu.ucundinamarca.backendudecprac.domain.model;
 
+import co.edu.ucundinamarca.backendudecprac.domain.exceptions.InvalidStateTransitionException;
+import co.edu.ucundinamarca.backendudecprac.domain.model.status.CommentStatus;
+
 import java.time.LocalDateTime;
 
 public class Comment {
     private long idComment;
     private long idPractice;
     private String commentText;
-    private String validationStatus;
+    private CommentStatus validationStatus;
     private Double companyRating;
     private LocalDateTime commentDate;
     private LocalDateTime acceptanceComment;
 
     public Comment() {}
+
+    // ------------------------- Comportamiento de dominio -------------------------
+
+    /** Todo comentario nace PENDIENTE de moderación por el administrador. */
+    public void submit(LocalDateTime now) {
+        this.validationStatus = CommentStatus.PENDIENTE;
+        this.commentDate = now;
+    }
+
+    /** Solo se puede moderar un comentario PENDIENTE. */
+    public void moderate(boolean approved, LocalDateTime now) {
+        CommentStatus target = approved ? CommentStatus.APROBADO : CommentStatus.RECHAZADO;
+        if (validationStatus == null || !validationStatus.canTransitionTo(target)) {
+            throw new InvalidStateTransitionException("el comentario", validationStatus, target);
+        }
+        this.validationStatus = target;
+        if (approved) {
+            this.acceptanceComment = now;
+        }
+    }
+
+    // ------------------------- Getters / setters -------------------------
 
     public long getIdComment() {
         return idComment;
@@ -37,11 +62,11 @@ public class Comment {
         this.commentText = commentText;
     }
 
-    public String getValidationStatus() {
+    public CommentStatus getValidationStatus() {
         return validationStatus;
     }
 
-    public void setValidationStatus(String validationStatus) {
+    public void setValidationStatus(CommentStatus validationStatus) {
         this.validationStatus = validationStatus;
     }
 

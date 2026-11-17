@@ -44,44 +44,27 @@ public class UserRepositoryAdapater implements UserRepositoryPort {
 
     @Override
     public Optional<User> findByCorreoElectronico(String correoElectronico) {
-        Optional<UserEntity> entityOptional = usuariojparepository.findByCorreoElectronico(correoElectronico);
-
-        if (entityOptional.isPresent()) {
-            UserEntity entity = entityOptional.get();
-            User user = new User();
-
-            user.setIdUser(entity.getIdUsario());
-            user.setEmailAddres(entity.getCorreoElectronico());
-            user.setPassword(entity.getContrasenia());
-            user.setUserRol(entity.getRolUsuario());
-            user.setUserStatus(entity.getEstado());
-
-            // 2. Mapeo de los datos de seguridad para la verificación
-            user.setVerificationCode(entity.getCodigoVerificacion());
-            user.setCodeExpiration(entity.getFechaExpiracionCodigo());
-            user.setCreationDate(entity.getFechaRegistro());
-            return Optional.of(user);
-        }
-        return Optional.empty();
+        return usuariojparepository.findByCorreoElectronico(correoElectronico).map(this::mapToDomain);
     }
 
     @Override
     public Optional<User> findById(Long idUser) {
-        Optional<UserEntity> entityOptional = usuariojparepository.findById(idUser);
+        // Antes este método no mapeaba fecha de registro ni código de verificación; como saveUser
+        // reescribe la fila completa, aprobar una empresa (findById + saveUser) borraba su fecha_registro.
+        return usuariojparepository.findById(idUser).map(this::mapToDomain);
+    }
 
-        if (entityOptional.isPresent()) {
-            UserEntity entity = entityOptional.get();
-            User user = new User();
-
-            user.setIdUser(entity.getIdUsario());
-            user.setEmailAddres(entity.getCorreoElectronico());
-            user.setPassword(entity.getContrasenia());
-            user.setUserRol(entity.getRolUsuario());
-            user.setUserStatus(entity.getEstado());
-            return Optional.of(user);
-        }
-
-        return Optional.empty();
+    private User mapToDomain(UserEntity entity) {
+        User user = new User();
+        user.setIdUser(entity.getIdUsario());
+        user.setEmailAddres(entity.getCorreoElectronico());
+        user.setPassword(entity.getContrasenia());
+        user.setUserRol(entity.getRolUsuario());
+        user.setUserStatus(entity.getEstado());
+        user.setVerificationCode(entity.getCodigoVerificacion());
+        user.setCodeExpiration(entity.getFechaExpiracionCodigo());
+        user.setCreationDate(entity.getFechaRegistro());
+        return user;
     }
 
     @Override

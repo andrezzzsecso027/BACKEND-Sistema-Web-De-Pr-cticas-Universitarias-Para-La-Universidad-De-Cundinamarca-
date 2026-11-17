@@ -5,8 +5,8 @@ import co.edu.ucundinamarca.backendudecprac.infrastructure.security.JWTservice;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.LoginRequest;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.LoginResponse;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.UpdatePasswordRequest;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.entities.UserEntity;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.jpa.UserJPArepository;
+import co.edu.ucundinamarca.backendudecprac.domain.model.User;
+import co.edu.ucundinamarca.backendudecprac.domain.port.in.FindUserUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,13 +23,13 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:4200")
 public class AuthController{
 
-    private final UserJPArepository userRepository;
+    private final FindUserUseCase findUserUseCase;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final JWTservice jwtService;
     private final UpdatePasswordUseCase updatePasswordUseCase;
-    public AuthController(UserJPArepository userRepository, AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JWTservice jwtService, UpdatePasswordUseCase updatePasswordUseCase) {
-        this.userRepository = userRepository;
+    public AuthController(FindUserUseCase findUserUseCase, AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JWTservice jwtService, UpdatePasswordUseCase updatePasswordUseCase) {
+        this.findUserUseCase = findUserUseCase;
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtService = jwtService;
@@ -60,14 +60,14 @@ public class AuthController{
         String jwtToken = jwtService.generateToken(userDetails);
 
         // 3. Buscamos al usuario en la BD para extraer su ID y Rol
-        UserEntity user = userRepository.findByCorreoElectronico(request.getEmail())
+        User user = findUserUseCase.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
         // 4. Armamos tu respuesta combinada
         LoginResponse response = new LoginResponse(
-                user.getIdUsario(),
-                user.getCorreoElectronico(),
-                user.getRolUsuario(),
+                user.getIdUser(),
+                user.getEmailAddres(),
+                user.getUserRol(),
                 jwtToken
         );
 
@@ -75,18 +75,17 @@ public class AuthController{
     }
 
     @PatchMapping("/cambiar-contrasena")
-    public ResponseEntity<String> cambiarContrasena(@RequestBody UpdatePasswordRequest request) {
-        try {
-            updatePasswordUseCase.updatePassword(
-                    request.getEmail(),
-                    request.getCurrentPassword(),
-                    request.getNewPassword()
-            );
-            return ResponseEntity.ok("Contraseña actualizada exitosamente.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        }
+    /**
+     * El correo se toma del token JWT (usuario autenticado), no del cuerpo: así nadie puede
+     * intentar cambiar la contraseña de otra cuenta. Errores -> GlobalExceptionHandler (400 / 401 / 404).
+     */
+    public ResponseEntity<String> cambiarContrasena(@RequestBody UpdatePasswordRequest request,
+                                                    java.security.Principal principal) {
+        updatePasswordUseCase.updatePassword(
+                principal.getName(),
+                request.getCurrentPassword(),
+                request.getNewPassword()
+        );
+        return ResponseEntity.ok("Contraseña actualizada exitosamente.");
     }
 }

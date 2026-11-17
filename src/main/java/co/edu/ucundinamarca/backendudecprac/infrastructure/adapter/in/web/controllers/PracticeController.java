@@ -1,10 +1,10 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.controllers;
 
 import co.edu.ucundinamarca.backendudecprac.domain.model.Practice;
+import co.edu.ucundinamarca.backendudecprac.domain.model.status.PracticeStatus;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.GetPracticeUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.UpdatePracticeUseCase;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.UpdatePracticeRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,35 +19,18 @@ public class PracticeController {
         this.getPracticeUseCase = getPracticeUseCase;
         this.updatePracticeUseCase = updatePracticeUseCase;
     }
+
     @GetMapping("/postulacion/{idPostulation}")
-    public ResponseEntity<Object> verPracticaPorPostulacion(@PathVariable Long idPostulation) {
-        try {
-            Practice practice = getPracticeUseCase.getPracticeByPostulation(idPostulation);
-            return ResponseEntity.ok(practice);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al consultar la práctica.");
-        }
+    public ResponseEntity<Practice> verPracticaPorPostulacion(@PathVariable Long idPostulation) {
+        return ResponseEntity.ok(getPracticeUseCase.getPracticeByPostulation(idPostulation));
     }
+
     @PatchMapping("/{idPractice}")
-    public ResponseEntity<Object> actualizarFechasPractica(
-            @PathVariable Long idPractice,
-            @RequestBody UpdatePracticeRequest request) {
-        try {
-            Practice actualizada = updatePracticeUseCase.updatePractice(
-                    idPractice,
-                    request.getStartDate(),
-                    request.getEndDate(),
-                    request.getPracticeStatus()
-            );
-            return ResponseEntity.ok(actualizada);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar la práctica.");
-        }
+    public ResponseEntity<Practice> actualizarFechasPractica(@PathVariable Long idPractice,
+                                                             @RequestBody UpdatePracticeRequest request) {
+        String estado = request.getPracticeStatus();
+        PracticeStatus nuevoEstado = (estado == null || estado.isBlank()) ? null : PracticeStatus.from(estado);
+        return ResponseEntity.ok(updatePracticeUseCase.updatePractice(
+                idPractice, request.getStartDate(), request.getEndDate(), nuevoEstado));
     }
-
 }
-

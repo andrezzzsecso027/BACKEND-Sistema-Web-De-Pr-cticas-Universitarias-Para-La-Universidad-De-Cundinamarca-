@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class StudentRepositoryAdapter implements StudentRepositoryPort {
+public class    StudentRepositoryAdapter implements StudentRepositoryPort {
 
     private final StudentJpaRepository jpaRepository;
 

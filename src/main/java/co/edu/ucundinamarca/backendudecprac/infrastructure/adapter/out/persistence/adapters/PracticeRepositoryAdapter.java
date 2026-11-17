@@ -1,5 +1,6 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.adapters;
 
+import co.edu.ucundinamarca.backendudecprac.domain.model.status.PracticeStatus;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Practice;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.PracticeRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.entities.PracticeEntity;
@@ -25,7 +26,7 @@ public class PracticeRepositoryAdapter implements PracticeRepositoryPort {
             entity.setIdPractice(practice.getIdPractice());
         }
         entity.setIdPostulation(practice.getIdPostulation());
-        entity.setPracticeStatus(practice.getPracticeStatus());
+        entity.setPracticeStatus(practice.getPracticeStatus() == null ? null : practice.getPracticeStatus().name());
         entity.setStartDate(practice.getStartDate());
         entity.setEndDate(practice.getEndDate());
         entity.setCompanyFeedback(practice.getCompanyFeedback());
@@ -50,7 +51,7 @@ public class PracticeRepositoryAdapter implements PracticeRepositoryPort {
         Practice practice = new Practice();
         practice.setIdPractice(entity.getIdPractice());
         practice.setIdPostulation(entity.getIdPostulation());
-        practice.setPracticeStatus(entity.getPracticeStatus());
+        practice.setPracticeStatus(entity.getPracticeStatus() == null ? null : PracticeStatus.from(entity.getPracticeStatus()));
         practice.setStartDate(entity.getStartDate());
         practice.setEndDate(entity.getEndDate());
         practice.setCompanyFeedback(entity.getCompanyFeedback());
@@ -66,7 +67,7 @@ public class PracticeRepositoryAdapter implements PracticeRepositoryPort {
         Practice practice = new Practice();
         practice.setIdPractice(entity.getIdPractice());
         practice.setIdPostulation(entity.getIdPostulation());
-        practice.setPracticeStatus(entity.getPracticeStatus());
+        practice.setPracticeStatus(entity.getPracticeStatus() == null ? null : PracticeStatus.from(entity.getPracticeStatus()));
         practice.setStartDate(entity.getStartDate());
         practice.setEndDate(entity.getEndDate());
         practice.setCompanyFeedback(entity.getCompanyFeedback());

@@ -1,9 +1,9 @@
 package co.edu.ucundinamarca.backendudecprac.domain.port.in;
 
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.PostulationDetailResponse;
+import co.edu.ucundinamarca.backendudecprac.domain.model.PostulationDetail;
 
 import java.util.List;
 
 public interface GetPostulationsUseCase {
-    List<PostulationDetailResponse> getPostulationsByOfferId(Long idOffer);
+    List<PostulationDetail> getPostulationsByOfferId(Long idOffer);
 }

@@ -1,5 +1,8 @@
 package co.edu.ucundinamarca.backendudecprac.domain.model;
 
+import co.edu.ucundinamarca.backendudecprac.domain.exceptions.InvalidStateTransitionException;
+import co.edu.ucundinamarca.backendudecprac.domain.model.status.CompanyVerificationStatus;
+
 public class Company {
     private String nit;
     private Long idUser;
@@ -10,7 +13,7 @@ public class Company {
     private String companyType;
     private String companyAddress;
     private String companyPhoneNumber;
-    private String verificationStatus = "PENDIENTE";
+    private CompanyVerificationStatus verificationStatus = CompanyVerificationStatus.PENDIENTE;
     private LegalRepresentative legalRepresentative;
     private String logoUrl;
     private String rutPdfUrl;
@@ -19,7 +22,7 @@ public class Company {
     public Company() {
     }
 
-    public Company(String nit, Long idUser, String legalName, String department, String city, String companyName, String companyType, String companyAddress, String companyPhoneNumber, String verificationStatus, LegalRepresentative legalRepresentative) {
+    public Company(String nit, Long idUser, String legalName, String department, String city, String companyName, String companyType, String companyAddress, String companyPhoneNumber, CompanyVerificationStatus verificationStatus, LegalRepresentative legalRepresentative) {
         this.nit = nit;
         this.idUser = idUser;
         this.legalName = legalName;
@@ -33,11 +36,37 @@ public class Company {
         this.legalRepresentative = legalRepresentative;
     }
 
-    public String getVerificationStatus() {
+    // ------------------------- Comportamiento de dominio -------------------------
+
+    public void approve() {
+        changeVerification(CompanyVerificationStatus.APROBADA);
+    }
+
+    /** Rechaza una solicitud pendiente o inhabilita una empresa ya aprobada. */
+    public void reject() {
+        changeVerification(CompanyVerificationStatus.RECHAZADA);
+    }
+
+    /** Solo una empresa aprobada por la Universidad puede publicar ofertas. */
+    public boolean isApproved() {
+        return verificationStatus == CompanyVerificationStatus.APROBADA;
+    }
+
+    private void changeVerification(CompanyVerificationStatus target) {
+        CompanyVerificationStatus current = verificationStatus == null ? CompanyVerificationStatus.PENDIENTE : verificationStatus;
+        if (!current.canTransitionTo(target)) {
+            throw new InvalidStateTransitionException("la empresa", current, target);
+        }
+        this.verificationStatus = target;
+    }
+
+    // ------------------------- Getters / setters -------------------------
+
+    public CompanyVerificationStatus getVerificationStatus() {
         return verificationStatus;
     }
 
-    public void setVerificationStatus(String verificationStatus) {
+    public void setVerificationStatus(CompanyVerificationStatus verificationStatus) {
         this.verificationStatus = verificationStatus;
     }
 

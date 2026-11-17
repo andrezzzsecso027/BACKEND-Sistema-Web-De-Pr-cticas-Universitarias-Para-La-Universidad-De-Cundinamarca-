@@ -1,5 +1,7 @@
 package co.edu.ucundinamarca.backendudecprac.application.usecase;
 
+import co.edu.ucundinamarca.backendudecprac.domain.exceptions.BusinessRuleException;
+import co.edu.ucundinamarca.backendudecprac.domain.exceptions.ResourceNotFoundException;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Company;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Offer;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.CreateOfferUseCase;
@@ -14,6 +16,7 @@ import java.util.List;
 
 @Service
 public class OfferUseCaseImpl implements CreateOfferUseCase, GetActiveOffersUseCase {
+
     private final OfferRepositoryPort offerRepositoryPort;
     private final CompanyRepositoryPort companyRepositoryPort;
 
@@ -21,23 +24,18 @@ public class OfferUseCaseImpl implements CreateOfferUseCase, GetActiveOffersUseC
         this.offerRepositoryPort = offerRepositoryPort;
         this.companyRepositoryPort = companyRepositoryPort;
     }
+
     @Transactional
     @Override
     public Offer createOffer(Offer offer) {
         Company company = companyRepositoryPort.findByNit(offer.getNitCompanyAssociated())
-                .orElseThrow(() -> new IllegalArgumentException("La empresa con NIT " + offer.getNitCompanyAssociated() + " no existe."));
-        if (!"APROBADA".equalsIgnoreCase(company.getVerificationStatus())) {
-            throw new IllegalStateException("No puedes publicar ofertas porque tu cuenta de empresa aún no ha sido aprobada por la Universidad.");
-        }
-        if (offer.getClosingDate() != null && offer.getClosingDate().isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("La fecha de cierre no puede ser en el pasado.");
+                .orElseThrow(() -> new ResourceNotFoundException("La empresa con NIT " + offer.getNitCompanyAssociated() + " no existe."));
+
+        if (!company.isApproved()) {
+            throw new BusinessRuleException("No puedes publicar ofertas porque tu cuenta de empresa aún no ha sido aprobada por la Universidad.");
         }
 
-        if (offer.getAvailableSpots() == null || offer.getAvailableSpots() <= 0) {
-            throw new IllegalArgumentException("La oferta debe tener al menos 1 cupo disponible.");
-        }
-        offer.setPublicationDate(LocalDate.now());
-        offer.setOfferStatus(true);
+        offer.publish(LocalDate.now()); // valida cupos y fecha de cierre
         return offerRepositoryPort.saveOffer(offer);
     }
 

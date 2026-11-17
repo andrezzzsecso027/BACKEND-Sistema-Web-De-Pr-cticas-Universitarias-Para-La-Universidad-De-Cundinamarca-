@@ -9,7 +9,7 @@ import co.edu.ucundinamarca.backendudecprac.domain.port.out.PostulationRepositor
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.StudentProfileRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.StudentRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.UserRepositoryPort;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.dtos.PostulationDetailResponse;
+import co.edu.ucundinamarca.backendudecprac.domain.model.PostulationDetail;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,11 +29,11 @@ public class GetPostulationsUseCaseImpl implements GetPostulationsUseCase {
     }
 
     @Override
-    public List<PostulationDetailResponse> getPostulationsByOfferId(Long idOffer) {
+    public List<PostulationDetail> getPostulationsByOfferId(Long idOffer) {
         List<Postulation> postulaciones = postulationRepositoryPort.getPostulationsByOfferId(idOffer);
 
         return postulaciones.stream().map(postulacion -> {
-            PostulationDetailResponse response = new PostulationDetailResponse();
+            PostulationDetail response = new PostulationDetail();
 
             response.setIdPostulation(postulacion.getIdPostulation());
             response.setDatePostulation(postulacion.getDatePostulation());

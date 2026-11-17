@@ -1,5 +1,6 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.adapters;
 
+import co.edu.ucundinamarca.backendudecprac.domain.model.status.CommentStatus;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Comment;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.CommentRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.entities.CommentEntity;
@@ -31,7 +32,7 @@ public class CommentRepositoryAdapter implements CommentRepositoryPort {
 
         entity.setIdPractice(comment.getIdPractice());
         entity.setCommentText(comment.getCommentText());
-        entity.setValidationStatus(comment.getValidationStatus());
+        entity.setValidationStatus(comment.getValidationStatus() == null ? null : comment.getValidationStatus().name());
         entity.setCompanyRating(comment.getCompanyRating());
         entity.setCommentDate(comment.getCommentDate());
         entity.setAcceptanceComment(comment.getAcceptanceComment());
@@ -51,8 +52,8 @@ public class CommentRepositoryAdapter implements CommentRepositoryPort {
     }
 
     @Override
-    public List<Comment> findByValidationStatus(String status) {
-        return commentJPArepository.findByValidationStatusIgnoreCase(status)
+    public List<Comment> findByValidationStatus(CommentStatus status) {
+        return commentJPArepository.findByValidationStatusIgnoreCase(status.name())
                 .stream()
                 .map(this::mapToDomain).toList();
     }
@@ -69,7 +70,7 @@ public class CommentRepositoryAdapter implements CommentRepositoryPort {
         comment.setIdComment(entity.getIdComment());
         comment.setIdPractice(entity.getIdPractice());
         comment.setCommentText(entity.getCommentText());
-        comment.setValidationStatus(entity.getValidationStatus());
+        comment.setValidationStatus(entity.getValidationStatus() == null ? null : CommentStatus.from(entity.getValidationStatus()));
         comment.setCompanyRating(entity.getCompanyRating());
         comment.setCommentDate(entity.getCommentDate());
         comment.setAcceptanceComment(entity.getAcceptanceComment());

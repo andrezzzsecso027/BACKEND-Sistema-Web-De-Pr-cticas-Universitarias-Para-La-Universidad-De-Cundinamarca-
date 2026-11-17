@@ -1,6 +1,6 @@
 package co.edu.ucundinamarca.backendudecprac.application.usecase;
 
-
+import co.edu.ucundinamarca.backendudecprac.domain.exceptions.ResourceNotFoundException;
 import co.edu.ucundinamarca.backendudecprac.domain.model.StudentProfile;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.SaveStudentProfileUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.StudentProfileUseCase;
@@ -19,18 +19,31 @@ public class StudentProfileUseCaseImpl implements SaveStudentProfileUseCase, Stu
         this.studentRepositoryPort = studentRepositoryPort;
     }
 
+    /**
+     * Crea el perfil si no existe; si ya existe, actualiza solo los campos enviados (no nulos).
+     */
     @Transactional
     @Override
     public StudentProfile saveProfile(StudentProfile profile) {
         if (profile.getDocumentStudent() == null || !studentRepositoryPort.existsByDocumento(profile.getDocumentStudent())) {
-            throw new IllegalArgumentException("El estudiante no existe.");
+            throw new ResourceNotFoundException("El estudiante no existe.");
         }
-        return profileRepositoryPort.save(profile);
 
+        StudentProfile existing = profileRepositoryPort.findByDocumentStudent(profile.getDocumentStudent());
+        if (existing == null) {
+            return profileRepositoryPort.save(profile);
+        }
+
+        if (profile.getAboutMe() != null) existing.setAboutMe(profile.getAboutMe());
+        if (profile.getSkills() != null) existing.setSkills(profile.getSkills());
+        if (profile.getEnglishLevel() != null) existing.setEnglishLevel(profile.getEnglishLevel());
+        if (profile.getGithubUrl() != null) existing.setGithubUrl(profile.getGithubUrl());
+        if (profile.getLinkLifesheet() != null) existing.setLinkLifesheet(profile.getLinkLifesheet());
+        if (profile.getPhotoUrl() != null) existing.setPhotoUrl(profile.getPhotoUrl());
+        return profileRepositoryPort.save(existing);
     }
-    @Transactional
 
-
+    @Transactional(readOnly = true)
     @Override
     public StudentProfile getProfileByDocument(String documentStudent) {
         return profileRepositoryPort.findByDocumentStudent(documentStudent);

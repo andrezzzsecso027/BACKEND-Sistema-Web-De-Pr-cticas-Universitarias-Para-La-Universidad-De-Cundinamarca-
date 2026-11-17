@@ -1,6 +1,6 @@
-package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.adapters;
+package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.external.email;
 
-import co.edu.ucundinamarca.backendudecprac.domain.port.out.EmailRepositoryPort;
+import co.edu.ucundinamarca.backendudecprac.domain.port.out.EmailSenderPort;
 
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class ExternalApiEmailAdapter implements EmailRepositoryPort {
+public class ExternalApiEmailAdapter implements EmailSenderPort {
+
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ExternalApiEmailAdapter.class);
 
 
     @Value("${brevo.api.key}")
@@ -32,7 +34,7 @@ public class ExternalApiEmailAdapter implements EmailRepositoryPort {
 
 
     @Override
-    public void sendEmailverification(String toEmail, String content) {
+    public void sendEmail(String toEmail, String content) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
@@ -57,7 +59,7 @@ public class ExternalApiEmailAdapter implements EmailRepositoryPort {
 
         try {
             restTemplate.postForEntity(BREVO_URL, request, String.class);
-            System.out.println("Correo enviado con éxito a través de Brevo para: " + toEmail);
+            log.info("Correo enviado con éxito a través de Brevo para: {}", toEmail);
         } catch (Exception e) {
             throw new RuntimeException("Error enviando correo con Brevo: " + e.getMessage());
         }

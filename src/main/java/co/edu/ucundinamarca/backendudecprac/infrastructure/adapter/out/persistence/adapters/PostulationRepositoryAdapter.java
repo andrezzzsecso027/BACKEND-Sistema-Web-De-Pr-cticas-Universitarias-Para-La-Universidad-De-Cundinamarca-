@@ -1,5 +1,6 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.adapters;
 
+import co.edu.ucundinamarca.backendudecprac.domain.model.status.PostulationStatus;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Postulation;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.PostulationRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.entities.PostulationEntity;
@@ -25,7 +26,7 @@ public class PostulationRepositoryAdapter implements PostulationRepositoryPort {
         }
         entity.setIdOffer(postulation.getIdOffer());
         entity.setNumberDocumentStudent(String.valueOf(postulation.getDocumentNumberStudent()));
-        entity.setStatusPostulation(postulation.getStatusPostulation());
+        entity.setStatusPostulation(postulation.getStatusPostulation().name());
         entity.setDateOfPostulation(postulation.getDatePostulation());
         entity.setDateOfActualizacion(postulation.getDateUdpate());
         entity.setObservations(postulation.getObservations());
@@ -49,7 +50,7 @@ public class PostulationRepositoryAdapter implements PostulationRepositoryPort {
             p.setIdPostulation(entity.getIdPostulation());
             p.setIdOffer(entity.getIdOffer());
             p.setDocumentNumberStudent(entity.getNumberDocumentStudent());
-            p.setStatusPostulation(entity.getStatusPostulation());
+            p.setStatusPostulation(PostulationStatus.from(entity.getStatusPostulation()));
             p.setDatePostulation(entity.getDateOfPostulation());
             p.setDateUdpate(entity.getDateOfActualizacion());
             p.setObservations(entity.getObservations());
@@ -66,7 +67,7 @@ public class PostulationRepositoryAdapter implements PostulationRepositoryPort {
         postulation.setIdPostulation(entity.getIdPostulation());
         postulation.setIdOffer(entity.getIdOffer());
         postulation.setDocumentNumberStudent(entity.getNumberDocumentStudent());
-        postulation.setStatusPostulation(entity.getStatusPostulation());
+        postulation.setStatusPostulation(PostulationStatus.from(entity.getStatusPostulation()));
         postulation.setDatePostulation(entity.getDateOfPostulation());
         postulation.setDateUdpate(entity.getDateOfActualizacion());
         postulation.setObservations(entity.getObservations());
@@ -74,7 +75,7 @@ public class PostulationRepositoryAdapter implements PostulationRepositoryPort {
     }
     @Override
     public boolean hasActivePracticeOrAcceptedPostulation(String numberDocumentStudent ) {
-        return jpaRepository.existsByNumberDocumentStudentAndStatusPostulationIgnoreCase(numberDocumentStudent, "ACEPTADA");
+        return jpaRepository.existsByNumberDocumentStudentAndStatusPostulationIgnoreCase(numberDocumentStudent, PostulationStatus.ACEPTADA.name());
     }
 }
 
