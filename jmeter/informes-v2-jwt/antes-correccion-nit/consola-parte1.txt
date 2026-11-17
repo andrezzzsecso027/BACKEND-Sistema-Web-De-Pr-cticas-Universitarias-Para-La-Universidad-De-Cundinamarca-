@@ -1,0 +1,22 @@
+>>> Parte 1 (1-carga-escenarios-1-al-4.jmx) - 15:22:13
+START Running Jmeter on Tue Nov 17 21:22:14 CET 2026
+JVM_ARGS=-Xmn512m -Xms1024m -Xmx2048m
+jmeter args=-n -t 1-carga-escenarios-1-al-4.jmx -Jhost=host.docker.internal -Jport=8081 -l informes-v2-jwt/resultados-parte1.jtl -j informes-v2-jwt/jmeter-parte1.log -e -o informes-v2-jwt/reporte-parte1-carga
+jmeter ALL ARGS=-Dlog4j2.formatMsgNoLookups=true -n -t 1-carga-escenarios-1-al-4.jmx -Jhost=host.docker.internal -Jport=8081 -l informes-v2-jwt/resultados-parte1.jtl -j informes-v2-jwt/jmeter-parte1.log -e -o informes-v2-jwt/reporte-parte1-carga
+Nov 17, 2026 9:22:16 PM java.util.prefs.FileSystemPreferences$1 run
+INFO: Created user preferences directory.
+Creating summariser <summary>
+Created the tree successfully using 1-carga-escenarios-1-al-4.jmx
+Starting standalone test @ November 17, 2026 9:22:18 PM CET (1794946938028)
+Waiting for possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
+summary +     41 in 00:00:11 =    3.6/s Avg:   174 Min:   128 Max:   501 Err:     0 (0.00%) Active: 29 Started: 29 Finished: 0
+summary +   1214 in 00:00:30 =   40.5/s Avg:    44 Min:    10 Max:   160 Err:     0 (0.00%) Active: 44 Started: 80 Finished: 36
+summary =   1255 in 00:00:41 =   30.5/s Avg:    49 Min:    10 Max:   501 Err:     0 (0.00%)
+summary +    957 in 00:00:30 =   31.9/s Avg:    60 Min:     9 Max:  1157 Err:     7 (0.73%) Active: 8 Started: 128 Finished: 120
+summary =   2212 in 00:01:11 =   31.1/s Avg:    54 Min:     9 Max:  1157 Err:     7 (0.32%)
+summary +    355 in 00:00:24 =   14.6/s Avg:    63 Min:    16 Max:   283 Err:     0 (0.00%) Active: 0 Started: 135 Finished: 135
+summary =   2567 in 00:01:35 =   26.9/s Avg:    55 Min:     9 Max:  1157 Err:     7 (0.27%)
+Tidying up ...    @ November 17, 2026 9:23:54 PM CET (1794947034268)
+... end of run
+END Running Jmeter on Tue Nov 17 21:23:58 CET 2026
+<<< Parte 1 terminada - 15:23:58

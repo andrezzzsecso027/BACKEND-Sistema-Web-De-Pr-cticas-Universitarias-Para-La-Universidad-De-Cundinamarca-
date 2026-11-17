@@ -1,5 +1,6 @@
 package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.adapters;
 
+import co.edu.ucundinamarca.backendudecprac.domain.exceptions.ResourceAlreadyExistsException;
 import co.edu.ucundinamarca.backendudecprac.domain.model.status.CompanyVerificationStatus;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Company;
 import co.edu.ucundinamarca.backendudecprac.domain.model.LegalRepresentative;
@@ -7,6 +8,10 @@ import co.edu.ucundinamarca.backendudecprac.domain.port.out.CompanyRepositoryPor
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.entities.CompanyEntity;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.entities.legalReprensentiveEmbeddable;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.jpa.JPACompanyRepository;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -18,12 +23,38 @@ public class JPACompanyRepositoryAdapter implements CompanyRepositoryPort {
 
     private final JPACompanyRepository jpaCompanyRepository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     public JPACompanyRepositoryAdapter(JPACompanyRepository jpaCompanyRepository) {
         this.jpaCompanyRepository = jpaCompanyRepository;
     }
 
+    /**
+     * INSERT explícito (persist + flush) en lugar de save(): como el NIT es una llave asignada,
+     * save() hace merge y, ante dos registros simultáneos del mismo NIT, el segundo SOBRESCRIBÍA
+     * la empresa del primero (respondiendo 201 y dejando usuarios huérfanos). Con persist la BD
+     * rechaza el duplicado por la llave primaria y se traduce a una excepción de dominio (409);
+     * la transacción del caso de uso hace rollback del usuario creado.
+     */
+    @Override
+    public Company createCompany(Company company) {
+        try {
+            entityManager.persist(toEntity(company));
+            entityManager.flush();
+        } catch (EntityExistsException | ConstraintViolationException e) {
+            throw new ResourceAlreadyExistsException("Ya existe una cuenta con ese nit");
+        }
+        return company;
+    }
+
     @Override
     public Company saveCompany(Company company) {
+        jpaCompanyRepository.save(toEntity(company));
+        return company;
+    }
+
+    private CompanyEntity toEntity(Company company) {
         CompanyEntity entity = new CompanyEntity();
         entity.setNit(company.getNit());
         entity.setIdUsuario(company.getIdUser());
@@ -45,9 +76,7 @@ public class JPACompanyRepositoryAdapter implements CompanyRepositoryPort {
             repEntity.setCCrepresentive(company.getLegalRepresentative().getNumberDocument());
             entity.setRepresentanteLegal(repEntity);
         }
-
-        jpaCompanyRepository.save(entity);
-        return company;
+        return entity;
     }
 
     @Override

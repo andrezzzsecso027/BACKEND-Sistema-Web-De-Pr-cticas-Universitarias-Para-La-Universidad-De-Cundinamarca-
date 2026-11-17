@@ -1,0 +1,56 @@
+>>> Parte 3 (3-resistencia-escenario-8.jmx) - 15:42:39
+START Running Jmeter on Tue Nov 17 21:42:39 CET 2026
+JVM_ARGS=-Xmn512m -Xms1024m -Xmx2048m
+jmeter args=-n -t 3-resistencia-escenario-8.jmx -Jhost=host.docker.internal -Jport=8081 -l informes-v2-jwt/resultados-parte3.jtl -j informes-v2-jwt/jmeter-parte3.log -e -o informes-v2-jwt/reporte-parte3-resistencia
+jmeter ALL ARGS=-Dlog4j2.formatMsgNoLookups=true -n -t 3-resistencia-escenario-8.jmx -Jhost=host.docker.internal -Jport=8081 -l informes-v2-jwt/resultados-parte3.jtl -j informes-v2-jwt/jmeter-parte3.log -e -o informes-v2-jwt/reporte-parte3-resistencia
+Nov 17, 2026 9:42:41 PM java.util.prefs.FileSystemPreferences$1 run
+INFO: Created user preferences directory.
+Creating summariser <summary>
+Created the tree successfully using 3-resistencia-escenario-8.jmx
+Starting standalone test @ November 17, 2026 9:42:42 PM CET (1794948162818)
+Waiting for possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
+summary +    235 in 00:00:17 =   14.2/s Avg:   116 Min:    24 Max:   817 Err:     0 (0.00%) Active: 38 Started: 38 Finished: 0
+summary +   1031 in 00:00:30 =   34.3/s Avg:   422 Min:    37 Max:  2211 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+summary =   1266 in 00:00:47 =   27.2/s Avg:   365 Min:    24 Max:  2211 Err:     0 (0.00%)
+summary +   1011 in 00:00:30 =   33.7/s Avg:   467 Min:    28 Max:  2678 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+summary =   2277 in 00:01:17 =   29.8/s Avg:   410 Min:    24 Max:  2678 Err:     0 (0.00%)
+summary +   1035 in 00:00:30 =   34.5/s Avg:   448 Min:    50 Max:  2842 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+summary =   3312 in 00:01:47 =   31.1/s Avg:   422 Min:    24 Max:  2842 Err:     0 (0.00%)
+summary +    761 in 00:00:30 =   25.4/s Avg:   943 Min:    77 Max: 10938 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+summary =   4073 in 00:02:17 =   29.8/s Avg:   519 Min:    24 Max: 10938 Err:     0 (0.00%)
+summary +    857 in 00:00:30 =   28.5/s Avg:   755 Min:    36 Max:  5853 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+summary =   4930 in 00:02:47 =   29.6/s Avg:   560 Min:    24 Max: 10938 Err:     0 (0.00%)
+summary +   1020 in 00:00:30 =   34.0/s Avg:   478 Min:    46 Max:  3330 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+summary =   5950 in 00:03:17 =   30.3/s Avg:   546 Min:    24 Max: 10938 Err:     0 (0.00%)
+summary +   1053 in 00:00:30 =   35.1/s Avg:   419 Min:    31 Max:  2858 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+summary =   7003 in 00:03:47 =   30.9/s Avg:   527 Min:    24 Max: 10938 Err:     0 (0.00%)
+summary +    980 in 00:00:30 =   32.5/s Avg:   507 Min:    58 Max:  3209 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+summary =   7983 in 00:04:17 =   31.1/s Avg:   525 Min:    24 Max: 10938 Err:     0 (0.00%)
+summary +    975 in 00:00:30 =   32.7/s Avg:   554 Min:    63 Max:  3416 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+summary =   8958 in 00:04:47 =   31.3/s Avg:   528 Min:    24 Max: 10938 Err:     0 (0.00%)
+summary +    985 in 00:00:30 =   32.8/s Avg:   518 Min:    52 Max:  2500 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+summary =   9943 in 00:05:17 =   31.4/s Avg:   527 Min:    24 Max: 10938 Err:     0 (0.00%)
+summary +    981 in 00:00:30 =   32.7/s Avg:   523 Min:    53 Max:  2769 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+summary =  10924 in 00:05:47 =   31.5/s Avg:   526 Min:    24 Max: 10938 Err:     0 (0.00%)
+summary +    998 in 00:00:30 =   33.2/s Avg:   506 Min:    30 Max:  2462 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+summary =  11922 in 00:06:17 =   31.7/s Avg:   525 Min:    24 Max: 10938 Err:     0 (0.00%)
+summary +    983 in 00:00:30 =   32.8/s Avg:   512 Min:    65 Max:  3566 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+summary =  12905 in 00:06:47 =   31.7/s Avg:   524 Min:    24 Max: 10938 Err:     0 (0.00%)
+summary +   1035 in 00:00:30 =   34.5/s Avg:   455 Min:    42 Max:  2682 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+summary =  13940 in 00:07:17 =   31.9/s Avg:   519 Min:    24 Max: 10938 Err:     0 (0.00%)
+summary +   1042 in 00:00:30 =   34.7/s Avg:   450 Min:    53 Max:  2442 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+summary =  14982 in 00:07:47 =   32.1/s Avg:   514 Min:    24 Max: 10938 Err:     0 (0.00%)
+summary +   1059 in 00:00:30 =   35.4/s Avg:   417 Min:    59 Max:  1911 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+summary =  16041 in 00:08:17 =   32.3/s Avg:   507 Min:    24 Max: 10938 Err:     0 (0.00%)
+summary +   1041 in 00:00:30 =   34.7/s Avg:   441 Min:    30 Max:  2832 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+summary =  17082 in 00:08:47 =   32.4/s Avg:   503 Min:    24 Max: 10938 Err:     0 (0.00%)
+summary +   1055 in 00:00:30 =   35.2/s Avg:   404 Min:    55 Max:  2418 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+summary =  18137 in 00:09:17 =   32.6/s Avg:   498 Min:    24 Max: 10938 Err:     0 (0.00%)
+summary +   1051 in 00:00:30 =   35.1/s Avg:   445 Min:    61 Max:  2260 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+summary =  19188 in 00:09:47 =   32.7/s Avg:   495 Min:    24 Max: 10938 Err:     0 (0.00%)
+summary +    559 in 00:00:16 =   35.7/s Avg:   384 Min:    36 Max:  1680 Err:     0 (0.00%) Active: 0 Started: 50 Finished: 50
+summary =  19747 in 00:10:02 =   32.8/s Avg:   492 Min:    24 Max: 10938 Err:     0 (0.00%)
+Tidying up ...    @ November 17, 2026 9:52:45 PM CET (1794948765651)
+... end of run
+END Running Jmeter on Tue Nov 17 21:52:52 CET 2026
+<<< Parte 3 terminada - 15:52:52

@@ -1,6 +1,7 @@
 package co.edu.ucundinamarca.backendudecprac.application.usecase;
 
 import co.edu.ucundinamarca.backendudecprac.domain.exceptions.InvalidInputException;
+import co.edu.ucundinamarca.backendudecprac.domain.exceptions.ResourceAlreadyExistsException;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Company;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Student;
 import co.edu.ucundinamarca.backendudecprac.domain.model.User;
@@ -62,7 +63,7 @@ class RegistroYArchivosTest {
             assertThrows(InvalidInputException.class,
                     () -> createCompany.createCompany(new User(), empresa("https://res.cloudinary.com/demo/logo.png")));
             verify(userRepositoryPort, never()).saveUser(any());
-            verify(companyRepositoryPort, never()).saveCompany(any());
+            verify(companyRepositoryPort, never()).createCompany(any());
         }
 
         @Test
@@ -73,13 +74,30 @@ class RegistroYArchivosTest {
             user.setPassword("secreta1");
             when(passwordEncoder.encode(anyString())).thenReturn("hash");
             when(userRepositoryPort.saveUser(any())).thenAnswer(i -> { User u = i.getArgument(0); u.setIdUser(9); return u; });
-            when(companyRepositoryPort.saveCompany(any())).thenAnswer(i -> i.getArgument(0));
+            when(companyRepositoryPort.createCompany(any())).thenAnswer(i -> i.getArgument(0));
 
             Company creada = createCompany.createCompany(user, empresa("https://res.cloudinary.com/demo/udecprac/empresas_nit/rut_ab12.pdf"));
 
             assertEquals("https://res.cloudinary.com/demo/udecprac/empresas_nit/rut_ab12.pdf", creada.getRutPdfUrl());
             assertEquals(9L, creada.getIdUser());
             assertFalse(user.isUserStatus(), "la cuenta queda deshabilitada hasta que la Universidad la apruebe");
+        }
+
+        @Test
+        @DisplayName("Si un registro simultáneo ganó la carrera por el NIT, se responde conflicto (no se sobrescribe)")
+        void nitDuplicadoConcurrenteEsConflicto() {
+            User user = new User();
+            user.setEmailAddres("otra@empresa.co");
+            user.setPassword("secreta1");
+            when(passwordEncoder.encode(anyString())).thenReturn("hash");
+            when(userRepositoryPort.saveUser(any())).thenAnswer(i -> i.getArgument(0));
+            // existsByNit dijo "no existe", pero al insertar la BD ya lo tiene (otro hilo hizo commit antes)
+            when(companyRepositoryPort.createCompany(any()))
+                    .thenThrow(new ResourceAlreadyExistsException("Ya existe una cuenta con ese nit"));
+
+            assertThrows(ResourceAlreadyExistsException.class,
+                    () -> createCompany.createCompany(user, empresa("https://res.cloudinary.com/demo/udecprac/empresas_nit/rut_ab12.pdf")));
+            verify(companyRepositoryPort, never()).saveCompany(any());
         }
     }
 

@@ -1,0 +1,10 @@
+# Muestras en crudo y logs (pesados; se regeneran con ejecutar-pruebas.sh)
+*.jtl
+*.log
+# Version 1 (15/11, sin JWT): reemplazada por informes-v2-jwt/
+/report/
+/reporte-parte1-carga/
+/reporte-parte2-estres/
+/reporte-parte3-resistencia/
+/udecprac-load-test.jmx
+/udecprac-write-test.jmx

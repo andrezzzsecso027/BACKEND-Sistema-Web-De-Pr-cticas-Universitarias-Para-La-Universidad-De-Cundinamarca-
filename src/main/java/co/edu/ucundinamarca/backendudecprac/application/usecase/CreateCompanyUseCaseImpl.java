@@ -44,7 +44,9 @@ public class CreateCompanyUseCaseImpl implements CreateCompanyUseCase {
         user.setCreationDate(LocalDateTime.now());
         User userGuardado = usuariorepositoryport.saveUser(user);
         company.setIdUser(userGuardado.getIdUser());
-        return empresarepositoryPort.saveCompany(company);
+        // createCompany (no saveCompany): si otro registro simultáneo ganó la carrera por este NIT,
+        // falla con 409 y el @Transactional deshace el usuario recién creado (sin huérfanos)
+        return empresarepositoryPort.createCompany(company);
     }
 
 
