@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StudentJpaRepository extends JpaRepository<StudentEntity, String> {
     boolean existsByDocumento(String documento);
+
+    java.util.Optional<StudentEntity> findByIdUsuario(Long idUsuario);
 }

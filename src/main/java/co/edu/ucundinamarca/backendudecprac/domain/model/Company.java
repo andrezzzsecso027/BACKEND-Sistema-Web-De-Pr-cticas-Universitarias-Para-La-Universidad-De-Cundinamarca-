@@ -1,5 +1,6 @@
 package co.edu.ucundinamarca.backendudecprac.domain.model;
 
+import co.edu.ucundinamarca.backendudecprac.domain.exceptions.BusinessRuleException;
 import co.edu.ucundinamarca.backendudecprac.domain.exceptions.InvalidStateTransitionException;
 import co.edu.ucundinamarca.backendudecprac.domain.model.status.CompanyVerificationStatus;
 
@@ -38,8 +39,23 @@ public class Company {
 
     // ------------------------- Comportamiento de dominio -------------------------
 
+    /**
+     * La Universidad solo puede aprobar una empresa que haya cargado su certificado RUT/NIT en PDF
+     * (antes se aprobaban únicamente con los datos del formulario).
+     */
     public void approve() {
+        if (!hasCertificadoNit()) {
+            throw new BusinessRuleException(
+                    "No se puede aprobar la empresa: no ha cargado el certificado RUT / NIT en PDF.");
+        }
         changeVerification(CompanyVerificationStatus.APROBADA);
+    }
+
+    /** true si la empresa adjuntó un certificado NIT en PDF accesible por https. */
+    public boolean hasCertificadoNit() {
+        if (rutPdfUrl == null || rutPdfUrl.isBlank()) return false;
+        String url = rutPdfUrl.trim().toLowerCase(java.util.Locale.ROOT);
+        return url.startsWith("https://") && url.endsWith(".pdf");
     }
 
     /** Rechaza una solicitud pendiente o inhabilita una empresa ya aprobada. */

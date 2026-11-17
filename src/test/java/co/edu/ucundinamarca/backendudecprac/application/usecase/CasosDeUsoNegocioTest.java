@@ -72,6 +72,7 @@ public class CasosDeUsoNegocioTest {
         Company emp = new Company();
         emp.setNit("900123456-7");
         emp.setCompanyName("Tech Solutions SAS");
+        emp.setRutPdfUrl("https://res.cloudinary.com/demo/rut.pdf");
         emp.setIdUser(10L);
 
         User usuarioEmpresa = new User();
@@ -371,7 +372,7 @@ public class CasosDeUsoNegocioTest {
             }
 
             if (m.getParameterCount() == 3) {
-                Object url = m.invoke(uploadUseCaseInstance, new byte[]{1, 2, 3}, "rut.pdf", "empresas_nit");
+                Object url = m.invoke(uploadUseCaseInstance, "%PDF-1.4 contenido".getBytes(), "rut.pdf", "empresas_nit");
                 assertNotNull(url);
             }
         }

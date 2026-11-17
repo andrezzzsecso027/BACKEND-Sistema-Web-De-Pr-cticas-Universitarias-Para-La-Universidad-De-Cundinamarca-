@@ -7,5 +7,6 @@ public interface StudentRepositoryPort {
     Student saveStudent(Student student);
     List<Student> findAllStudents();
     Student findByDocumento(String documento);
+    java.util.Optional<Student> findByIdUser(Long idUser);
     boolean existsByDocumento(String documento);
 }

@@ -130,12 +130,29 @@ class DomainRulesTest {
         @DisplayName("PENDIENTE -> APROBADA -> RECHAZADA (inhabilitar); repetir el mismo estado no se permite")
         void verificacion() {
             Company c = new Company();
+            c.setRutPdfUrl("https://res.cloudinary.com/demo/udecprac/empresas_nit/rut.pdf");
             assertEquals(CompanyVerificationStatus.PENDIENTE, c.getVerificationStatus());
             c.approve();
             assertTrue(c.isApproved());
             assertThrows(InvalidStateTransitionException.class, c::approve);
             c.reject();
             assertFalse(c.isApproved());
+        }
+
+        @Test
+        @DisplayName("No se puede aprobar una empresa sin certificado RUT/NIT en PDF")
+        void sinCertificadoNoSeAprueba() {
+            Company sinPdf = new Company();
+            assertThrows(BusinessRuleException.class, sinPdf::approve);
+
+            Company conOtroArchivo = new Company();
+            conOtroArchivo.setRutPdfUrl("https://res.cloudinary.com/demo/logo.png");
+            assertThrows(BusinessRuleException.class, conOtroArchivo::approve);
+            assertEquals(CompanyVerificationStatus.PENDIENTE, conOtroArchivo.getVerificationStatus());
+
+            Company sinHttps = new Company();
+            sinHttps.setRutPdfUrl("http://servidor/rut.pdf");
+            assertFalse(sinHttps.hasCertificadoNit());
         }
     }
 

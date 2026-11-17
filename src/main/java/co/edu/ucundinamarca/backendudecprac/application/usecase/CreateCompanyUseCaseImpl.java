@@ -1,5 +1,6 @@
 package co.edu.ucundinamarca.backendudecprac.application.usecase;
 
+import co.edu.ucundinamarca.backendudecprac.domain.exceptions.InvalidInputException;
 import co.edu.ucundinamarca.backendudecprac.domain.exceptions.ResourceAlreadyExistsException;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Company;
 import co.edu.ucundinamarca.backendudecprac.domain.model.User;
@@ -27,6 +28,10 @@ public class CreateCompanyUseCaseImpl implements CreateCompanyUseCase {
     @Transactional
     @Override
     public Company createCompany(User user, Company company) {
+        // El certificado RUT/NIT es obligatorio: sin él la Coordinación no puede verificar a la empresa
+        if (!company.hasCertificadoNit()) {
+            throw new InvalidInputException("Debes adjuntar el certificado RUT / NIT en PDF para registrar la empresa.");
+        }
         if(usuariorepositoryport.existsByCorreoElectronico(user.getEmailAddres())) {
             throw new ResourceAlreadyExistsException("Ya existe una cuenta con ese correo");
         }

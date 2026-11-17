@@ -59,6 +59,21 @@ public class PostulationRepositoryAdapter implements PostulationRepositoryPort {
     }
 
     @Override
+    public List<Postulation> findByStudentDocument(String documentStudent) {
+        return jpaRepository.findByNumberDocumentStudentOrderByDateOfPostulationDesc(documentStudent).stream().map(entity -> {
+            Postulation p = new Postulation();
+            p.setIdPostulation(entity.getIdPostulation());
+            p.setIdOffer(entity.getIdOffer());
+            p.setDocumentNumberStudent(entity.getNumberDocumentStudent());
+            p.setStatusPostulation(PostulationStatus.from(entity.getStatusPostulation()));
+            p.setDatePostulation(entity.getDateOfPostulation());
+            p.setDateUdpate(entity.getDateOfActualizacion());
+            p.setObservations(entity.getObservations());
+            return p;
+        }).toList();
+    }
+
+    @Override
     public Postulation findById(Long idPostulation) {
         PostulationEntity entity = jpaRepository.findById(idPostulation).orElse(null);
         if (entity == null) return null;

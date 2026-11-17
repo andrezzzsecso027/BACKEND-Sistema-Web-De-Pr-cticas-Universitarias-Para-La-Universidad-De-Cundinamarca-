@@ -57,13 +57,16 @@ public class    StudentRepositoryAdapter implements StudentRepositoryPort {
     }
 
     @Override
+    public java.util.Optional<Student> findByIdUser(Long idUser) {
+        return jpaRepository.findByIdUsuario(idUser).map(this::mapToDomain);
+    }
+
+    @Override
     public Student findByDocumento(String documento) {
-        StudentEntity entity = jpaRepository.findById(documento).orElse(null);
+        return jpaRepository.findById(documento).map(this::mapToDomain).orElse(null);
+    }
 
-        if (entity == null) {
-            return null;
-        }
-
+    private Student mapToDomain(StudentEntity entity) {
         Student student = new Student();
         student.setDocument(entity.getDocumento());
         student.setName(entity.getNombres());

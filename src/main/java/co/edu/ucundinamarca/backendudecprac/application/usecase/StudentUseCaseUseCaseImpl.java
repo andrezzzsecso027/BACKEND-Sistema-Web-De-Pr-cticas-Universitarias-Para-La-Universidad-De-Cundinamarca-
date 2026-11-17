@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class StudentUseCaseUseCaseImpl implements CreateStudentUseCase {
 
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(StudentUseCaseUseCaseImpl.class);
+    private static final java.util.regex.Pattern CORREO_INSTITUCIONAL =
+            java.util.regex.Pattern.compile("^[a-z0-9._%+-]+@ucundinamarca\\.edu\\.co$");
 
     private final StudentRepositoryPort studentRepositoryPort;
     private final UserRepositoryPort usuariorepositoryport;
@@ -36,11 +38,13 @@ public class StudentUseCaseUseCaseImpl implements CreateStudentUseCase {
     @Override
     public Student createStudent(User user, Student student) {
 
-        String correo = user.getEmailAddres();
-
-        if (correo == null || !correo.endsWith("@ucundinamarca.edu.co")) {
+        // Se normaliza (sin espacios, minúsculas) y se exige un usuario válido antes del dominio institucional:
+        // antes "@ucundinamarca.edu.co" a secas o "Ana@UCUNDINAMARCA.EDU.CO" daban resultados inconsistentes.
+        String correo = user.getEmailAddres() == null ? "" : user.getEmailAddres().trim().toLowerCase(java.util.Locale.ROOT);
+        if (!CORREO_INSTITUCIONAL.matcher(correo).matches()) {
             throw new InvalidInputException("Solo se permiten correos institucionales (@ucundinamarca.edu.co)");
         }
+        user.setEmailAddres(correo);
 
         if(usuariorepositoryport.existsByCorreoElectronico(user.getEmailAddres())) {
             throw new ResourceAlreadyExistsException("Ya existe una cuenta con ese correo");

@@ -80,6 +80,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/registro/estudiantes/perfil").hasRole(ESTUDIANTE)
                         .requestMatchers(HttpMethod.GET, "/api/ia/recomendar-ofertas/*").hasRole(ESTUDIANTE)
                         .requestMatchers(HttpMethod.POST, "/api/comentarios/crear").hasRole(ESTUDIANTE)
+                        .requestMatchers(HttpMethod.GET, "/api/estudiantes/me", "/api/estudiantes/me/**").hasRole(ESTUDIANTE)
 
                         // ---------- Cualquier usuario autenticado ----------
                         // (cambiar contraseña, consultar perfiles, prácticas, historial, listados, archivos)
