@@ -33,7 +33,9 @@ public class UserEntity {
     private LocalDateTime fechaRegistro;
 
 
-    public UserEntity() {}
+    public UserEntity() {
+        // Constructor vacío requerido por JPA
+    }
 
     public long getIdUsario() {
         return idUsario;

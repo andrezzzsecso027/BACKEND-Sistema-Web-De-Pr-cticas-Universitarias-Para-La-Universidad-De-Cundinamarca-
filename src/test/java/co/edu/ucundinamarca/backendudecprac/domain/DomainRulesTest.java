@@ -89,12 +89,13 @@ class DomainRulesTest {
         void validaPublicacion() {
             Offer sinCupos = new Offer();
             sinCupos.setAvailableSpots(0);
-            assertThrows(InvalidInputException.class, () -> sinCupos.publish(LocalDate.now()));
+            LocalDate hoy = LocalDate.now();
+            assertThrows(InvalidInputException.class, () -> sinCupos.publish(hoy));
 
             Offer vencida = new Offer();
             vencida.setAvailableSpots(3);
             vencida.setClosingDate(LocalDate.now().minusDays(1));
-            assertThrows(InvalidInputException.class, () -> vencida.publish(LocalDate.now()));
+            assertThrows(InvalidInputException.class, () -> vencida.publish(hoy));
         }
     }
 
@@ -117,8 +118,9 @@ class DomainRulesTest {
         @DisplayName("La fecha de fin no puede ser anterior a la de inicio")
         void validaFechas() {
             Practice p = Practice.startFor(10L);
-            assertThrows(InvalidInputException.class,
-                    () -> p.update(LocalDate.of(2026, 6, 1), LocalDate.of(2026, 1, 1), null));
+            LocalDate inicio = LocalDate.of(2026, 6, 1);
+            LocalDate finAnterior = LocalDate.of(2026, 1, 1);
+            assertThrows(InvalidInputException.class, () -> p.update(inicio, finAnterior, null));
         }
     }
 

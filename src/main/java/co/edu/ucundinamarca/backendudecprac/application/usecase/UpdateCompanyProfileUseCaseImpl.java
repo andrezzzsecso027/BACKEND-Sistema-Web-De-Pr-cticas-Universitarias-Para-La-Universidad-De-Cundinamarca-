@@ -1,5 +1,7 @@
 package co.edu.ucundinamarca.backendudecprac.application.usecase;
 
+import java.util.function.Consumer;
+
 import co.edu.ucundinamarca.backendudecprac.domain.exceptions.ResourceNotFoundException;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Company;
 import co.edu.ucundinamarca.backendudecprac.domain.model.LegalRepresentative;
@@ -27,16 +29,16 @@ public class UpdateCompanyProfileUseCaseImpl implements UpdateCompanyProfileUseC
         Company existing = companyRepositoryPort.findByNit(nit)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró la empresa con NIT: " + nit));
 
-        if (updatedData.getCompanyName() != null) existing.setCompanyName(updatedData.getCompanyName());
-        if (updatedData.getLegalName() != null) existing.setLegalName(updatedData.getLegalName());
-        if (updatedData.getCompanyType() != null) existing.setCompanyType(updatedData.getCompanyType());
-        if (updatedData.getCompanyPhoneNumber() != null) existing.setCompanyPhoneNumber(updatedData.getCompanyPhoneNumber());
-        if (updatedData.getDepartment() != null) existing.setDepartment(updatedData.getDepartment());
-        if (updatedData.getCity() != null) existing.setCity(updatedData.getCity());
-        if (updatedData.getCompanyAddress() != null) existing.setCompanyAddress(updatedData.getCompanyAddress());
-        if (updatedData.getCompanyDescription() != null) existing.setCompanyDescription(updatedData.getCompanyDescription());
-        if (updatedData.getLogoUrl() != null) existing.setLogoUrl(updatedData.getLogoUrl());
-        if (updatedData.getRutPdfUrl() != null) existing.setRutPdfUrl(updatedData.getRutPdfUrl());
+        siPresente(updatedData.getCompanyName(), existing::setCompanyName);
+        siPresente(updatedData.getLegalName(), existing::setLegalName);
+        siPresente(updatedData.getCompanyType(), existing::setCompanyType);
+        siPresente(updatedData.getCompanyPhoneNumber(), existing::setCompanyPhoneNumber);
+        siPresente(updatedData.getDepartment(), existing::setDepartment);
+        siPresente(updatedData.getCity(), existing::setCity);
+        siPresente(updatedData.getCompanyAddress(), existing::setCompanyAddress);
+        siPresente(updatedData.getCompanyDescription(), existing::setCompanyDescription);
+        siPresente(updatedData.getLogoUrl(), existing::setLogoUrl);
+        siPresente(updatedData.getRutPdfUrl(), existing::setRutPdfUrl);
 
         LegalRepresentative newRep = updatedData.getLegalRepresentative();
         if (newRep != null) {
@@ -44,10 +46,17 @@ public class UpdateCompanyProfileUseCaseImpl implements UpdateCompanyProfileUseC
                 existing.setLegalRepresentative(new LegalRepresentative());
             }
             LegalRepresentative rep = existing.getLegalRepresentative();
-            if (newRep.getNameRepresentative() != null) rep.setNameRepresentative(newRep.getNameRepresentative());
-            if (newRep.getLastNameRepresentative() != null) rep.setLastNameRepresentative(newRep.getLastNameRepresentative());
+            siPresente(newRep.getNameRepresentative(), rep::setNameRepresentative);
+            siPresente(newRep.getLastNameRepresentative(), rep::setLastNameRepresentative);
         }
 
         return companyRepositoryPort.saveCompany(existing);
+    }
+
+    /** Aplica el valor solo si llegó informado (actualización parcial del perfil). */
+    private static <T> void siPresente(T valor, Consumer<T> setter) {
+        if (valor != null) {
+            setter.accept(valor);
+        }
     }
 }

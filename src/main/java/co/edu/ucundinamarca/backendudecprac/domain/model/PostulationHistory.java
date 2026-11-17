@@ -11,7 +11,9 @@ public class PostulationHistory {
     private PostulationStatus newStatus;
     private LocalDateTime changeDate;
 
-    public PostulationHistory() {}
+    public PostulationHistory() {
+        // Constructor vacío requerido por Jackson y por los mapeadores de persistencia
+    }
 
     public Long getIdHistory() {
         return idHistory;

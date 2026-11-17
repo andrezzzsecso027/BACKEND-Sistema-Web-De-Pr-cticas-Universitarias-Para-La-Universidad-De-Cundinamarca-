@@ -3,6 +3,7 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure;
 import co.edu.ucundinamarca.backendudecprac.domain.exceptions.BusinessRuleException;
 import co.edu.ucundinamarca.backendudecprac.domain.exceptions.InvalidCredentialsException;
 import co.edu.ucundinamarca.backendudecprac.domain.exceptions.InvalidInputException;
+import co.edu.ucundinamarca.backendudecprac.domain.exceptions.InvalidStateTransitionException;
 import co.edu.ucundinamarca.backendudecprac.domain.exceptions.ResourceAlreadyExistsException;
 import co.edu.ucundinamarca.backendudecprac.domain.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +26,8 @@ import java.nio.charset.StandardCharsets;
  *   ResourceNotFoundException      -> 404
  *   InvalidInputException          -> 400
  *   InvalidCredentialsException    -> 401
- *   BusinessRuleException          -> 409  (incluye InvalidStateTransitionException)
+ *   BusinessRuleException          -> 409
+ *   InvalidStateTransitionException -> 409
  *   ResourceAlreadyExistsException -> 409
  *   Cualquier otra                 -> 500 (se registra en el log, sin exponer detalles al cliente)
  *
@@ -54,7 +56,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return message(HttpStatus.UNAUTHORIZED, ex.getMessage());
     }
 
-    @ExceptionHandler({BusinessRuleException.class, ResourceAlreadyExistsException.class})
+    @ExceptionHandler({BusinessRuleException.class, InvalidStateTransitionException.class, ResourceAlreadyExistsException.class})
     public ResponseEntity<String> handleConflict(RuntimeException ex) {
         return message(HttpStatus.CONFLICT, ex.getMessage());
     }

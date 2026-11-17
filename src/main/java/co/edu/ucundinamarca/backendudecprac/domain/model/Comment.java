@@ -14,11 +14,13 @@ public class Comment {
     private LocalDateTime commentDate;
     private LocalDateTime acceptanceComment;
 
-    public Comment() {}
+    public Comment() {
+        // Constructor vacío requerido por Jackson y por los mapeadores de persistencia
+    }
 
     // ------------------------- Comportamiento de dominio -------------------------
 
-    /** Todo comentario nace PENDIENTE de moderación por el administrador. */
+    /** Cada comentario nace PENDIENTE de moderación por el administrador. */
     public void submit(LocalDateTime now) {
         this.validationStatus = CommentStatus.PENDIENTE;
         this.commentDate = now;

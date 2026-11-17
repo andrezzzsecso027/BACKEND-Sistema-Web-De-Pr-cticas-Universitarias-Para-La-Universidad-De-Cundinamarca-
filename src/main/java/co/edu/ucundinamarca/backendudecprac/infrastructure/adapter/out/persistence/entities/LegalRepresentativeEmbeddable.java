@@ -4,22 +4,22 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class legalReprensentiveEmbeddable {
+public class LegalRepresentativeEmbeddable {
 
     @Column(name = "nombre_representante", length = 100)
     private String nameRepresentive;
     @Column(name = "apellido_representante", length = 100)
     private String lastNameRepresentive;
     @Column(name = "CC_representante", length = 100)
-    private String CCrepresentive;
+    private String ccRepresentive;
 
-    public legalReprensentiveEmbeddable() {
+    public LegalRepresentativeEmbeddable() {
     }
 
-    public legalReprensentiveEmbeddable(String nameRepresentive, String lastNameRepresentive, String CCrepresentive) {
+    public LegalRepresentativeEmbeddable(String nameRepresentive, String lastNameRepresentive, String ccRepresentive) {
         this.nameRepresentive = nameRepresentive;
         this.lastNameRepresentive = lastNameRepresentive;
-        this.CCrepresentive = CCrepresentive;
+        this.ccRepresentive = ccRepresentive;
     }
 
     public String getNameRepresentive() {
@@ -38,11 +38,11 @@ public class legalReprensentiveEmbeddable {
         this.lastNameRepresentive = lastNameRepresentive;
     }
 
-    public String getCCrepresentive() {
-        return CCrepresentive;
+    public String getCcRepresentive() {
+        return ccRepresentive;
     }
 
-    public void setCCrepresentive(String CCrepresentive) {
-        this.CCrepresentive = CCrepresentive;
+    public void setCcRepresentive(String ccRepresentive) {
+        this.ccRepresentive = ccRepresentive;
     }
 }

@@ -6,6 +6,7 @@ public class CommentRequestDTO {
     private Double companyRating;
 
     public CommentRequestDTO() {
+        // Constructor vacío requerido por Jackson
     }
 
     public long getIdPractice() {

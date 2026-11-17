@@ -1,6 +1,6 @@
 package co.edu.ucundinamarca.backendudecprac.application.usecase;
 
-import co.edu.ucundinamarca.backendudecprac.domain.exceptions.OfferNotFound;
+import co.edu.ucundinamarca.backendudecprac.domain.exceptions.ResourceNotFoundException;
 import co.edu.ucundinamarca.backendudecprac.domain.model.Offer;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.ClosedOfferByAdminUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.OfferRepositoryPort;
@@ -21,7 +21,7 @@ public class CloseOfferByAdminUseCaseImpl implements ClosedOfferByAdminUseCase {
     public void closeOfferByAdmin(Long idOffer) {
         Offer offer = offerRepositoryPort.findById(idOffer);
         if (offer == null) {
-            throw new OfferNotFound("Oferta no encontrada con ID: " + idOffer);
+            throw new ResourceNotFoundException("Oferta no encontrada con ID: " + idOffer);
         }
         offer.close();
         offerRepositoryPort.saveOffer(offer);

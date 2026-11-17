@@ -88,7 +88,11 @@ class StudentMeIntegrationTest {
     }
 
     private void estudiante(String doc, long idUser, String nombre) {
-        students.saveStudent(new Student(idUser, doc, nombre, "Prueba", "Calle 1", "300", "Fusagasugá", "Ingeniería de Sistemas"));
+        Student s = new Student();
+        s.setIdUser(idUser); s.setDocument(doc); s.setName(nombre); s.setLastName("Prueba");
+        s.setAddres("Calle 1"); s.setPhoneNumber("300"); s.setHeadquarters("Fusagasugá");
+        s.setAcademicProgram("Ingeniería de Sistemas");
+        students.saveStudent(s);
     }
 
     private void postular(Long idOferta, String doc) {

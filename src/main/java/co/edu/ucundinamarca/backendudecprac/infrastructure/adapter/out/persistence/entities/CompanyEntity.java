@@ -23,7 +23,7 @@ public class CompanyEntity {
     @Column(name = "estado_verificacion")
     private String estadoVerificacion = "PENDIENTE";
     @Embedded
-    private legalReprensentiveEmbeddable representanteLegal;
+    private LegalRepresentativeEmbeddable representanteLegal;
 
     @Column(name = "url_logo", length = 500)
     private String urlLogo;
@@ -34,7 +34,9 @@ public class CompanyEntity {
     @Column(name = "descripcion_empresa", length = 1000)
     private String descripcionEmpresa;
 
-    public CompanyEntity() {}
+    public CompanyEntity() {
+        // Constructor vacío requerido por JPA
+    }
 
     public Long getIdUsuario() {
         return idUsuario;
@@ -83,11 +85,11 @@ public class CompanyEntity {
     public void setTelefonoEmpresa(String telefonoEmpresa) {
         this.telefonoEmpresa = telefonoEmpresa;
     }
-    public legalReprensentiveEmbeddable getRepresentanteLegal() {
+    public LegalRepresentativeEmbeddable getRepresentanteLegal() {
         return representanteLegal;
     }
 
-    public void setRepresentanteLegal(legalReprensentiveEmbeddable representanteLegal) {
+    public void setRepresentanteLegal(LegalRepresentativeEmbeddable representanteLegal) {
         this.representanteLegal = representanteLegal;
     }
     public String getDepartamento() {

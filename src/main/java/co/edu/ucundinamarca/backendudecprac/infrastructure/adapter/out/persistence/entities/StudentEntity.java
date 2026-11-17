@@ -37,7 +37,9 @@ public class StudentEntity {
     private StudentProfileEntity profile;
 
 
-    public StudentEntity() {}
+    public StudentEntity() {
+        // Constructor vacío requerido por JPA
+    }
 
     public String getProgramaAcademico() {
         return programaAcademico;

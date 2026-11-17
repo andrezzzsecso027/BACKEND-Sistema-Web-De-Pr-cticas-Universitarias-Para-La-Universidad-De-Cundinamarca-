@@ -10,7 +10,9 @@ public class StudentProfile {
     private String aboutMe;
     private String photoUrl;
 
-    public StudentProfile() {}
+    public StudentProfile() {
+        // Constructor vacío requerido por Jackson y por los mapeadores de persistencia
+    }
     public String getLinkLifesheet() {
         return linkLifesheet;
     }

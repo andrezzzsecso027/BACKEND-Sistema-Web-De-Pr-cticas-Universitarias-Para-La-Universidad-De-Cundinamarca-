@@ -20,7 +20,9 @@ public class Offer {
     private Integer availableSpots;
     private LocalDate closingDate;
 
-    public Offer() {}
+    public Offer() {
+        // Constructor vacío requerido por Jackson y por los mapeadores de persistencia
+    }
 
     // ------------------------- Comportamiento de dominio -------------------------
 

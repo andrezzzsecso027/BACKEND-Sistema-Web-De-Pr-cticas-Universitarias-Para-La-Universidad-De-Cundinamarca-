@@ -36,18 +36,7 @@ public class ManageContractDocumentUseCaseImpl implements SaveContractDocumentUs
 
         if (existenteOpt.isPresent()) {
             ContractDocument existente = existenteOpt.get();
-            if (document.getFileUrl() != null && !document.getFileUrl().isBlank()) {
-                existente.setFileUrl(document.getFileUrl());
-            }
-            if (document.getFileName() != null && !document.getFileName().isBlank()) {
-                existente.setFileName(document.getFileName());
-            }
-            if (document.getCompanyComments() != null) {
-                existente.setCompanyComments(document.getCompanyComments());
-            }
-            if (document.getTrackingStatus() != null) {
-                existente.setTrackingStatus(document.getTrackingStatus());
-            }
+            aplicarCambios(existente, document);
             existente.setUploadDate(LocalDateTime.now());
             return repositoryPort.saveContractDocument(existente);
         }
@@ -57,6 +46,26 @@ public class ManageContractDocumentUseCaseImpl implements SaveContractDocumentUs
         }
         document.setUploadDate(LocalDateTime.now());
         return repositoryPort.saveContractDocument(document);
+    }
+
+    /** Actualiza solo lo que llega informado; el resto del contrato existente se conserva. */
+    private static void aplicarCambios(ContractDocument existente, ContractDocument cambios) {
+        if (tieneTexto(cambios.getFileUrl())) {
+            existente.setFileUrl(cambios.getFileUrl());
+        }
+        if (tieneTexto(cambios.getFileName())) {
+            existente.setFileName(cambios.getFileName());
+        }
+        if (cambios.getCompanyComments() != null) {
+            existente.setCompanyComments(cambios.getCompanyComments());
+        }
+        if (cambios.getTrackingStatus() != null) {
+            existente.setTrackingStatus(cambios.getTrackingStatus());
+        }
+    }
+
+    private static boolean tieneTexto(String valor) {
+        return valor != null && !valor.isBlank();
     }
 
     @Override

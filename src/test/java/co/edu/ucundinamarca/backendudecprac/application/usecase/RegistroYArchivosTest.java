@@ -58,10 +58,13 @@ class RegistroYArchivosTest {
         @Test
         @DisplayName("Sin certificado RUT/NIT en PDF se rechaza y no se guarda nada")
         void sinCertificadoSeRechaza() {
-            assertThrows(InvalidInputException.class, () -> createCompany.createCompany(new User(), empresa(null)));
-            assertThrows(InvalidInputException.class, () -> createCompany.createCompany(new User(), empresa("  ")));
-            assertThrows(InvalidInputException.class,
-                    () -> createCompany.createCompany(new User(), empresa("https://res.cloudinary.com/demo/logo.png")));
+            User usuario = new User();
+            Company sinPdf = empresa(null);
+            Company pdfVacio = empresa("  ");
+            Company conImagen = empresa("https://res.cloudinary.com/demo/logo.png");
+            assertThrows(InvalidInputException.class, () -> createCompany.createCompany(usuario, sinPdf));
+            assertThrows(InvalidInputException.class, () -> createCompany.createCompany(usuario, pdfVacio));
+            assertThrows(InvalidInputException.class, () -> createCompany.createCompany(usuario, conImagen));
             verify(userRepositoryPort, never()).saveUser(any());
             verify(companyRepositoryPort, never()).createCompany(any());
         }
@@ -95,8 +98,8 @@ class RegistroYArchivosTest {
             when(companyRepositoryPort.createCompany(any()))
                     .thenThrow(new ResourceAlreadyExistsException("Ya existe una cuenta con ese nit"));
 
-            assertThrows(ResourceAlreadyExistsException.class,
-                    () -> createCompany.createCompany(user, empresa("https://res.cloudinary.com/demo/udecprac/empresas_nit/rut_ab12.pdf")));
+            Company empresa = empresa("https://res.cloudinary.com/demo/udecprac/empresas_nit/rut_ab12.pdf");
+            assertThrows(ResourceAlreadyExistsException.class, () -> createCompany.createCompany(user, empresa));
             verify(companyRepositoryPort, never()).saveCompany(any());
         }
     }
@@ -112,7 +115,8 @@ class RegistroYArchivosTest {
         void rechazaOtrosDominios(String correo) {
             User user = new User();
             user.setEmailAddres(correo);
-            assertThrows(InvalidInputException.class, () -> createStudent.createStudent(user, new Student()));
+            Student estudiante = new Student();
+            assertThrows(InvalidInputException.class, () -> createStudent.createStudent(user, estudiante));
             verify(userRepositoryPort, never()).saveUser(any());
         }
 

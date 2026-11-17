@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class AiRecommendationUseCaseTest {
+class AiRecommendationUseCaseTest {
     @Mock
     private AiModelPort aiModelPort;
 
@@ -120,5 +120,110 @@ public class AiRecommendationUseCaseTest {
         GeminiAiAdapter adapterErrorRed = new GeminiAiAdapter("AIzaFakeKeyTest", "http://localhost:1/invalid");
         String respFallbackRed = adapterErrorRed.generateAnalysis("genera un ranking de compatibilidad");
         assertTrue(respFallbackRed.contains("Análisis IA UdecPrac"));
+    }
+
+    private static Offer ofertaBackend() {
+        Offer o = new Offer();
+        o.setIdOffer(7L);
+        o.setPracticeName("Practicante Backend Java");
+        o.setProfession("Ingeniería de Sistemas");
+        o.setModality("Remoto");
+        o.setLocation("Fusagasugá");
+        o.setAvailableSpots(2);
+        o.setPracticeDescription("Spring Boot, SQL y Git");
+        return o;
+    }
+
+    private static StudentProfile perfilCompleto() {
+        StudentProfile perfil = new StudentProfile();
+        perfil.setSkills("Java, Spring, SQL, Git");
+        perfil.setEnglishLevel("B2");
+        perfil.setAboutMe("Desarrollador backend");
+        perfil.setGithubUrl("https://github.com/udec");
+        return perfil;
+    }
+
+    @Test
+    void sinIaDisponibleGeneraAnalisisLocalDeOfertasConElPerfil() {
+        when(studentProfileRepositoryPort.findByDocumentStudent("123")).thenReturn(perfilCompleto());
+        when(offerRepositoryPort.getActiveOffers()).thenReturn(List.of(ofertaBackend()));
+        when(aiModelPort.generateAnalysis(anyString())).thenReturn("FALLBACK: sin conexión");
+
+        String analisis = aiUseCase.recommendOffersForStudent("123").get("aiRecommendation").toString();
+
+        assertTrue(analisis.contains("EVALUACIÓN PERSONALIZADA"));
+        assertTrue(analisis.contains("Practicante Backend Java"));
+        assertTrue(analisis.contains("Java, Spring, SQL, Git"), "usa las habilidades reales del perfil");
+        assertTrue(analisis.contains("Prioridad #1"), "habilidades alineadas => compatibilidad alta");
+    }
+
+    @Test
+    void sinIaYSinOfertasInformaQueNoHayOfertas() {
+        when(offerRepositoryPort.getActiveOffers()).thenReturn(Collections.emptyList());
+        when(aiModelPort.generateAnalysis(anyString())).thenReturn(null);
+
+        String analisis = aiUseCase.recommendOffersForStudent("").get("aiRecommendation").toString();
+
+        assertTrue(analisis.contains("no hay ofertas de práctica activas"));
+    }
+
+    @Test
+    void perfilQueFallaAlLeerseUsaValoresPorDefecto() {
+        when(studentProfileRepositoryPort.findByDocumentStudent("999")).thenThrow(new IllegalStateException("BD caída"));
+        when(offerRepositoryPort.getActiveOffers()).thenReturn(List.of(ofertaBackend()));
+        when(aiModelPort.generateAnalysis(anyString())).thenReturn("FALLBACK:");
+
+        String analisis = aiUseCase.recommendOffersForStudent("999").get("aiRecommendation").toString();
+
+        assertTrue(analisis.contains("Java, Spring Boot, Angular, SQL, Git"));
+    }
+
+    @Test
+    void sinIaGeneraRankingLocalConVeredictoPorCandidato() {
+        when(offerRepositoryPort.findById(7L)).thenReturn(ofertaBackend());
+        PostulationDetail conPerfil = new PostulationDetail();
+        conPerfil.setStudentFullName("Ana Pérez");
+        conPerfil.setDocumentStudent("111");
+        PostulationDetail sinPerfil = new PostulationDetail();
+        sinPerfil.setStudentFullName("Luis Gómez");
+        sinPerfil.setDocumentStudent("222");
+        sinPerfil.setSkills("No especificadas");
+        PostulationDetail sinNombre = new PostulationDetail();
+        sinNombre.setStudentFullName(" ");
+        when(getPostulationsUseCase.getPostulationsByOfferId(7L)).thenReturn(List.of(conPerfil, sinPerfil, sinNombre));
+        when(studentProfileRepositoryPort.findByDocumentStudent("111")).thenReturn(perfilCompleto());
+        when(aiModelPort.generateAnalysis(anyString())).thenReturn("FALLBACK: cuota agotada");
+
+        Map<String, Object> res = aiUseCase.rankCandidatesForOffer(7L);
+        String ranking = res.get("aiRankingAnalysis").toString();
+
+        assertEquals(2, res.get("totalCandidatesAnalyzed"), "descarta postulantes sin nombre");
+        assertTrue(ranking.contains("RANKING DE COMPATIBILIDAD IA"));
+        assertTrue(ranking.contains("Ana Pérez") && ranking.contains("Luis Gómez"));
+        assertTrue(ranking.contains("altamente recomendado"));
+        assertTrue(ranking.contains("validar conocimientos"));
+    }
+
+    @Test
+    void sinIaYSinPostuladosAvisaQueNoHayCandidatos() {
+        when(offerRepositoryPort.findById(7L)).thenReturn(ofertaBackend());
+        when(getPostulationsUseCase.getPostulationsByOfferId(7L)).thenReturn(Collections.emptyList());
+        when(aiModelPort.generateAnalysis(anyString())).thenReturn(null);
+
+        String ranking = aiUseCase.rankCandidatesForOffer(7L).get("aiRankingAnalysis").toString();
+
+        assertTrue(ranking.contains("Aún no hay candidatos"));
+    }
+
+    @Test
+    void ofertaInexistenteEnRankingLanzaExcepcion() {
+        when(offerRepositoryPort.findById(5L)).thenReturn(null);
+        assertThrows(IllegalArgumentException.class, () -> aiUseCase.rankCandidatesForOffer(5L));
+    }
+
+    @Test
+    void primerNoVacioDevuelveElPrimerValorConContenido() {
+        assertEquals("b", AiRecommendationUseCaseImpl.primerNoVacio(null, " ", "b", "c"));
+        assertEquals("defecto", AiRecommendationUseCaseImpl.primerNoVacio(null, "", "defecto"));
     }
 }

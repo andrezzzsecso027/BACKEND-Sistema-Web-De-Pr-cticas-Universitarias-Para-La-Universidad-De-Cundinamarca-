@@ -15,7 +15,9 @@ public class Postulation {
     private LocalDateTime dateUdpate;
     private String observations;
 
-    public Postulation() {}
+    public Postulation() {
+        // Constructor vacío requerido por Jackson y por los mapeadores de persistencia
+    }
 
     // ------------------------- Comportamiento de dominio -------------------------
 

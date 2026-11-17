@@ -13,18 +13,9 @@ public class Student {
     private String headquarters;
     private String academicProgram;
 
-    public Student() {}
-    public Student(Long idUser, String document, String name, String lastName, String addres, String phoneNumber, String headquarters, String academicProgram) {
-        this.idUser = idUser;
-        this.document = document;
-        this.name = name;
-        this.lastName = lastName;
-        this.addres = addres;
-        this.phoneNumber = phoneNumber;
-        this.headquarters = headquarters;
-        this.academicProgram = academicProgram;
+    public Student() {
+        // Constructor vacío requerido por Jackson y por los mapeadores de persistencia
     }
-
     public Long getIdUser() {
         return idUser;
     }

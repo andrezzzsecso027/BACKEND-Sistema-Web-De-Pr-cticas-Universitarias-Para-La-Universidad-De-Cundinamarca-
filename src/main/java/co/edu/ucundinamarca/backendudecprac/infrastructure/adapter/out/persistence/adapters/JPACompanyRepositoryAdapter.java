@@ -6,7 +6,7 @@ import co.edu.ucundinamarca.backendudecprac.domain.model.Company;
 import co.edu.ucundinamarca.backendudecprac.domain.model.LegalRepresentative;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.CompanyRepositoryPort;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.entities.CompanyEntity;
-import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.entities.legalReprensentiveEmbeddable;
+import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.entities.LegalRepresentativeEmbeddable;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.out.persistence.jpa.JPACompanyRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
@@ -70,10 +70,10 @@ public class JPACompanyRepositoryAdapter implements CompanyRepositoryPort {
         entity.setUrlPdfNit(company.getRutPdfUrl());
         entity.setDescripcionEmpresa(company.getCompanyDescription());
         if (company.getLegalRepresentative() != null) {
-            legalReprensentiveEmbeddable repEntity = new legalReprensentiveEmbeddable();
+            LegalRepresentativeEmbeddable repEntity = new LegalRepresentativeEmbeddable();
             repEntity.setNameRepresentive(company.getLegalRepresentative().getNameRepresentative());
             repEntity.setLastNameRepresentive(company.getLegalRepresentative().getLastNameRepresentative());
-            repEntity.setCCrepresentive(company.getLegalRepresentative().getNumberDocument());
+            repEntity.setCcRepresentive(company.getLegalRepresentative().getNumberDocument());
             entity.setRepresentanteLegal(repEntity);
         }
         return entity;
@@ -111,7 +111,7 @@ public class JPACompanyRepositoryAdapter implements CompanyRepositoryPort {
             LegalRepresentative representante = new LegalRepresentative(
                     entity.getRepresentanteLegal().getNameRepresentive(),
                     entity.getRepresentanteLegal().getLastNameRepresentive(),
-                    entity.getRepresentanteLegal().getCCrepresentive()
+                    entity.getRepresentanteLegal().getCcRepresentive()
             );
             company.setLegalRepresentative(representante);
         }

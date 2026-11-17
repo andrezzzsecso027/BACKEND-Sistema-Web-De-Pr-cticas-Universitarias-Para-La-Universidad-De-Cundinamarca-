@@ -21,20 +21,7 @@ public class Company {
     private String companyDescription;
 
     public Company() {
-    }
-
-    public Company(String nit, Long idUser, String legalName, String department, String city, String companyName, String companyType, String companyAddress, String companyPhoneNumber, CompanyVerificationStatus verificationStatus, LegalRepresentative legalRepresentative) {
-        this.nit = nit;
-        this.idUser = idUser;
-        this.legalName = legalName;
-        this.department = department;
-        this.city = city;
-        this.companyName = companyName;
-        this.companyType = companyType;
-        this.companyAddress = companyAddress;
-        this.companyPhoneNumber = companyPhoneNumber;
-        this.verificationStatus = verificationStatus;
-        this.legalRepresentative = legalRepresentative;
+        // Constructor vacío requerido por Jackson y por los mapeadores de persistencia
     }
 
     // ------------------------- Comportamiento de dominio -------------------------

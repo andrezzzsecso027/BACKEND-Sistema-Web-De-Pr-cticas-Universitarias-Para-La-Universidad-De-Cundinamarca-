@@ -105,8 +105,8 @@ class ProfileUpdateUseCasesTest {
     @DisplayName("Empresa inexistente: lanza ResourceNotFoundException (el controlador responde 404)")
     void empresaInexistente() {
         when(companyRepositoryPort.findByNit("000")).thenReturn(Optional.empty());
-        assertThrows(ResourceNotFoundException.class,
-                () -> updateCompanyProfileUseCase.updateProfile("000", new Company()));
+        Company cambios = new Company();
+        assertThrows(ResourceNotFoundException.class, () -> updateCompanyProfileUseCase.updateProfile("000", cambios));
         verify(companyRepositoryPort, never()).saveCompany(any());
     }
 }

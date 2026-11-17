@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class CasosDeUsoNegocioTest {
+class CasosDeUsoNegocioTest {
     @Mock private CompanyRepositoryPort companyRepositoryPort;
     @Mock private OfferRepositoryPort offerRepositoryPort;
     @Mock private StudentRepositoryPort studentRepositoryPort;

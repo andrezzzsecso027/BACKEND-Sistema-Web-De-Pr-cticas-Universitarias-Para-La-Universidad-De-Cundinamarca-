@@ -77,7 +77,7 @@ public class UploadFileUseCaseImpl implements UploadFileUseCase {
         return fileStoragePort.uploadFile(fileBytes, uniquePublicId, folder);
     }
 
-    /** Todo PDF empieza por "%PDF-". */
+    /** Cada PDF empieza por "%PDF-". */
     private static boolean esPdf(byte[] b) {
         return empiezaCon(b, "%PDF-".getBytes(StandardCharsets.US_ASCII));
     }

@@ -38,7 +38,7 @@ public class ApplicationConfig {
 
     // 4. Creamos el AuthenticationManager que tu AuthController estaba pidiendo a gritos
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) {
         return config.getAuthenticationManager();
     }
 }

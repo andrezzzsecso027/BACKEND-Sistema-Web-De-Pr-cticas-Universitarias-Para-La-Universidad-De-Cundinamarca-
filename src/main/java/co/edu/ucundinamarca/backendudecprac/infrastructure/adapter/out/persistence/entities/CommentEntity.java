@@ -31,6 +31,7 @@ public class CommentEntity {
     private LocalDateTime acceptanceComment;
 
     public CommentEntity() {
+        // Constructor vacío requerido por JPA
     }
 
     public Long getIdComment() {

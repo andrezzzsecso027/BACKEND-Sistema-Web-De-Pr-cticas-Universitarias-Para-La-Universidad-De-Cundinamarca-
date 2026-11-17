@@ -5,6 +5,7 @@ import co.edu.ucundinamarca.backendudecprac.domain.port.out.EmailSenderPort;
 import org.springframework.stereotype.Component;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -31,6 +32,8 @@ public class ExternalApiEmailAdapter implements EmailSenderPort {
 
     private final RestTemplate restTemplate = new RestTemplate();
     private static final String BREVO_URL = "https://api.brevo.com/v3/smtp/email";
+    private static final String CAMPO_EMAIL = "email";
+    private static final String CAMPO_NOMBRE = "name";
 
 
     @Override
@@ -48,9 +51,9 @@ public class ExternalApiEmailAdapter implements EmailSenderPort {
                 + "</div>";
 
         Map<String, Object> body = new HashMap<>();
-        body.put("sender", Map.of("name", senderName.trim(), "email", senderEmail.trim()));
-        body.put("replyTo", Map.of("name", senderName.trim(), "email", senderEmail.trim()));
-        body.put("to", List.of(Map.of("email", toEmail.trim())));
+        body.put("sender", Map.of(CAMPO_NOMBRE, senderName.trim(), CAMPO_EMAIL, senderEmail.trim()));
+        body.put("replyTo", Map.of(CAMPO_NOMBRE, senderName.trim(), CAMPO_EMAIL, senderEmail.trim()));
+        body.put("to", List.of(Map.of(CAMPO_EMAIL, toEmail.trim())));
         body.put("subject", "Notificación Oficial - Sistema UdecPrac");
         body.put("htmlContent", htmlBody);
         body.put("textContent", content);
@@ -60,8 +63,8 @@ public class ExternalApiEmailAdapter implements EmailSenderPort {
         try {
             restTemplate.postForEntity(BREVO_URL, request, String.class);
             log.info("Correo enviado con éxito a través de Brevo para: {}", toEmail);
-        } catch (Exception e) {
-            throw new RuntimeException("Error enviando correo con Brevo: " + e.getMessage());
+        } catch (RestClientException e) {
+            throw new EmailDeliveryException("Error enviando correo con Brevo: " + e.getMessage(), e);
         }
     }
 }

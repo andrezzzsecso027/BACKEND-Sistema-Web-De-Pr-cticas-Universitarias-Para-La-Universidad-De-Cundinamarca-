@@ -11,13 +11,40 @@ import co.edu.ucundinamarca.backendudecprac.domain.port.out.StudentProfileReposi
 import co.edu.ucundinamarca.backendudecprac.domain.model.PostulationDetail;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 @Service
 public class AiRecommendationUseCaseImpl implements AiRecommendationCandidatesUseCase, AiRecommendationOfferUseCase {
+
+    private static final String PREFIJO_FALLBACK = "FALLBACK:";
+
+    private static final String PROMPT_OFERTAS = """
+            Eres el orientador de prácticas de la Universidad de Cundinamarca. \
+            Analiza el perfil del estudiante (CC: %s):
+            - Habilidades técnicas: %s
+            - Nivel de inglés: %s
+            - Resumen profesional: %s
+
+            Evalúa su compatibilidad frente a cada una de estas ofertas activas:
+            %s
+            Responde en español indicando para CADA oferta por su nombre:
+            1. Porcentaje de Match (0%% a 100%%).
+            2. Por qué encaja o no con sus habilidades.
+            3. Cuál es la mejor opción para postularse hoy.""";
+
+    private static final String PROMPT_RANKING = """
+            Eres un reclutador técnico evaluando candidatos para la oferta de práctica '%s' \
+            (Programa requerido: %s | Modalidad: %s | Descripción: %s).
+
+            Lista de estudiantes postulados:
+            %s
+            Genera en español un ranking detallado ordenando del candidato más compatible al menos compatible. \
+            Para CADA estudiante menciona su Nombre completo, su porcentaje de Match (0%% a 100%%), \
+            sus fortalezas técnicas frente a la vacante y un veredicto de contratación.""";
+
     private final AiModelPort aiModelPort;
     private final OfferRepositoryPort offerRepositoryPort;
     private final StudentProfileRepositoryPort studentProfileRepositoryPort;
@@ -35,15 +62,10 @@ public class AiRecommendationUseCaseImpl implements AiRecommendationCandidatesUs
         StudentProfile profile = obtenerPerfilSeguro(studentDocument);
         List<Offer> activeOffers = offerRepositoryPort.getActiveOffers();
 
-        String skillsEst = (profile != null && profile.getSkills() != null && !profile.getSkills().isBlank())
-                ? profile.getSkills()
-                : "Java, Spring Boot, Angular, SQL, Git";
-        String inglesEst = (profile != null && profile.getEnglishLevel() != null && !profile.getEnglishLevel().isBlank())
-                ? profile.getEnglishLevel()
-                : "B1 - Intermedio";
-        String sobreMiEst = (profile != null && profile.getAboutMe() != null && !profile.getAboutMe().isBlank())
-                ? profile.getAboutMe()
-                : "Estudiante de pregrado en búsqueda de práctica profesional.";
+        String skillsEst = primerNoVacio(dePerfil(profile, StudentProfile::getSkills), "Java, Spring Boot, Angular, SQL, Git");
+        String inglesEst = primerNoVacio(dePerfil(profile, StudentProfile::getEnglishLevel), "B1 - Intermedio");
+        String sobreMiEst = primerNoVacio(dePerfil(profile, StudentProfile::getAboutMe),
+                "Estudiante de pregrado en búsqueda de práctica profesional.");
 
         StringBuilder catalogoOfertas = new StringBuilder();
         for (Offer o : activeOffers) {
@@ -54,23 +76,11 @@ public class AiRecommendationUseCaseImpl implements AiRecommendationCandidatesUs
             ));
         }
 
-        String prompt = String.format(
-                "Eres el orientador de prácticas de la Universidad de Cundinamarca. "
-                        + "Analiza el perfil del estudiante (CC: %s):\n"
-                        + "- Habilidades técnicas: %s\n"
-                        + "- Nivel de inglés: %s\n"
-                        + "- Resumen profesional: %s\n\n"
-                        + "Evalúa su compatibilidad frente a cada una de estas ofertas activas:\n%s\n"
-                        + "Responde en español indicando para CADA oferta por su nombre:\n"
-                        + "1. Porcentaje de Match (0%% a 100%%).\n"
-                        + "2. Por qué encaja o no con sus habilidades.\n"
-                        + "3. Cuál es la mejor opción para postularse hoy.",
-                studentDocument, skillsEst, inglesEst, sobreMiEst,
-                catalogoOfertas.isEmpty() ? "No hay ofertas activas." : catalogoOfertas.toString()
-        );
+        String prompt = PROMPT_OFERTAS.formatted(studentDocument, skillsEst, inglesEst, sobreMiEst,
+                catalogoOfertas.isEmpty() ? "No hay ofertas activas." : catalogoOfertas.toString());
 
         String respuestaIa = aiModelPort.generateAnalysis(prompt);
-        if (respuestaIa == null || respuestaIa.startsWith("FALLBACK:")) {
+        if (esFallback(respuestaIa)) {
             respuestaIa = construirAnalisisLocalOfertas(studentDocument, skillsEst, inglesEst, activeOffers);
         }
 
@@ -96,41 +106,15 @@ public class AiRecommendationUseCaseImpl implements AiRecommendationCandidatesUs
         StringBuilder detallePostulados = new StringBuilder();
         int idx = 1;
         for (PostulationDetail p : postulados) {
-            String doc = p.getDocumentStudent();
-            StudentProfile perf = obtenerPerfilSeguro(doc);
-
-            String skills = (perf != null && perf.getSkills() != null && !perf.getSkills().isBlank())
-                    ? perf.getSkills()
-                    : (p.getSkills() != null ? p.getSkills() : "En actualización");
-            String ingles = (perf != null && perf.getEnglishLevel() != null && !perf.getEnglishLevel().isBlank())
-                    ? perf.getEnglishLevel()
-                    : (p.getEnglishLevel() != null ? p.getEnglishLevel() : "B1");
-            String resumen = (perf != null && perf.getAboutMe() != null && !perf.getAboutMe().isBlank())
-                    ? perf.getAboutMe()
-                    : "Postulante activo de la UdeC";
-            String github = (perf != null && perf.getGithubUrl() != null && !perf.getGithubUrl().isBlank())
-                    ? perf.getGithubUrl()
-                    : "No adjunto";
-
-            detallePostulados.append(String.format(
-                    "%d. Nombre: %s (CC: %s) | Correo: %s | Habilidades: [%s] | Inglés: %s | Portafolio: %s | Perfil: %s%n",
-                    idx++, p.getStudentFullName(), doc, p.getStudentEmail(), skills, ingles, github, resumen
-            ));
+            detallePostulados.append(describirPostulado(idx++, p));
         }
 
-        String prompt = String.format(
-                "Eres un reclutador técnico evaluando candidatos para la oferta de práctica '%s' "
-                        + "(Programa requerido: %s | Modalidad: %s | Descripción: %s).\n\n"
-                        + "Lista de estudiantes postulados:\n%s\n"
-                        + "Genera en español un ranking detallado ordenando del candidato más compatible al menos compatible. "
-                        + "Para CADA estudiante menciona su Nombre completo, su porcentaje de Match (0%% a 100%%), "
-                        + "sus fortalezas técnicas frente a la vacante y un veredicto de contratación.",
+        String prompt = PROMPT_RANKING.formatted(
                 offer.getPracticeName(), offer.getProfession(), offer.getModality(), offer.getPracticeDescription(),
-                detallePostulados.isEmpty() ? "Sin postulados." : detallePostulados.toString()
-        );
+                detallePostulados.isEmpty() ? "Sin postulados." : detallePostulados.toString());
 
         String respuestaIa = aiModelPort.generateAnalysis(prompt);
-        if (respuestaIa == null || respuestaIa.startsWith("FALLBACK:")) {
+        if (esFallback(respuestaIa)) {
             respuestaIa = construirRankingLocalDetallado(offer, postulados);
         }
 
@@ -142,13 +126,43 @@ public class AiRecommendationUseCaseImpl implements AiRecommendationCandidatesUs
         return resultado;
     }
 
+    private String describirPostulado(int posicion, PostulationDetail p) {
+        String doc = p.getDocumentStudent();
+        StudentProfile perf = obtenerPerfilSeguro(doc);
+        String skills = primerNoVacio(dePerfil(perf, StudentProfile::getSkills), p.getSkills(), "En actualización");
+        String ingles = primerNoVacio(dePerfil(perf, StudentProfile::getEnglishLevel), p.getEnglishLevel(), "B1");
+        String resumen = primerNoVacio(dePerfil(perf, StudentProfile::getAboutMe), "Postulante activo de la UdeC");
+        String github = primerNoVacio(dePerfil(perf, StudentProfile::getGithubUrl), "No adjunto");
+        return String.format(
+                "%d. Nombre: %s (CC: %s) | Correo: %s | Habilidades: [%s] | Inglés: %s | Portafolio: %s | Perfil: %s%n",
+                posicion, p.getStudentFullName(), doc, p.getStudentEmail(), skills, ingles, github, resumen);
+    }
+
     private StudentProfile obtenerPerfilSeguro(String doc) {
         if (doc == null || doc.isBlank()) return null;
         try {
             return studentProfileRepositoryPort.findByDocumentStudent(doc);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
+            // Un perfil ilegible no debe impedir el análisis: se usan los valores por defecto
             return null;
         }
+    }
+
+    private static boolean esFallback(String respuestaIa) {
+        return respuestaIa == null || respuestaIa.startsWith(PREFIJO_FALLBACK);
+    }
+
+    /** Valor de un campo del perfil, o null si no hay perfil. */
+    private static String dePerfil(StudentProfile perfil, Function<StudentProfile, String> campo) {
+        return perfil == null ? null : campo.apply(perfil);
+    }
+
+    /** Primer valor con contenido; el último argumento actúa como valor por defecto. */
+    static String primerNoVacio(String... valores) {
+        for (String v : valores) {
+            if (v != null && !v.isBlank()) return v;
+        }
+        return valores[valores.length - 1];
     }
 
     private String construirRankingLocalDetallado(Offer offer, List<PostulationDetail> postulados) {
@@ -164,15 +178,9 @@ public class AiRecommendationUseCaseImpl implements AiRecommendationCandidatesUs
         int pos = 1;
         for (PostulationDetail p : postulados) {
             StudentProfile perf = obtenerPerfilSeguro(p.getDocumentStudent());
-            String skills = (perf != null && perf.getSkills() != null && !perf.getSkills().isBlank())
-                    ? perf.getSkills()
-                    : (p.getSkills() != null && !p.getSkills().isBlank() ? p.getSkills() : "No especificadas en el perfil");
-            String ingles = (perf != null && perf.getEnglishLevel() != null && !perf.getEnglishLevel().isBlank())
-                    ? perf.getEnglishLevel()
-                    : "B1 - Intermedio";
-            String github = (perf != null && perf.getGithubUrl() != null && !perf.getGithubUrl().isBlank())
-                    ? perf.getGithubUrl()
-                    : "No registrado";
+            String skills = primerNoVacio(dePerfil(perf, StudentProfile::getSkills), p.getSkills(), "No especificadas en el perfil");
+            String ingles = primerNoVacio(dePerfil(perf, StudentProfile::getEnglishLevel), "B1 - Intermedio");
+            String github = primerNoVacio(dePerfil(perf, StudentProfile::getGithubUrl), "No registrado");
 
             int score = calcularMatchHabilidades(skills, offer.getPracticeName() + " " + offer.getPracticeDescription() + " " + offer.getProfession());
 

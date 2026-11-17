@@ -38,8 +38,7 @@ public class CreateCompanyUseCaseImpl implements CreateCompanyUseCase {
         if(empresarepositoryPort.existsByNit(company.getNit())){
             throw new ResourceAlreadyExistsException("Ya existe una cuenta con ese nit");
         }
-        String JWtpassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(JWtpassword);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setUserStatus(false);
         user.setCreationDate(LocalDateTime.now());
         User userGuardado = usuariorepositoryport.saveUser(user);
