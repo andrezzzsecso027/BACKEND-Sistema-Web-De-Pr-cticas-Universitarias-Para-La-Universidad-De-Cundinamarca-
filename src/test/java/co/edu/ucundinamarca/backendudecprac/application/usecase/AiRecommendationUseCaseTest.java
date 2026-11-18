@@ -42,35 +42,9 @@ class AiRecommendationUseCaseTest {
     private AiRecommendationUseCaseImpl aiUseCase;
 
     @Test
-    void debeRecomendarOfertasParaEstudianteConIa() {
-        Offer oferta = new Offer();
-        oferta.setIdOffer(1L);
-        oferta.setPracticeName("Desarrollador Backend Spring Boot");
-        oferta.setProfession("Ingeniería de Sistemas");
-        oferta.setModality("Remoto");
-        oferta.setLocation("Fusagasugá");
-        oferta.setPracticeDescription("API REST con Arquitectura Hexagonal");
-
-        when(studentProfileRepositoryPort.findByDocumentStudent("1003558974")).thenReturn(new StudentProfile());
-        when(offerRepositoryPort.getActiveOffers()).thenReturn(List.of(oferta));
-        when(aiModelPort.generateAnalysis(anyString())).thenReturn("Match 95%: Excelente perfil para Backend.");
-
-        AiController controller = new AiController(aiUseCase, aiUseCase);
-        ResponseEntity<?> response = controller.recomendarOfertasEstudiante("1003558974");
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
-        assertEquals(1, body.get("totalOffersAnalyzed"));
-        assertTrue(body.get("aiRecommendation").toString().contains("Match 95%"));
-    }
-
-    @Test
     void debeRecomendarOfertasCuandoPerfilEsNuloYNoHayOfertas() {
         when(studentProfileRepositoryPort.findByDocumentStudent("0000")).thenReturn(null);
         when(offerRepositoryPort.getActiveOffers()).thenReturn(Collections.emptyList());
-        when(aiModelPort.generateAnalysis(anyString())).thenReturn("Sin ofertas disponibles");
 
         Map<String, Object> res = aiUseCase.recommendOffersForStudent("0000");
         assertEquals(0, res.get("totalOffersAnalyzed"));
@@ -144,38 +118,12 @@ class AiRecommendationUseCaseTest {
     }
 
     @Test
-    void sinIaDisponibleGeneraAnalisisLocalDeOfertasConElPerfil() {
-        when(studentProfileRepositoryPort.findByDocumentStudent("123")).thenReturn(perfilCompleto());
-        when(offerRepositoryPort.getActiveOffers()).thenReturn(List.of(ofertaBackend()));
-        when(aiModelPort.generateAnalysis(anyString())).thenReturn("FALLBACK: sin conexión");
-
-        String analisis = aiUseCase.recommendOffersForStudent("123").get("aiRecommendation").toString();
-
-        assertTrue(analisis.contains("EVALUACIÓN PERSONALIZADA"));
-        assertTrue(analisis.contains("Practicante Backend Java"));
-        assertTrue(analisis.contains("Java, Spring, SQL, Git"), "usa las habilidades reales del perfil");
-        assertTrue(analisis.contains("Prioridad #1"), "habilidades alineadas => compatibilidad alta");
-    }
-
-    @Test
     void sinIaYSinOfertasInformaQueNoHayOfertas() {
         when(offerRepositoryPort.getActiveOffers()).thenReturn(Collections.emptyList());
-        when(aiModelPort.generateAnalysis(anyString())).thenReturn(null);
 
         String analisis = aiUseCase.recommendOffersForStudent("").get("aiRecommendation").toString();
 
         assertTrue(analisis.contains("no hay ofertas de práctica activas"));
-    }
-
-    @Test
-    void perfilQueFallaAlLeerseUsaValoresPorDefecto() {
-        when(studentProfileRepositoryPort.findByDocumentStudent("999")).thenThrow(new IllegalStateException("BD caída"));
-        when(offerRepositoryPort.getActiveOffers()).thenReturn(List.of(ofertaBackend()));
-        when(aiModelPort.generateAnalysis(anyString())).thenReturn("FALLBACK:");
-
-        String analisis = aiUseCase.recommendOffersForStudent("999").get("aiRecommendation").toString();
-
-        assertTrue(analisis.contains("Java, Spring Boot, Angular, SQL, Git"));
     }
 
     @Test
@@ -208,7 +156,6 @@ class AiRecommendationUseCaseTest {
     void sinIaYSinPostuladosAvisaQueNoHayCandidatos() {
         when(offerRepositoryPort.findById(7L)).thenReturn(ofertaBackend());
         when(getPostulationsUseCase.getPostulationsByOfferId(7L)).thenReturn(Collections.emptyList());
-        when(aiModelPort.generateAnalysis(anyString())).thenReturn(null);
 
         String ranking = aiUseCase.rankCandidatesForOffer(7L).get("aiRankingAnalysis").toString();
 

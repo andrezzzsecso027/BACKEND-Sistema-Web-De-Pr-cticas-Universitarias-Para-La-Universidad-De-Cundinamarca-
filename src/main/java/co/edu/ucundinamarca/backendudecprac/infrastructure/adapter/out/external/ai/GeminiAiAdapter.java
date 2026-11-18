@@ -23,7 +23,7 @@ public class GeminiAiAdapter implements AiModelPort {
 
     public GeminiAiAdapter(
             @Value("${gemini.api.key:}") String apiKey,
-            @Value("${gemini.api.url:https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent}") String modelUrl) {
+            @Value("${gemini.api.url:https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent}") String modelUrl) {
         this.apiKey = apiKey;
         this.modelUrl = modelUrl;
         this.objectMapper = new ObjectMapper();
