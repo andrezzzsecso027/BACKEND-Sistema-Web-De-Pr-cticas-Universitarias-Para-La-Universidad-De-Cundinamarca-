@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/practicas")
-@CrossOrigin(origins = "http://localhost:4200")
 public class PracticeController {
     private final GetPracticeUseCase getPracticeUseCase;
     private final UpdatePracticeUseCase updatePracticeUseCase;

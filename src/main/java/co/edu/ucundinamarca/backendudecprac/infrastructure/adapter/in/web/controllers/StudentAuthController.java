@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/estudiantes/auth")
-@CrossOrigin(origins = "http://localhost:4200")
 public class StudentAuthController {
 
     private final VerifyStudentUseCase verifyStudentUseCase;

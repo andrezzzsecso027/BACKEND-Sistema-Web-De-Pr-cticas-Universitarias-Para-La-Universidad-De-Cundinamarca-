@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/ofertas")
-@CrossOrigin(origins = "http://localhost:4200")
 public class OfferController {
     private final CreateOfferUseCase createOfferUseCase;
     private final GetActiveOffersUseCase getActiveOffersUseCase;

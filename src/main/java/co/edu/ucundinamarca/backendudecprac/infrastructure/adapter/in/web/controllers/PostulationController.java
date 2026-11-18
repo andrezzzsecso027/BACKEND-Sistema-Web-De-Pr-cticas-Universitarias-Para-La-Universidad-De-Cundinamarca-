@@ -19,7 +19,6 @@ import java.util.List;
 /** Los errores de negocio los traduce GlobalExceptionHandler (404 / 409 / 400). */
 @RestController
 @RequestMapping("/api/postulaciones")
-@CrossOrigin(origins = "http://localhost:4200")
 public class PostulationController {
     private final CreatePostulationUseCase createPostulationUseCase;
     private final GetPostulationsUseCase getPostulationsUseCase;

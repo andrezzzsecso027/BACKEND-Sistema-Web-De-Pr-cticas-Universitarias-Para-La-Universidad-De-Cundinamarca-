@@ -10,7 +10,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/archivos")
-@CrossOrigin(origins = "http://localhost:4200")
 public class FileUploadController {
     private final UploadFileUseCase uploadFileUseCase;
 

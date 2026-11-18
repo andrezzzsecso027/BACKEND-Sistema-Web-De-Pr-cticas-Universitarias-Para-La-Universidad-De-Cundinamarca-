@@ -17,7 +17,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/registro/estudiantes")
-@CrossOrigin(origins = "http://localhost:4200")
 public class StudentController {
 
     private final CreateStudentUseCase createStudentUseCase;

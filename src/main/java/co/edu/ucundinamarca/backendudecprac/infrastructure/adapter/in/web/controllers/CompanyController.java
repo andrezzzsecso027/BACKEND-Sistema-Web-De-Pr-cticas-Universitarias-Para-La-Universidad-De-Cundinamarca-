@@ -17,7 +17,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/registro/empresas")
-@CrossOrigin(origins = "http://localhost:4200")
 public class CompanyController {
 
     private final CreateCompanyUseCase createCompanyUseCase;
