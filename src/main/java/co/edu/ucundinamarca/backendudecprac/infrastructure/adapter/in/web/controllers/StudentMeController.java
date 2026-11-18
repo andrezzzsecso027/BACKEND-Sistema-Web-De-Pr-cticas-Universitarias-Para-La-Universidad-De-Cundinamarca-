@@ -2,6 +2,8 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web.contr
 
 import co.edu.ucundinamarca.backendudecprac.domain.model.Student;
 import co.edu.ucundinamarca.backendudecprac.domain.model.StudentPostulationSummary;
+import co.edu.ucundinamarca.backendudecprac.domain.model.StudentPracticeSummary;
+import co.edu.ucundinamarca.backendudecprac.domain.port.in.GetMyPracticesUseCase;
 import co.edu.ucundinamarca.backendudecprac.domain.port.in.StudentSelfServiceUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,9 +24,18 @@ import java.util.List;
 public class StudentMeController {
 
     private final StudentSelfServiceUseCase studentSelfServiceUseCase;
+    private final GetMyPracticesUseCase getMyPracticesUseCase;
 
-    public StudentMeController(StudentSelfServiceUseCase studentSelfServiceUseCase) {
+    public StudentMeController(StudentSelfServiceUseCase studentSelfServiceUseCase,
+                               GetMyPracticesUseCase getMyPracticesUseCase) {
         this.studentSelfServiceUseCase = studentSelfServiceUseCase;
+        this.getMyPracticesUseCase = getMyPracticesUseCase;
+    }
+
+    /** Seguimiento de mis prácticas: estado, fechas, contrato y mi calificación a la empresa. */
+    @GetMapping("/practicas")
+    public ResponseEntity<List<StudentPracticeSummary>> misPracticas(Principal principal) {
+        return ResponseEntity.ok(getMyPracticesUseCase.getMyPractices(principal.getName()));
     }
 
     @GetMapping

@@ -51,6 +51,11 @@ public class CommentRepositoryAdapter implements CommentRepositoryPort {
     }
 
     @Override
+    public Optional<Comment> findByIdPractice(Long idPractice) {
+        return commentJPArepository.findFirstByIdPractice(idPractice).map(this::mapToDomain);
+    }
+
+    @Override
     public List<Comment> findByValidationStatus(CommentStatus status) {
         return commentJPArepository.findByValidationStatusIgnoreCase(status.name())
                 .stream()

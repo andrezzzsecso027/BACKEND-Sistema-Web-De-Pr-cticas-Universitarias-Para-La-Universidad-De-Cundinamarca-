@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -20,12 +21,12 @@ public class CommentController {
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<Comment> createComment(@RequestBody CommentRequestDTO dto) {
+    public ResponseEntity<Comment> createComment(@RequestBody CommentRequestDTO dto, Principal principal) {
         Comment comment = new Comment();
         comment.setIdPractice(dto.getIdPractice());
         comment.setCommentText(dto.getCommentText());
         comment.setCompanyRating(dto.getCompanyRating());
-        return ResponseEntity.status(HttpStatus.CREATED).body(commentUseCase.createComment(comment));
+        return ResponseEntity.status(HttpStatus.CREATED).body(commentUseCase.createComment(comment, principal.getName()));
     }
 
     @GetMapping("/empresa/{nitCompany}")

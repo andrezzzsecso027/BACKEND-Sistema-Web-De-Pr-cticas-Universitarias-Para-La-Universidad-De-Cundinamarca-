@@ -4,6 +4,7 @@ import co.edu.ucundinamarca.backendudecprac.domain.exceptions.BusinessRuleExcept
 import co.edu.ucundinamarca.backendudecprac.domain.exceptions.InvalidInputException;
 import co.edu.ucundinamarca.backendudecprac.domain.exceptions.ResourceNotFoundException;
 import co.edu.ucundinamarca.backendudecprac.domain.model.*;
+import co.edu.ucundinamarca.backendudecprac.domain.model.status.CommentStatus;
 import co.edu.ucundinamarca.backendudecprac.domain.model.status.ContractTrackingStatus;
 import co.edu.ucundinamarca.backendudecprac.domain.model.status.PostulationStatus;
 import co.edu.ucundinamarca.backendudecprac.domain.model.status.PracticeStatus;
@@ -230,10 +231,31 @@ class FlujosDeNegocioTest {
     @DisplayName("Calificación de la empresa (comentarios)")
     class Comentarios {
 
+        private static final String DUENO = "dueno@ucundinamarca.edu.co";
+        private static final String OTRO = "otro@ucundinamarca.edu.co";
+
+        /** DUENO (doc 1003) hizo la postulación 1 de la que nace la práctica 7; OTRO tiene el doc 2002. */
+        @BeforeEach
+        void sesiones() {
+            registrarEstudiante(DUENO, 50L, "1003");
+            registrarEstudiante(OTRO, 51L, "2002");
+            when(postulationPort.findById(1L)).thenReturn(postulacionEnRevision()); // documento 1003
+        }
+
+        private void registrarEstudiante(String correo, long idUser, String documento) {
+            User u = new User();
+            u.setIdUser(idUser);
+            Student s = new Student();
+            s.setDocument(documento);
+            when(userPort.findByCorreoElectronico(correo)).thenReturn(Optional.of(u));
+            when(studentPort.findByIdUser(idUser)).thenReturn(Optional.of(s));
+        }
+
         private Comment comentario() {
             Comment c = new Comment();
             c.setIdPractice(7L);
             c.setCommentText("Excelente acompañamiento");
+            c.setCompanyRating(5.0);
             return c;
         }
 
@@ -247,14 +269,24 @@ class FlujosDeNegocioTest {
         void practicaInexistenteEs404() {
             Comment c = comentario();
             when(practicePort.findById(7L)).thenReturn(null);
-            assertThrows(ResourceNotFoundException.class, () -> comments.createComment(c));
+            assertThrows(ResourceNotFoundException.class, () -> comments.createComment(c, DUENO));
+        }
+
+        @Test
+        @DisplayName("Un estudiante no puede calificar la práctica de otro (se responde 404, no se revela)")
+        void noSeCalificaLaPracticaDeOtroEstudiante() {
+            Comment c = comentario();
+            when(practicePort.findById(7L)).thenReturn(practicaFinalizada());
+            assertThrows(ResourceNotFoundException.class, () -> comments.createComment(c, OTRO));
+            assertThrows(ResourceNotFoundException.class, () -> comments.createComment(c, "sin-cuenta@x.co"));
+            verify(commentPort, never()).saveComment(any());
         }
 
         @Test
         void soloSeCalificaUnaPracticaFinalizada() {
             Comment c = comentario();
             when(practicePort.findById(7L)).thenReturn(Practice.startFor(1L));
-            assertThrows(BusinessRuleException.class, () -> comments.createComment(c));
+            assertThrows(BusinessRuleException.class, () -> comments.createComment(c, DUENO));
         }
 
         @Test
@@ -262,7 +294,26 @@ class FlujosDeNegocioTest {
             Comment c = comentario();
             when(practicePort.findById(7L)).thenReturn(practicaFinalizada());
             when(commentPort.existsByIdPractice(7L)).thenReturn(true);
-            assertThrows(BusinessRuleException.class, () -> comments.createComment(c));
+            assertThrows(BusinessRuleException.class, () -> comments.createComment(c, DUENO));
+        }
+
+        @Test
+        @DisplayName("La calificación debe estar entre 1 y 5 estrellas y el comentario no puede ir vacío")
+        void calificacionFueraDeRangoOTextoVacioEs400() {
+            when(practicePort.findById(7L)).thenReturn(practicaFinalizada());
+            Comment seis = comentario();
+            seis.setCompanyRating(6.0);
+            Comment sinNota = comentario();
+            sinNota.setCompanyRating(null);
+            Comment vacio = comentario();
+            vacio.setCommentText("   ");
+            Comment largo = comentario();
+            largo.setCommentText("a".repeat(Comment.MAX_TEXT_LENGTH + 1));
+
+            for (Comment c : List.of(seis, sinNota, vacio, largo)) {
+                assertThrows(InvalidInputException.class, () -> comments.createComment(c, DUENO));
+            }
+            verify(commentPort, never()).saveComment(any());
         }
 
         @Test
@@ -275,9 +326,9 @@ class FlujosDeNegocioTest {
             admin2.setIdUser(2);
             when(userPort.findByRole("administrador")).thenReturn(List.of(admin1, admin2));
 
-            Comment guardado = comments.createComment(comentario());
+            Comment guardado = comments.createComment(comentario(), DUENO);
 
-            assertNotNull(guardado.getValidationStatus());
+            assertEquals(CommentStatus.PENDIENTE, guardado.getValidationStatus());
             verify(notificationUseCase, times(2)).createNotification(any());
         }
 

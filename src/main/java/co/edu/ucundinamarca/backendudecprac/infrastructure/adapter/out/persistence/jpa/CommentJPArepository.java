@@ -6,9 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CommentJPArepository extends JpaRepository<CommentEntity, Long> {
     boolean existsByIdPractice(Long idPractice);
+
+    Optional<CommentEntity> findFirstByIdPractice(Long idPractice);
 
     List<CommentEntity> findByValidationStatusIgnoreCase(String validationStatus);
 

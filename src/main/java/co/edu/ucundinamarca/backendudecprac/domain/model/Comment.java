@@ -1,11 +1,16 @@
 package co.edu.ucundinamarca.backendudecprac.domain.model;
 
+import co.edu.ucundinamarca.backendudecprac.domain.exceptions.InvalidInputException;
 import co.edu.ucundinamarca.backendudecprac.domain.exceptions.InvalidStateTransitionException;
 import co.edu.ucundinamarca.backendudecprac.domain.model.status.CommentStatus;
 
 import java.time.LocalDateTime;
 
 public class Comment {
+    public static final int MIN_RATING = 1;
+    public static final int MAX_RATING = 5;
+    public static final int MAX_TEXT_LENGTH = 1000;
+
     private long idComment;
     private long idPractice;
     private String commentText;
@@ -20,8 +25,21 @@ public class Comment {
 
     // ------------------------- Comportamiento de dominio -------------------------
 
-    /** Cada comentario nace PENDIENTE de moderación por el administrador. */
+    /**
+     * Cada comentario nace PENDIENTE de moderación por el administrador.
+     * La calificación es obligatoria (1 a 5 estrellas) y el texto no puede ir vacío.
+     */
     public void submit(LocalDateTime now) {
+        if (companyRating == null || companyRating < MIN_RATING || companyRating > MAX_RATING) {
+            throw new InvalidInputException("La calificación debe estar entre " + MIN_RATING + " y " + MAX_RATING + " estrellas.");
+        }
+        if (commentText == null || commentText.isBlank()) {
+            throw new InvalidInputException("Escribe un comentario sobre tu experiencia en la empresa.");
+        }
+        if (commentText.length() > MAX_TEXT_LENGTH) {
+            throw new InvalidInputException("El comentario no puede superar los " + MAX_TEXT_LENGTH + " caracteres.");
+        }
+        this.commentText = commentText.trim();
         this.validationStatus = CommentStatus.PENDIENTE;
         this.commentDate = now;
     }

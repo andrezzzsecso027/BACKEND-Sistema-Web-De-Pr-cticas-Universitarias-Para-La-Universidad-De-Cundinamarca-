@@ -2,7 +2,9 @@ package co.edu.ucundinamarca.backendudecprac.infrastructure.adapter.in.web;
 
 import co.edu.ucundinamarca.backendudecprac.domain.model.*;
 import co.edu.ucundinamarca.backendudecprac.domain.model.status.CompanyVerificationStatus;
+import co.edu.ucundinamarca.backendudecprac.domain.model.status.ContractTrackingStatus;
 import co.edu.ucundinamarca.backendudecprac.domain.model.status.PostulationStatus;
+import co.edu.ucundinamarca.backendudecprac.domain.model.status.PracticeStatus;
 import co.edu.ucundinamarca.backendudecprac.domain.port.out.*;
 import co.edu.ucundinamarca.backendudecprac.infrastructure.security.JWTservice;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,6 +23,7 @@ import java.time.LocalDateTime;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -51,8 +55,11 @@ class StudentMeIntegrationTest {
     @Autowired private CompanyRepositoryPort companies;
     @Autowired private OfferRepositoryPort offers;
     @Autowired private PostulationRepositoryPort postulations;
+    @Autowired private PracticeRepositoryPort practices;
+    @Autowired private ContractDocumentRepositoryPort contracts;
 
     private static boolean sembrado = false;
+    private static long idPracticaLuis;
 
     @BeforeEach
     void sembrar() {
@@ -77,7 +84,20 @@ class StudentMeIntegrationTest {
         Long idOferta = offers.saveOffer(o).getIdOffer();
 
         postular(idOferta, "1001");
-        postular(idOferta, "2002");
+        // Luis fue aceptado: su práctica ya terminó y la empresa cargó el contrato firmado.
+        Postulation deLuis = postular(idOferta, "2002");
+        deLuis.setStatusPostulation(PostulationStatus.ACEPTADA);
+        deLuis.setDateUdpate(LocalDateTime.now());
+        postulations.savePostulation(deLuis);
+        Practice practica = Practice.startFor(deLuis.getIdPostulation());
+        practica.update(LocalDate.now().minusMonths(6), LocalDate.now().minusDays(1), PracticeStatus.FINALIZADA);
+        practica.setCompanyFeedback("Muy buen desempeño");
+        idPracticaLuis = practices.savePractice(practica).getIdPractice();
+        ContractDocument contrato = new ContractDocument();
+        contrato.setIdPostulation(deLuis.getIdPostulation()); contrato.setNitCompany("830-1");
+        contrato.setDocumentStudent("2002"); contrato.setFileName("contrato.pdf"); contrato.setFileUrl("https://x/contrato.pdf");
+        contrato.setTrackingStatus(ContractTrackingStatus.CONTRATO_FIRMADO); contrato.setUploadDate(LocalDateTime.now());
+        contracts.saveContractDocument(contrato);
     }
 
     private long usuario(String email, String rol) {
@@ -95,11 +115,16 @@ class StudentMeIntegrationTest {
         students.saveStudent(s);
     }
 
-    private void postular(Long idOferta, String doc) {
+    private Postulation postular(Long idOferta, String doc) {
         Postulation p = new Postulation();
         p.setIdOffer(idOferta); p.setDocumentNumberStudent(doc);
         p.submit(LocalDateTime.now());
-        postulations.savePostulation(p);
+        return postulations.savePostulation(p);
+    }
+
+    private String comentario(long idPractica, double estrellas) {
+        return "{\"idPractice\":" + idPractica + ",\"companyRating\":" + estrellas
+                + ",\"commentText\":\"Gran ambiente y acompañamiento\"}";
     }
 
     private String bearer(String email) {
@@ -124,6 +149,48 @@ class StudentMeIntegrationTest {
                 .andExpect(jsonPath("$[0].offerName").value("Practicante backend"))
                 .andExpect(jsonPath("$[0].companyName").value("Nexus Software"))
                 .andExpect(jsonPath("$[0].status").value(PostulationStatus.POSTULADA.name()));
+    }
+
+    @Test
+    @DisplayName("GET /me/practicas: seguimiento con oferta, empresa, contrato; vacío si no tiene práctica")
+    void misPracticas() throws Exception {
+        mockMvc.perform(get("/api/estudiantes/me/practicas").header("Authorization", bearer(LUIS)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].idPractice").value(idPracticaLuis))
+                .andExpect(jsonPath("$[0].practiceStatus").value("FINALIZADA"))
+                .andExpect(jsonPath("$[0].offerName").value("Practicante backend"))
+                .andExpect(jsonPath("$[0].companyName").value("Nexus Software"))
+                .andExpect(jsonPath("$[0].companyFeedback").value("Muy buen desempeño"))
+                .andExpect(jsonPath("$[0].contract.trackingStatus").value("CONTRATO_FIRMADO"));
+
+        mockMvc.perform(get("/api/estudiantes/me/practicas").header("Authorization", bearer(ANA)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    @DisplayName("Calificar la empresa: solo el dueño de la práctica, 1 a 5 estrellas, una sola vez y queda PENDIENTE")
+    void calificarEmpresa() throws Exception {
+        // Ana intenta calificar la práctica de Luis -> 404 (no se revela que existe)
+        mockMvc.perform(post("/api/comentarios/crear").header("Authorization", bearer(ANA))
+                        .contentType(MediaType.APPLICATION_JSON).content(comentario(idPracticaLuis, 5)))
+                .andExpect(status().isNotFound());
+        // Calificación fuera de rango -> 400
+        mockMvc.perform(post("/api/comentarios/crear").header("Authorization", bearer(LUIS))
+                        .contentType(MediaType.APPLICATION_JSON).content(comentario(idPracticaLuis, 7)))
+                .andExpect(status().isBadRequest());
+        // Calificación válida -> 201 y aparece en su seguimiento como PENDIENTE
+        mockMvc.perform(post("/api/comentarios/crear").header("Authorization", bearer(LUIS))
+                        .contentType(MediaType.APPLICATION_JSON).content(comentario(idPracticaLuis, 4)))
+                .andExpect(status().isCreated());
+        mockMvc.perform(get("/api/estudiantes/me/practicas").header("Authorization", bearer(LUIS)))
+                .andExpect(jsonPath("$[0].evaluation.companyRating").value(4.0))
+                .andExpect(jsonPath("$[0].evaluation.validationStatus").value("PENDIENTE"));
+        // Segunda calificación de la misma práctica -> 409
+        mockMvc.perform(post("/api/comentarios/crear").header("Authorization", bearer(LUIS))
+                        .contentType(MediaType.APPLICATION_JSON).content(comentario(idPracticaLuis, 5)))
+                .andExpect(status().isConflict());
     }
 
     @Test

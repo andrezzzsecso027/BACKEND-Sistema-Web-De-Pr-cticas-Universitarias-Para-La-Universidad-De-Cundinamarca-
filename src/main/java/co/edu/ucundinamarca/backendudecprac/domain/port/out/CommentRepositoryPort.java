@@ -10,6 +10,7 @@ public interface CommentRepositoryPort {
     Comment saveComment(Comment comment);
     Optional<Comment> findById(Long idComment);
     boolean existsByIdPractice(Long idPractice);
+    Optional<Comment> findByIdPractice(Long idPractice);
     List<Comment> findByValidationStatus(CommentStatus status);
     List<Comment> findApprovedByCompanyNit(String nitCompany);
 }
