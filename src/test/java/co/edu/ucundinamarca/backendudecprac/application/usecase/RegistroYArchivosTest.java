@@ -84,6 +84,23 @@ class RegistroYArchivosTest {
             assertEquals("https://res.cloudinary.com/demo/udecprac/empresas_nit/rut_ab12.pdf", creada.getRutPdfUrl());
             assertEquals(9L, creada.getIdUser());
             assertFalse(user.isUserStatus(), "la cuenta queda deshabilitada hasta que la Universidad la apruebe");
+            verify(emailSenderPort).sendEmail(eq("talento@empresa.co"), contains("Recibimos tu solicitud"));
+        }
+
+        @Test
+        @DisplayName("Si el correo de solicitud recibida falla, el registro igual queda hecho")
+        void correoFallidoNoImpideElRegistro() {
+            User user = new User();
+            user.setEmailAddres("sin-correo@empresa.co");
+            user.setPassword("secreta1");
+            when(passwordEncoder.encode(anyString())).thenReturn("hash");
+            when(userRepositoryPort.saveUser(any())).thenAnswer(i -> { User u = i.getArgument(0); u.setIdUser(10); return u; });
+            when(companyRepositoryPort.createCompany(any())).thenAnswer(i -> i.getArgument(0));
+            doThrow(new RuntimeException("Brevo caído")).when(emailSenderPort).sendEmail(anyString(), anyString());
+
+            Company creada = assertDoesNotThrow(() ->
+                    createCompany.createCompany(user, empresa("https://res.cloudinary.com/demo/udecprac/empresas_nit/rut_cd34.pdf")));
+            assertEquals(10L, creada.getIdUser());
         }
 
         @Test
